@@ -1,10 +1,11 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux'
+import { Reducer } from 'redux'
+import { documentStateReducer, DocumentStateType } from './Document'
 
-export interface IRootReducer {
-    session: {
-        isLoggedIn: boolean,
-    };
+export interface RootReducerType {
+    documentState: DocumentStateType
 }
 
-export const rootReducer  = combineReducers<IRootReducer>({
-});
+export const rootReducer: Reducer<RootReducerType> = combineReducers<RootReducerType>({
+    documentState: documentStateReducer,
+})
