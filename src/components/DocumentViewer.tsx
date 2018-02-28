@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { DocumentData, DocumentViewerSettings } from '../models'
+import { DocumentViewerSettings } from '../models'
 import { DocumentStateType, pollDocumentData } from '../store/Document'
 import { RootReducerType } from '../store/RootReducer'
-import DocumentViewerError from './DocumentViewerError'
-import DocumentViewerLoading from './DocumentViewerLoading'
+import { DocumentViewerError } from './DocumentViewerError'
+import DocumentViewerLayout from './DocumentViewerLayout'
+import { DocumentViewerLoading } from './DocumentViewerLoading'
 
 /**
  * Properties for main
@@ -41,13 +42,7 @@ class DocumentViewer extends React.Component<DocumentViewerProps & DocumentState
             return <DocumentViewerLoading />
 
         }
-        return <div style={{
-            width: '100%',
-            height: '100%',
-        }}>
-            <h1> {(this.props.document as DocumentData).documentName}</h1>
-            <p>Id / Path: <strong>{JSON.stringify(this.props.idOrPath)}</strong></p>
-        </div>
+        return <DocumentViewerLayout />
     }
 }
 

@@ -1,9 +1,11 @@
 import React = require('react')
 
-const documentViewerError = (props: any) => (
-    <div>
-        Error: {JSON.stringify(props)}
-    </div>
-)
-
-export default documentViewerError
+export class DocumentViewerError extends React.Component<{error: string}> {
+    public render() {
+        return (
+            <div>
+                Error: {JSON.stringify(this.props)}
+            </div>
+        )
+    }
+}

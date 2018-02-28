@@ -1,6 +1,7 @@
 import { Action, ActionCreator, Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { DocumentData, DocumentViewerSettings } from '../models'
+import { getAvailableImages } from './PreviewImages'
 
 export interface DocumentStateType {
     idOrPath: number | string | undefined
@@ -22,6 +23,7 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
             }
         }
         dispatch(documentReceivedAction(docData))
+        dispatch<any>(getAvailableImages(docData))
     }
 }
 
