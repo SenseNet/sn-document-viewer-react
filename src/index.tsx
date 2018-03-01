@@ -49,7 +49,7 @@ const settings: DocumentViewerSettings = {
 
 const store = configureStore(settings)
 
-store.dispatch<any>(pollDocumentData('Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/(\'BusinessPlan.docx\')'))
+store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('1000-Lorem.docx')`))
 
 ReactDOM.render(
     <Provider store={store}>

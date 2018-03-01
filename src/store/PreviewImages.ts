@@ -23,6 +23,12 @@ export const availabelImagesReceiveErrorAction: (error: string) => Action = (err
     error,
 })
 
+export const rotateImages: (imageIndexes: number[], amount: number) => Action = (imageIndexes, amount) => ({
+    type: 'SN_DOCVIEWER_PREVIEWS_IMAGES_ROTATE',
+    imageIndexes,
+    amount,
+})
+
 export const getAvailableImages: ActionCreator<ThunkAction<Promise<void>, PreviewImagesStateType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A') => {
     return async (dispatch, getState, api) => {
         dispatch(getAvailabelImagesAction(documentData))
@@ -41,11 +47,30 @@ export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { 
     const actionCasted = action as Action & PreviewImagesStateType
     switch (actionCasted.type) {
         case 'SN_DOCVIEWER_PREVIEWS_GET_IMAGES':
-            return Object.assign({}, state, { AvailableImages: [], Error: null })
+            return { ...state, AvailableImages: [], Error: null }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVED':
-            return Object.assign({}, state, { AvailableImages: action.imageData })
+            return { ...state, AvailableImages: action.imageData }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVE_ERROR':
-            return Object.assign({}, state, { AvailableImages: [], error: action.Error })
+            return { ...state, AvailableImages: [], error: action.Error }
+        case 'SN_DOCVIEWER_PREVIEWS_IMAGES_ROTATE':
+            return {
+                ...state,
+                AvailableImages:
+                    state.AvailableImages.map((img) => {
+                        const newImg = { ...img }
+                        if (action.imageIndexes.indexOf(newImg.Index) >= 0) {
+                            let newAngle = ((newImg.Attributes && newImg.Attributes.degree || 0) + (action.amount % 350)) % 360
+                            if (newAngle < 0) {
+                                newAngle += 360
+                            }
+                            newImg.Attributes = {
+                                ...newImg.Attributes,
+                                degree: newAngle,
+                            }
+                        }
+                        return newImg
+                    }),
+            }
         default:
             return state
     }

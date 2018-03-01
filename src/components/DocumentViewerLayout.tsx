@@ -3,32 +3,31 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action, Dispatch } from 'redux'
-import { DocumentData } from '../models'
-import { PreviewImagesStateType } from '../store/PreviewImages'
+import { DocumentData, PreviewImageData } from '../models'
 import { RootReducerType } from '../store/RootReducer'
-import { setPage, ViewerStateType } from '../store/Viewer'
-import { DocumentPage } from './DocumentPage'
+import { setActivePages, ViewerStateType } from '../store/Viewer'
+import DocumentPage from './DocumentPage'
 import LayoutAppBar from './LayoutAppBar'
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
         document: state.documentState.document,
-        images: state.previewImages,
+        images: state.previewImages.AvailableImages,
         viewer: state.viewer,
     }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
-        setPage: (page: number) => dispatch(setPage(page)),
+        setActivePages: (pages: number[]) => dispatch(setActivePages(pages)),
     },
 })
 
 export interface DocumentLayoutProps {
     document: DocumentData
-    images: PreviewImagesStateType
+    images: PreviewImageData[]
     viewer: ViewerStateType
-    actions: { setPage: (pageNo: number) => Action }
+    actions: { setActivePages: (pages: number[]) => Action }
 }
 
 export interface DocumentLayoutState {
@@ -39,6 +38,7 @@ export interface DocumentLayoutState {
 
 class DocumentViewerLayout extends React.Component<DocumentLayoutProps, DocumentLayoutState> {
 
+    public canvas!: HTMLCanvasElement | null
     constructor(props: DocumentLayoutProps) {
         super(props)
         this.state = {
@@ -46,6 +46,19 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
             pagesViewPortWidth: 0,
             showThumbnails: true,
         }
+
+        const observerke = new IntersectionObserver((entries, observer) => {
+            // tslint:disable-next-line:no-console
+            console.log('IntersectionObserverHeeee', entries)
+            /** */
+        }, {
+            root: this.viewPort,
+            rootMargin: '0px',
+            threshold: 1.0,
+        })
+
+        observerke.thresholds.keys()
+        // observerke.observe(document.querySelector('img') as HTMLElement)
     }
 
     public viewPort: HTMLDivElement | null = null
@@ -70,7 +83,11 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
             duration: 600,
             offset: -8,
         })
-        this.props.actions.setPage(index)
+        if (ev.ctrlKey) {
+            this.props.actions.setActivePages([...this.props.viewer.activePages, index])
+        } else {
+            this.props.actions.setActivePages([index])
+        }
     }
 
     private onResize(ev: Event) {
@@ -101,6 +118,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                 width: '100%',
                 height: '100%',
             }}>
+                <canvas ref={((c) => this.canvas = c)} style={{ display: 'none' }} />
                 <LayoutAppBar />
                 <div ref={(viewPort) => this.setupViewPort(viewPort)} style={{
                     display: 'flex',
@@ -110,16 +128,15 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                 }}>
                     <Grid item style={{ flexGrow: 1, flexShrink: 1, overflowX: 'hidden', overflowY: 'auto', height: '100%', padding: '1rem' }} id="sn-document-viewer-pages">
                         <Grid container direction="column">
-                            {this.props.images.AvailableImages.map((value) => (
+                            {this.props.images.map((value) => (
                                 <DocumentPage
+                                    canvas={this.canvas as HTMLCanvasElement}
                                     viewportWidth={this.state.pagesViewPortWidth}
                                     viewportHeight={this.state.pagesViewPortHeight}
                                     key={value.Index}
-                                    page={value}
+                                    imageIndex={value.Index}
                                     onClick={(ev) => this.scrollTo(value.Index, ev)}
-                                    activePage={this.props.viewer.activePage}
                                     zoomMode={this.props.viewer.zoomMode}
-                                    customZoomLevel={this.props.viewer.customZoomLevel}
                                     elementNamePrefix="Page-"
                                 />
                             ))}
@@ -129,16 +146,15 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                     {this.state.showThumbnails ?
                         (<Grid item style={{ flexGrow: 0, overflowX: 'hidden', overflowY: 'auto', height: '100%', padding: '.5rem' }} id="sn-document-viewer-previews">
                             <Grid container direction="column">
-                                {this.props.images.AvailableImages.map((value) => (
+                                {this.props.images.map((value) => (
                                     <DocumentPage
+                                        canvas={this.canvas as HTMLCanvasElement}
                                         viewportWidth={180}
                                         viewportHeight={this.state.pagesViewPortHeight}
                                         key={value.Index}
-                                        page={value}
+                                        imageIndex={value.Index}
                                         onClick={(ev) => this.scrollTo(value.Index, ev)}
-                                        activePage={this.props.viewer.activePage}
                                         zoomMode="fit"
-                                        customZoomLevel={this.props.viewer.customZoomLevel}
                                         elementNamePrefix="Preview-"
                                     />))}
                             </Grid>
