@@ -1,4 +1,3 @@
-import { Grid } from 'material-ui'
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
@@ -6,8 +5,8 @@ import { Action, Dispatch } from 'redux'
 import { DocumentData, PreviewImageData } from '../models'
 import { RootReducerType } from '../store/RootReducer'
 import { setActivePages, ViewerStateType } from '../store/Viewer'
-import DocumentPage from './DocumentPage'
 import LayoutAppBar from './LayoutAppBar'
+import PageList from './PageList'
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
@@ -46,43 +45,26 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
             pagesViewPortWidth: 0,
             showThumbnails: true,
         }
-
-        const observerke = new IntersectionObserver((entries, observer) => {
-            // tslint:disable-next-line:no-console
-            console.log('IntersectionObserverHeeee', entries)
-            /** */
-        }, {
-            root: this.viewPort,
-            rootMargin: '0px',
-            threshold: 1.0,
-        })
-
-        observerke.thresholds.keys()
-        // observerke.observe(document.querySelector('img') as HTMLElement)
     }
 
     public viewPort: HTMLDivElement | null = null
-    public componentWillMount() {
-        addEventListener('resize', this.onResize.bind(this))
-    }
 
-    public componentWillUnmount() {
-        removeEventListener('resize', this.onResize.bind(this))
-    }
-
-    public scrollTo(index: number, ev: React.MouseEvent<HTMLElement>) {
+    public scrollTo(ev: React.MouseEvent<HTMLElement>, index: number) {
         scroller.scrollTo(`Page-${index}`, {
             containerId: 'sn-document-viewer-pages',
             smooth: 'easeInOutQuint',
             duration: 600,
             offset: -8,
         })
-        scroller.scrollTo(`Preview-${index}`, {
-            containerId: 'sn-document-viewer-previews',
-            smooth: 'easeInOutQuint',
-            duration: 600,
-            offset: -8,
-        })
+
+        if (this.state.showThumbnails) {
+            scroller.scrollTo(`Thumbnail-${index}`, {
+                containerId: 'sn-document-viewer-thumbnails',
+                smooth: 'easeInOutQuint',
+                duration: 600,
+                offset: -8,
+            })
+        }
         if (ev.ctrlKey) {
             this.props.actions.setActivePages([...this.props.viewer.activePages, index])
         } else {
@@ -91,25 +73,21 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
     }
 
     private onResize(ev: Event) {
-        this.setupViewPort(null)
+        const showThumbnails = innerWidth > 800
+        if (this.state.showThumbnails !== showThumbnails) {
+            this.setState({
+                ...this.state,
+                showThumbnails: innerWidth > 800,
+            })
+        }
     }
 
-    private setupViewPort(viewPort: HTMLDivElement | null) {
-        if (viewPort) {
-            this.viewPort = viewPort.querySelector('#sn-document-viewer-pages')
-        }
-        if (this.viewPort) {
-            const newHeight = this.viewPort.clientHeight - 32
-            const newWidth = this.viewPort.clientWidth - 32
-            if (!this.state || newHeight !== this.state.pagesViewPortHeight || newWidth !== this.state.pagesViewPortWidth) {
-                this.setState({
-                    ...this.state,
-                    pagesViewPortHeight: newHeight,
-                    pagesViewPortWidth: newWidth,
-                    showThumbnails: innerWidth > 800,
-                })
-            }
-        }
+    public componentWillMount() {
+        addEventListener('resize', this.onResize.bind(this))
+    }
+
+    public componentWillUnmount() {
+        removeEventListener('resize', this.onResize.bind(this))
     }
 
     public render() {
@@ -120,16 +98,24 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
             }}>
                 <canvas ref={((c) => this.canvas = c)} style={{ display: 'none' }} />
                 <LayoutAppBar />
-                <div ref={(viewPort) => this.setupViewPort(viewPort)} style={{
+                <div style={{
                     display: 'flex',
                     height: 'calc(100% - 64px)',
                     width: '100%',
                     overflow: 'hidden',
                 }}>
-                    <Grid item style={{ flexGrow: 1, flexShrink: 1, overflowX: 'hidden', overflowY: 'auto', height: '100%', padding: '1rem' }} id="sn-document-viewer-pages">
+                    <PageList
+                        id="sn-document-viewer-pages"
+                        canvas={this.canvas as HTMLCanvasElement}
+                        zoomMode={this.props.viewer.zoomMode}
+                        onPageClick={(ev, index) => this.scrollTo(ev, index)}
+                        elementNamePrefix="Page-"
+                        images="preview"
+                    />
+                    {/* <Grid item style={{ flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%', padding: '1rem' }} id="sn-document-viewer-pages">
                         <Grid container direction="column">
-                            {this.props.images.map((value) => (
-                                <DocumentPage
+                            {this.props.images.slice(0, 100).map((value) => (
+                                <Page
                                     canvas={this.canvas as HTMLCanvasElement}
                                     viewportWidth={this.state.pagesViewPortWidth}
                                     viewportHeight={this.state.pagesViewPortHeight}
@@ -141,24 +127,34 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                                 />
                             ))}
                         </Grid>
-                    </Grid>
+                    </Grid> */}
 
                     {this.state.showThumbnails ?
-                        (<Grid item style={{ flexGrow: 0, overflowX: 'hidden', overflowY: 'auto', height: '100%', padding: '.5rem' }} id="sn-document-viewer-previews">
-                            <Grid container direction="column">
-                                {this.props.images.map((value) => (
-                                    <DocumentPage
-                                        canvas={this.canvas as HTMLCanvasElement}
-                                        viewportWidth={180}
-                                        viewportHeight={this.state.pagesViewPortHeight}
-                                        key={value.Index}
-                                        imageIndex={value.Index}
-                                        onClick={(ev) => this.scrollTo(value.Index, ev)}
-                                        zoomMode="fit"
-                                        elementNamePrefix="Preview-"
-                                    />))}
-                            </Grid>
-                        </Grid>)
+                        <div style={{ maxWidth: 180 }}>
+                            <PageList
+                                id="sn-document-viewer-thumbnails"
+                                canvas={this.canvas as HTMLCanvasElement}
+                                zoomMode="fit"
+                                onPageClick={(ev, index) => this.scrollTo(ev, index)}
+                                elementNamePrefix="Thumbnail-"
+                                images="thumbnail"
+                            />
+                        </div>
+                        // (<Grid item style={{ flexGrow: 0, overflowX: 'hidden', overflowY: 'auto', height: '100%', padding: '.5rem' }} id="sn-document-viewer-previews">
+                        //     <Grid container direction="column">
+                        //         {this.props.images.slice(0, 100).map((value) => (
+                        //             <Page
+                        //                 canvas={this.canvas as HTMLCanvasElement}
+                        //                 viewportWidth={180}
+                        //                 viewportHeight={this.state.pagesViewPortHeight}
+                        //                 key={value.Index}
+                        //                 imageIndex={value.Index}
+                        //                 onClick={(ev) => this.scrollTo(ev, value.Index)}
+                        //                 zoomMode="fit"
+                        //                 elementNamePrefix="Preview-"
+                        //             />))}
+                        //     </Grid>
+                        // </Grid>)
                         : null
                     }
 

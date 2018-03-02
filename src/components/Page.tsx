@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {},
 })
 
-export interface DocumentPageProps {
+export interface PageProps {
     page: PreviewImageData,
     imageIndex: number,
     viewportHeight: number,
@@ -29,9 +29,10 @@ export interface DocumentPageProps {
     activePages: number[]
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
     actions: {}
+    image: 'preview' | 'thumbnail'
 }
 
-export interface DocumentPageState {
+export interface PageState {
     isRotated: boolean,
     imageRotation: number,
     isLoading: boolean,
@@ -40,7 +41,7 @@ export interface DocumentPageState {
     isActive: boolean
 }
 
-class DocumentPage extends React.Component<DocumentPageProps, DocumentPageState> {
+class Page extends React.Component<PageProps, PageState> {
     private rotationCache: Map<number, string> = new Map()
     private rotateImage(imgElement: HTMLImageElement, canvas: HTMLCanvasElement, degrees: number): string {
 
@@ -105,7 +106,7 @@ class DocumentPage extends React.Component<DocumentPageProps, DocumentPageState>
             imageRotation += 360
         }
 
-        let imgSrc = props.page.PreviewAvailable || ''
+        let imgSrc = (this.props.image === 'preview' ? props.page.PreviewImageUrl : props.page.ThumbnailImageUrl) || ''
 
         if (isLoaded && imageRotation && this.imageRef && props.canvas) {
             if (!this.originalImgNode) {
@@ -119,18 +120,18 @@ class DocumentPage extends React.Component<DocumentPageProps, DocumentPageState>
             imgSrc,
             imgStyle: this.getImgageStyle(),
             imageRotation,
-            isLoading: isRotated || !props.page.PreviewAvailable,
+            isLoading: isRotated || !props.page.PreviewImageUrl,
         }
     }
 
-    constructor(props: DocumentPageProps) {
+    constructor(props: PageProps) {
         super(props)
         this.state = this.getStateFromProps(props)
     }
 
     private imageRef!: HTMLImageElement | null
 
-    public componentWillReceiveProps(nextProps: DocumentPageProps, isLoaded: boolean = false) {
+    public componentWillReceiveProps(nextProps: PageProps, isLoaded: boolean = false) {
         this.setState(this.getStateFromProps(nextProps, isLoaded))
     }
 
@@ -158,8 +159,8 @@ class DocumentPage extends React.Component<DocumentPageProps, DocumentPageState>
                     <Paper elevation={this.state.isActive ? 8 : 2}>
                         <Button style={{ padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
                             {
-                                <img src={this.state.imgSrc || this.props.page.PreviewAvailable}
-                                    crossOrigin={'anonymous'}
+                                <img src={this.state.imgSrc || this.props.page.PreviewImageUrl}
+                                    // crossOrigin={'use-credentials'}
                                     ref={(img) => this.imageRef = img}
                                     style={this.state.imgStyle}
                                     onLoad={(ev) => { this.componentWillReceiveProps(this.props, true) }}
@@ -173,4 +174,4 @@ class DocumentPage extends React.Component<DocumentPageProps, DocumentPageState>
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentPage)
+export default connect(mapStateToProps, mapDispatchToProps)(Page)
