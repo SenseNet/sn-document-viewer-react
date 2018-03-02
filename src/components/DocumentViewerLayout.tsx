@@ -112,22 +112,6 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                         elementNamePrefix="Page-"
                         images="preview"
                     />
-                    {/* <Grid item style={{ flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%', padding: '1rem' }} id="sn-document-viewer-pages">
-                        <Grid container direction="column">
-                            {this.props.images.slice(0, 100).map((value) => (
-                                <Page
-                                    canvas={this.canvas as HTMLCanvasElement}
-                                    viewportWidth={this.state.pagesViewPortWidth}
-                                    viewportHeight={this.state.pagesViewPortHeight}
-                                    key={value.Index}
-                                    imageIndex={value.Index}
-                                    onClick={(ev) => this.scrollTo(value.Index, ev)}
-                                    zoomMode={this.props.viewer.zoomMode}
-                                    elementNamePrefix="Page-"
-                                />
-                            ))}
-                        </Grid>
-                    </Grid> */}
 
                     {this.state.showThumbnails ?
                         <div style={{ maxWidth: 180 }}>
@@ -140,21 +124,6 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                                 images="thumbnail"
                             />
                         </div>
-                        // (<Grid item style={{ flexGrow: 0, overflowX: 'hidden', overflowY: 'auto', height: '100%', padding: '.5rem' }} id="sn-document-viewer-previews">
-                        //     <Grid container direction="column">
-                        //         {this.props.images.slice(0, 100).map((value) => (
-                        //             <Page
-                        //                 canvas={this.canvas as HTMLCanvasElement}
-                        //                 viewportWidth={180}
-                        //                 viewportHeight={this.state.pagesViewPortHeight}
-                        //                 key={value.Index}
-                        //                 imageIndex={value.Index}
-                        //                 onClick={(ev) => this.scrollTo(ev, value.Index)}
-                        //                 zoomMode="fit"
-                        //                 elementNamePrefix="Preview-"
-                        //             />))}
-                        //     </Grid>
-                        // </Grid>)
                         : null
                     }
 

@@ -1,4 +1,4 @@
-import { Button, Grid, Paper } from 'material-ui'
+import { Button, Paper } from 'material-ui'
 import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { Element } from 'react-scroll'
@@ -35,7 +35,6 @@ export interface PageProps {
 export interface PageState {
     isRotated: boolean,
     imageRotation: number,
-    isLoading: boolean,
     imgSrc: string
     imgStyle: React.CSSProperties
     isActive: boolean
@@ -63,14 +62,14 @@ class Page extends React.Component<PageProps, PageState> {
 
         if (degrees <= 90 || (degrees >= 180 && degrees <= 270)) {
             const rads2 = (degrees % 180) * Math.PI / 180
-            canvas.width =  Math.cos(rads2) * imgElement.width + Math.sin(rads2) * imgElement.height
-            canvas.height =  Math.sin(rads2) * imgElement.width + Math.cos(rads2) * imgElement.height
+            canvas.width = Math.cos(rads2) * imgElement.width + Math.sin(rads2) * imgElement.height
+            canvas.height = Math.sin(rads2) * imgElement.width + Math.cos(rads2) * imgElement.height
         } else {
             const h = imgElement.width
             const w = imgElement.height
             const angle = ((degrees % 180) - 90) * Math.PI / 180
-            canvas.width =  Math.cos(angle) * w + Math.sin(angle) * h
-            canvas.height =  Math.sin(angle) * w + Math.cos(angle) * h
+            canvas.width = Math.cos(angle) * w + Math.sin(angle) * h
+            canvas.height = Math.sin(angle) * w + Math.cos(angle) * h
         }
 
         if (ctx) {
@@ -101,7 +100,7 @@ class Page extends React.Component<PageProps, PageState> {
     private getStateFromProps(props: this['props'], isLoaded: boolean = false): this['state'] {
         const isRotated = props.page.Attributes && props.page.Attributes.degree % 180 !== 0 || false
 
-        let imageRotation  = ( props.page.Attributes && props.page.Attributes.degree || 0) % 360
+        let imageRotation = (props.page.Attributes && props.page.Attributes.degree || 0) % 360
         if (imageRotation < 0) {
             imageRotation += 360
         }
@@ -118,9 +117,8 @@ class Page extends React.Component<PageProps, PageState> {
             isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
             isRotated,
             imgSrc,
-            imgStyle: this.getImgageStyle(),
+            imgStyle: this.getImgageStyle(props),
             imageRotation,
-            isLoading: isRotated || !props.page.PreviewImageUrl,
         }
     }
 
@@ -132,21 +130,22 @@ class Page extends React.Component<PageProps, PageState> {
     private imageRef!: HTMLImageElement | null
 
     public componentWillReceiveProps(nextProps: PageProps, isLoaded: boolean = false) {
-        this.setState(this.getStateFromProps(nextProps, isLoaded))
+        const newState = this.getStateFromProps(nextProps, isLoaded)
+        this.setState(newState)
     }
 
-    public getImgageStyle() {
+    public getImgageStyle(props: PageProps) {
         const style: React.CSSProperties = {}
-        switch (this.props.zoomMode) {
+        switch (props.zoomMode) {
             case 'fitWidth':
-                style.width = this.props.viewportWidth
+                style.width = props.viewportWidth
                 break
             case 'fitHeight':
-                style.height = this.props.viewportHeight
+                style.height = props.viewportHeight
                 break
             case 'fit':
-                style.maxWidth = this.props.viewportWidth
-                style.maxHeight = this.props.viewportHeight
+                style.maxWidth = props.viewportWidth
+                style.maxHeight = props.viewportHeight
                 break
         }
         return style
@@ -154,22 +153,20 @@ class Page extends React.Component<PageProps, PageState> {
 
     public render() {
         return (
-            <Grid item key={this.props.page.Index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`}>
-                    <Paper elevation={this.state.isActive ? 8 : 2}>
-                        <Button style={{ padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
-                            {
-                                <img src={this.state.imgSrc || this.props.page.PreviewImageUrl}
-                                    // crossOrigin={'use-credentials'}
-                                    ref={(img) => this.imageRef = img}
-                                    style={this.state.imgStyle}
-                                    onLoad={(ev) => { this.componentWillReceiveProps(this.props, true) }}
-                                />
-                            }
-                        </Button>
-                    </Paper>
-                </Element>
-            </Grid>
+            <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{margin: '8px' }}>
+                <Paper elevation={this.state.isActive ? 8 : 2}>
+                    <Button style={{ padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
+                        {
+                            <img src={this.state.imgSrc || this.props.page.PreviewImageUrl}
+                                // crossOrigin={'use-credentials'}
+                                ref={(img) => this.imageRef = img}
+                                style={this.state.imgStyle}
+                                onLoad={(ev) => { this.componentWillReceiveProps(this.props, true) }}
+                            />
+                        }
+                    </Button>
+                </Paper>
+            </Element>
         )
     }
 }

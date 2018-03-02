@@ -46,14 +46,16 @@ class PageList extends React.Component<PageListProps, PageListState> {
     private onResize!: () => void
 
     public componentWillMount() {
-        this.onResize = _.debounce(() => this.setupViewPort(), 100)
-        this.onResize()
-        addEventListener('resize', this.onResize.bind(this))
+        this.onResize = _.debounce(() => this.setupViewPort(), 100).bind(this)
+        addEventListener('resize', this.onResize)
+    }
 
+    public componentDidMount() {
+        this.onResize()
     }
 
     public componentWillUnmount() {
-        removeEventListener('resize', this.onResize.bind(this))
+        removeEventListener('resize', this.onResize)
     }
 
     private setupViewPort() {
@@ -78,7 +80,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
     public render() {
         return (
             <Grid item style={{ flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%', padding: '1rem' }} id={this.props.id}>
-                <Grid container direction="column">
+                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                     {this.props.pages.map((value) => (
                         <Page
                             canvas={this.props.canvas as HTMLCanvasElement}
@@ -92,7 +94,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
                             image={this.props.images}
                         />
                     ))}
-                </Grid>
+                </div>
             </Grid>)
     }
 }

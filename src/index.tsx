@@ -52,6 +52,8 @@ const store = configureStore(settings)
 
 // large
 // store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Document/londondocumentworkspace/Document_Library('Jon Skeet - C- in Depth- 2nd Edition - 2010.pdf')`))
+
+// small
 store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('BusinessPlan.docx')`))
 
 ReactDOM.render(
