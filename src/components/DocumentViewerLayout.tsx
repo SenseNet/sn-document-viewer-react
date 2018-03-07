@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action, Dispatch } from 'redux'
 import { DocumentData, PreviewImageData } from '../models'
+import { ImageUtil } from '../services/ImageUtils'
 import { RootReducerType } from '../store/RootReducer'
 import { setActivePages, ViewerStateType } from '../store/Viewer'
 import LayoutAppBar from './LayoutAppBar'
@@ -30,19 +31,17 @@ export interface DocumentLayoutProps {
 }
 
 export interface DocumentLayoutState {
-    pagesViewPortWidth: number
-    pagesViewPortHeight: number
     showThumbnails: boolean
+    activePage?: number
 }
 
 class DocumentViewerLayout extends React.Component<DocumentLayoutProps, DocumentLayoutState> {
 
     public canvas!: HTMLCanvasElement | null
+    private imageUtils: ImageUtil = new ImageUtil()
     constructor(props: DocumentLayoutProps) {
         super(props)
         this.state = {
-            pagesViewPortHeight: 0,
-            pagesViewPortWidth: 0,
             showThumbnails: true,
         }
     }
@@ -50,26 +49,30 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
     public viewPort: HTMLDivElement | null = null
 
     public scrollTo(ev: React.MouseEvent<HTMLElement>, index: number) {
-        scroller.scrollTo(`Page-${index}`, {
-            containerId: 'sn-document-viewer-pages',
-            smooth: 'easeInOutQuint',
-            duration: 600,
-            offset: -8,
-        })
-
-        if (this.state.showThumbnails) {
-            scroller.scrollTo(`Thumbnail-${index}`, {
-                containerId: 'sn-document-viewer-thumbnails',
+        ev.persist()
+        this.setState({ ...this.state, activePage: index }, () => {
+            scroller.scrollTo(`Page-${index}`, {
+                containerId: 'sn-document-viewer-pages',
                 smooth: 'easeInOutQuint',
                 duration: 600,
                 offset: -8,
             })
-        }
-        if (ev.ctrlKey) {
-            this.props.actions.setActivePages([...this.props.viewer.activePages, index])
-        } else {
-            this.props.actions.setActivePages([index])
-        }
+
+            if (this.state.showThumbnails) {
+                scroller.scrollTo(`Thumbnail-${index}`, {
+                    containerId: 'sn-document-viewer-thumbnails',
+                    smooth: 'easeInOutQuint',
+                    duration: 600,
+                    offset: -8,
+                })
+            }
+            if (ev.ctrlKey) {
+                this.props.actions.setActivePages([...this.props.viewer.activePages, index])
+            } else {
+                this.props.actions.setActivePages([index])
+            }
+        })
+
     }
 
     private onResize(ev: Event) {
@@ -111,6 +114,10 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                         onPageClick={(ev, index) => this.scrollTo(ev, index)}
                         elementNamePrefix="Page-"
                         images="preview"
+                        tolerance={256}
+                        padding={8}
+                        activePage={this.state.activePage}
+                        imageUtil={this.imageUtils}
                     />
 
                     {this.state.showThumbnails ?
@@ -122,6 +129,10 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                                 onPageClick={(ev, index) => this.scrollTo(ev, index)}
                                 elementNamePrefix="Thumbnail-"
                                 images="thumbnail"
+                                tolerance={256}
+                                padding={8}
+                                activePage={this.state.activePage}
+                                imageUtil={this.imageUtils}
                             />
                         </div>
                         : null

@@ -3,6 +3,7 @@ import { Grid } from 'material-ui'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { PreviewImageData } from '../models'
+import { ImageUtil } from '../services/ImageUtils'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
 import Page from './Page'
@@ -18,6 +19,9 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 })
 
 export interface PageListProps {
+
+    tolerance: number
+    padding: number
     pages: PreviewImageData[]
     id: string
     elementNamePrefix: string
@@ -25,13 +29,20 @@ export interface PageListProps {
     zoomMode: ZoomMode
     canvas: HTMLCanvasElement
     images: 'preview' | 'thumbnail'
+    activePage?: number
+    imageUtil: ImageUtil
     onPageClick: (ev: React.MouseEvent<HTMLElement>, pageIndex: number) => void
 }
 
 export interface PageListState {
+    marginTop: number
+    marginBottom: number
     scrollState: number
+    pagesToSkip: number
+    pagesToTake: number
     viewportWidth: number
     viewportHeight: number
+    visiblePages: PreviewImageData[]
 }
 
 class PageList extends React.Component<PageListProps, PageListState> {
@@ -39,36 +50,113 @@ class PageList extends React.Component<PageListProps, PageListState> {
     constructor(props: PageListProps) {
         super(props)
         this.state = {
+            tolerance: props.tolerance,
+            padding: props.padding,
+            pagesToSkip: 0,
+            pagesToTake: 32,
+            visiblePages: this.props.pages.slice(0, 32),
         } as any
     }
 
+    public canUpdate: boolean = false
     public viewPort: any
     private onResize!: () => void
+    private onScroll!: () => void
 
     public componentWillMount() {
         this.onResize = _.debounce(() => this.setupViewPort(), 100).bind(this)
         addEventListener('resize', this.onResize)
+        this.onResize()
+        this.canUpdate = true
     }
 
     public componentDidMount() {
-        this.onResize()
+        this.setupViewPort()
+        this.onScroll = _.debounce(() => this.setupVisiblePages(this.props), 10).bind(this)
+        this.viewPort.addEventListener('scroll', this.onScroll)
+        this.onScroll()
     }
 
     public componentWillUnmount() {
         removeEventListener('resize', this.onResize)
+        this.viewPort.removeEventListener('scroll', this.onScroll)
+        this.canUpdate = false
+    }
+
+    public componentWillReceiveProps(newProps: PageListProps) {
+        this.setupVisiblePages(newProps, newProps.activePage !== this.props.actions ? newProps.activePage : undefined)
+    }
+
+    private setupVisiblePages(props: PageListProps, pageNo?: number) {
+
+        if (!props.pages.length || !this.canUpdate) {
+            return
+        }
+
+        let defaultWidth!: number
+        let defaultHeight!: number
+
+        const pages = props.pages.map((p) => {
+
+            if (!defaultWidth || !defaultHeight) {
+                [defaultWidth, defaultHeight] = [p.Width, p.Height]
+            }
+
+            if (!p.Width || !p.Height) {
+                [p.Width, p.Height] = [defaultWidth, defaultHeight]
+            }
+
+            return this.props.imageUtil.getImageSize({width: this.state.viewportWidth, height: this.state.viewportHeight}, this.props.zoomMode, p)
+        })
+
+        const scrollState = this.viewPort.scrollTop
+        let marginTop: number = 0
+        let pagesToSkip: number = 0
+
+        while (pageNo !== undefined ? pagesToSkip < pageNo - 1 : pages[pagesToSkip] && marginTop + pages[pagesToSkip].Height + props.tolerance < scrollState) {
+            marginTop += pages[pagesToSkip].Height + props.padding * 2
+            pagesToSkip++
+        }
+
+        let pagesToTake: number = 1
+        let pagesHeight: number = 0
+
+        while (pages[pagesToSkip + pagesToTake] && pagesHeight < this.state.viewportHeight + props.tolerance) {
+            pagesHeight += pages[pagesToSkip + pagesToTake].Height + props.padding * 2
+            pagesToTake++
+        }
+
+        let marginBottom: number = 0
+        for (let i = pagesToSkip + pagesToTake - 1; i < pages.length; i++) {
+            marginBottom += pages[i].Height + props.padding * 2
+        }
+
+        if (pagesToSkip !== this.state.pagesToSkip || pagesToTake !== this.state.pagesToTake) {
+            this.setState({
+                ...this.state,
+                marginTop,
+                marginBottom,
+                pagesToSkip,
+                pagesToTake,
+                scrollState,
+                visiblePages: pages.slice(pagesToSkip, pagesToSkip + pagesToTake),
+            })
+            this.forceUpdate()
+        }
     }
 
     private setupViewPort() {
         if (!this.viewPort) {
             this.viewPort = document.querySelector(`#${this.props.id}`)
         }
-        if (this.viewPort) {
+        if (this.canUpdate && this.viewPort) {
 
-            const newHeight = this.viewPort.clientHeight - 32
-            const newWidth = this.viewPort.clientWidth - 32
+            const newHeight = this.viewPort.clientHeight - 16
+            const newWidth = this.viewPort.clientWidth - 16
             if (!this.state || newHeight !== this.state.viewportHeight || newWidth !== this.state.viewportWidth) {
                 this.setState({
                     ...this.state,
+                    visiblePages: this.state.visiblePages,
                     viewportHeight: newHeight,
                     viewportWidth: newWidth,
                 })
@@ -79,9 +167,16 @@ class PageList extends React.Component<PageListProps, PageListState> {
 
     public render() {
         return (
-            <Grid item style={{ flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%', padding: '1rem' }} id={this.props.id}>
-                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                    {this.props.pages.map((value) => (
+            <Grid item style={{ flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%' }} id={this.props.id}>
+                <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingTop: this.state.marginTop,
+                        paddingBottom: this.state.marginBottom,
+                    }}>
+                    {this.state.visiblePages.map((value) => (
                         <Page
                             canvas={this.props.canvas as HTMLCanvasElement}
                             viewportWidth={this.state.viewportWidth}

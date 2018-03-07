@@ -158,7 +158,7 @@ class Page extends React.Component<PageProps, PageState> {
                     <Button style={{ padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
                         {
                             <img src={this.state.imgSrc || this.props.page.PreviewImageUrl}
-                                // crossOrigin={'use-credentials'}
+                                crossOrigin={'anonymous'}
                                 ref={(img) => this.imageRef = img}
                                 style={this.state.imgStyle}
                                 onLoad={(ev) => { this.componentWillReceiveProps(this.props, true) }}

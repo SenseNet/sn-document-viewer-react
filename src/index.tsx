@@ -12,11 +12,11 @@ import './style'
 const settings: DocumentViewerSettings = {
     pollInterval: 250,
     getExistingPreviewImages: async (docData, version) => {
-        const response = await fetch(`https://demo06.demo.sensenet.com/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, {method: 'POST'})
+        const response = await fetch(`http://sensenet7-local/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, {method: 'POST'})
         const availablePreviews = (await response.json() as Array<PreviewImageData & {PreviewAvailable?: string}>).map((a) => {
             if (a.PreviewAvailable) {
-                a.PreviewImageUrl = `https://demo06.demo.sensenet.com${a.PreviewAvailable}`
-                a.ThumbnailImageUrl = `https://demo06.demo.sensenet.com${a.PreviewAvailable.replace('preview', 'thumbnail')}`
+                a.PreviewImageUrl = `http://sensenet7-local${a.PreviewAvailable}`
+                a.ThumbnailImageUrl = `http://sensenet7-local${a.PreviewAvailable.replace('preview', 'thumbnail')}`
             }
             return a
         })
@@ -31,7 +31,7 @@ const settings: DocumentViewerSettings = {
     },
     isPreviewAvailable: async (idOrPath) => undefined,
     getDocumentData:  async (idOrPath: number | string) => {
-        const docData = await fetch('https://demo06.demo.sensenet.com/odata.svc/' + idOrPath)
+        const docData = await fetch('http://sensenet7-local/odata.svc/' + idOrPath)
         const body = await docData.json()
         await new Promise<void>((resolve, reject) => {
             setTimeout(() => resolve(), 250)
@@ -50,11 +50,7 @@ const settings: DocumentViewerSettings = {
 
 const store = configureStore(settings)
 
-// large
-// store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Document/londondocumentworkspace/Document_Library('Jon Skeet - C- in Depth- 2nd Edition - 2010.pdf')`))
-
-// small
-store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('BusinessPlan.docx')`))
+store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library('uxpin_guide_to_uxdesign_process_and_documentation.pdf')`))
 
 ReactDOM.render(
     <Provider store={store}>
