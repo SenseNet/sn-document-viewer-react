@@ -2,6 +2,7 @@ import { Action, ActionCreator } from 'redux'
 import { Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../models'
+import { ImageUtil } from '../services/ImageUtils'
 
 export interface PreviewImagesStateType {
     AvailableImages: PreviewImageData[]
@@ -59,10 +60,7 @@ export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { 
                     state.AvailableImages.map((img) => {
                         const newImg = { ...img }
                         if (action.imageIndexes.indexOf(newImg.Index) >= 0) {
-                            let newAngle = ((newImg.Attributes && newImg.Attributes.degree || 0) + (action.amount % 350)) % 360
-                            if (newAngle < 0) {
-                                newAngle += 360
-                            }
+                            const newAngle = ImageUtil.normalizeDegrees((newImg.Attributes && newImg.Attributes.degree || 0) + (action.amount % 360)) % 360
                             newImg.Attributes = {
                                 ...newImg.Attributes,
                                 degree: newAngle,

@@ -32,6 +32,7 @@ export interface PageListProps {
     activePage?: number
     imageUtil: ImageUtil
     onPageClick: (ev: React.MouseEvent<HTMLElement>, pageIndex: number) => void
+    style?: React.CSSProperties
 }
 
 export interface PageListState {
@@ -47,15 +48,15 @@ export interface PageListState {
 
 class PageList extends React.Component<PageListProps, PageListState> {
 
-    constructor(props: PageListProps) {
-        super(props)
-        this.state = {
-            tolerance: props.tolerance,
-            padding: props.padding,
-            pagesToSkip: 0,
-            pagesToTake: 32,
-            visiblePages: this.props.pages.slice(0, 32),
-        } as any
+    public state: PageListState = {
+        marginTop: 0,
+        marginBottom: 0,
+        scrollState: 0,
+        pagesToSkip: 0,
+        viewportWidth: 110,
+        viewportHeight: 110,
+        pagesToTake: 32,
+        visiblePages: this.props.pages.slice(0, 32),
     }
 
     public canUpdate: boolean = false
@@ -64,7 +65,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
     private onScroll!: () => void
 
     public componentWillMount() {
-        this.onResize = _.debounce(() => this.setupViewPort(), 100).bind(this)
+        this.onResize = _.debounce(() => this.setupViewPort(), 50).bind(this)
         addEventListener('resize', this.onResize)
         this.onResize()
         this.canUpdate = true
@@ -106,7 +107,20 @@ class PageList extends React.Component<PageListProps, PageListState> {
                 [p.Width, p.Height] = [defaultWidth, defaultHeight]
             }
 
-            return this.props.imageUtil.getImageSize({width: this.state.viewportWidth, height: this.state.viewportHeight}, this.props.zoomMode, p)
+            const relativeSize = this.props.imageUtil.getImageSize({
+                width: this.state.viewportWidth,
+                height: this.state.viewportHeight,
+            }, {
+                    width: p.Width,
+                    height: p.Height,
+                    rotation: p.Attributes && p.Attributes.degree || 0,
+                }, this.props.zoomMode)
+
+            return {
+                ...p,
+                Width: relativeSize.width,
+                Height: relativeSize.height,
+            }
         })
 
         const scrollState = this.viewPort.scrollTop
@@ -167,15 +181,15 @@ class PageList extends React.Component<PageListProps, PageListState> {
 
     public render() {
         return (
-            <Grid item style={{ flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%' }} id={this.props.id}>
+            <Grid item style={{ ...this.props.style, flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%' }} id={this.props.id}>
                 <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        paddingTop: this.state.marginTop,
-                        paddingBottom: this.state.marginBottom,
-                    }}>
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingTop: this.state.marginTop,
+                    paddingBottom: this.state.marginBottom,
+                }}>
                     {this.state.visiblePages.map((value) => (
                         <Page
                             canvas={this.props.canvas as HTMLCanvasElement}
@@ -186,6 +200,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
                             onClick={(ev) => this.props.onPageClick(ev, value.Index)}
                             zoomMode={this.props.zoomMode}
                             elementNamePrefix={this.props.elementNamePrefix}
+                            imageUtil={this.props.imageUtil}
                             image={this.props.images}
                         />
                     ))}

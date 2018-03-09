@@ -3,6 +3,7 @@ import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { Element } from 'react-scroll'
 import { PreviewImageData } from '../models'
+import { ImageUtil } from '../services/ImageUtils'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
 
@@ -28,97 +29,41 @@ export interface PageProps {
     canvas: HTMLCanvasElement,
     activePages: number[]
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
+    imageUtil: ImageUtil,
     actions: {}
     image: 'preview' | 'thumbnail'
 }
 
 export interface PageState {
-    isRotated: boolean,
-    imageRotation: number,
     imgSrc: string
-    imgStyle: React.CSSProperties
+    pageStyle: React.CSSProperties
     isActive: boolean
+    imageWidth: string
+    imageHeight: string
+    imageTransform: string
 }
 
 class Page extends React.Component<PageProps, PageState> {
-    private rotationCache: Map<number, string> = new Map()
-    private rotateImage(imgElement: HTMLImageElement, canvas: HTMLCanvasElement, degrees: number): string {
 
-        if (!degrees) {
-            return ''
-        }
+    private getStateFromProps(props: this['props']): this['state'] {
+        const imageRotation = ImageUtil.normalizeDegrees(props.page.Attributes && props.page.Attributes.degree || 0)
+        const imageRotationRads = (imageRotation % 180) * Math.PI / 180
 
-        if (this.rotationCache.has(degrees)) {
-            return this.rotationCache.get(degrees) as string
-        }
+        const imgSrc = (this.props.image === 'preview' ? props.page.PreviewImageUrl : props.page.ThumbnailImageUrl) || ''
+        const pageStyle = this.getPageStyle(props)
+        const boundingBox = this.props.imageUtil.getRotatedBoundingBoxSize({
+            width: props.page.Width,
+            height: props.page.Height,
+        }, imageRotation)
 
-        const [oldMaxWidth, oldMaxHeight] = [imgElement.style.maxWidth, imgElement.style.maxHeight]
-        imgElement.style.maxWidth = 'unset'
-        imgElement.style.maxHeight = 'unset'
-        let base64: string = ''
-        const ctx = canvas.getContext('2d')
-
-        const rads = degrees * Math.PI / 180
-
-        if (degrees <= 90 || (degrees >= 180 && degrees <= 270)) {
-            const rads2 = (degrees % 180) * Math.PI / 180
-            canvas.width = Math.cos(rads2) * imgElement.width + Math.sin(rads2) * imgElement.height
-            canvas.height = Math.sin(rads2) * imgElement.width + Math.cos(rads2) * imgElement.height
-        } else {
-            const h = imgElement.width
-            const w = imgElement.height
-            const angle = ((degrees % 180) - 90) * Math.PI / 180
-            canvas.width = Math.cos(angle) * w + Math.sin(angle) * h
-            canvas.height = Math.sin(angle) * w + Math.cos(angle) * h
-        }
-
-        if (ctx) {
-            ctx.translate(canvas.width / 2, canvas.height / 2)
-            ctx.rotate(rads)
-            ctx.drawImage(imgElement, -imgElement.width / 2, -imgElement.height / 2)
-            ctx.rotate(-rads)
-            ctx.translate(-canvas.width / 2, -canvas.height / 2)
-            const dataUrl = canvas.toDataURL()
-            if (dataUrl !== 'data:,') {
-                base64 = dataUrl
-            }
-        }
-
-        canvas.width = 0
-        canvas.height = 0
-
-        imgElement.style.maxWidth = oldMaxWidth
-        imgElement.style.maxHeight = oldMaxHeight
-        if (base64) {
-            this.rotationCache.set(degrees, base64)
-        }
-        return base64
-    }
-
-    private originalImgNode?: Node
-
-    private getStateFromProps(props: this['props'], isLoaded: boolean = false): this['state'] {
-        const isRotated = props.page.Attributes && props.page.Attributes.degree % 180 !== 0 || false
-
-        let imageRotation = (props.page.Attributes && props.page.Attributes.degree || 0) % 360
-        if (imageRotation < 0) {
-            imageRotation += 360
-        }
-
-        let imgSrc = (this.props.image === 'preview' ? props.page.PreviewImageUrl : props.page.ThumbnailImageUrl) || ''
-
-        if (isLoaded && imageRotation && this.imageRef && props.canvas) {
-            if (!this.originalImgNode) {
-                this.originalImgNode = this.imageRef.cloneNode(true)
-            }
-            imgSrc = this.rotateImage(this.originalImgNode as HTMLImageElement, this.props.canvas, imageRotation)
-        }
+        const diffWidth = Math.sin(imageRotationRads) * ((pageStyle.width - pageStyle.height) / 2)
         return {
             isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
-            isRotated,
             imgSrc,
-            imgStyle: this.getImgageStyle(props),
-            imageRotation,
+            pageStyle,
+            imageWidth: `${100 * boundingBox.zoomRatio}%`,
+            imageHeight:  `${100 * boundingBox.zoomRatio}%`,
+            imageTransform: `translateY(${-diffWidth}px) rotate(${imageRotation}deg)`,
         }
     }
 
@@ -127,43 +72,34 @@ class Page extends React.Component<PageProps, PageState> {
         this.state = this.getStateFromProps(props)
     }
 
-    private imageRef!: HTMLImageElement | null
-
-    public componentWillReceiveProps(nextProps: PageProps, isLoaded: boolean = false) {
-        const newState = this.getStateFromProps(nextProps, isLoaded)
+    public componentWillReceiveProps(nextProps: PageProps) {
+        const newState = this.getStateFromProps(nextProps)
         this.setState(newState)
     }
 
-    public getImgageStyle(props: PageProps) {
+    public getPageStyle(props: PageProps) {
         const style: React.CSSProperties = {}
-        switch (props.zoomMode) {
-            case 'fitWidth':
-                style.width = props.viewportWidth
-                break
-            case 'fitHeight':
-                style.height = props.viewportHeight
-                break
-            case 'fit':
-                style.maxWidth = props.viewportWidth
-                style.maxHeight = props.viewportHeight
-                break
-        }
+        const relativeSize = this.props.imageUtil.getImageSize({
+            width: props.viewportWidth,
+            height: props.viewportHeight,
+        }, {
+                width: props.page.Width,
+                height: props.page.Height,
+                rotation: props.page.Attributes && props.page.Attributes.degree || 0,
+            }, props.zoomMode)
+        style.width = relativeSize.width
+        style.height = relativeSize.height
         return style
     }
 
     public render() {
         return (
-            <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{margin: '8px' }}>
+            <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
                 <Paper elevation={this.state.isActive ? 8 : 2}>
-                    <Button style={{ padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
-                        {
-                            <img src={this.state.imgSrc || this.props.page.PreviewImageUrl}
-                                crossOrigin={'anonymous'}
-                                ref={(img) => this.imageRef = img}
-                                style={this.state.imgStyle}
-                                onLoad={(ev) => { this.componentWillReceiveProps(this.props, true) }}
-                            />
-                        }
+                    <Button style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
+                        <img src={this.state.imgSrc}
+                            style={{width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform}}
+                        />
                     </Button>
                 </Paper>
             </Element>

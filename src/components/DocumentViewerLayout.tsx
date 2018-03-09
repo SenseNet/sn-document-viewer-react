@@ -53,7 +53,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
         this.setState({ ...this.state, activePage: index }, () => {
             scroller.scrollTo(`Page-${index}`, {
                 containerId: 'sn-document-viewer-pages',
-                smooth: 'easeInOutQuint',
+                smooth: 'easeOutQuint',
                 duration: 600,
                 offset: -8,
             })
@@ -61,7 +61,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
             if (this.state.showThumbnails) {
                 scroller.scrollTo(`Thumbnail-${index}`, {
                     containerId: 'sn-document-viewer-thumbnails',
-                    smooth: 'easeInOutQuint',
+                    smooth: 'easeOutQuint',
                     duration: 600,
                     offset: -8,
                 })
@@ -114,27 +114,26 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                         onPageClick={(ev, index) => this.scrollTo(ev, index)}
                         elementNamePrefix="Page-"
                         images="preview"
-                        tolerance={256}
+                        tolerance={2048}
                         padding={8}
                         activePage={this.state.activePage}
                         imageUtil={this.imageUtils}
                     />
 
                     {this.state.showThumbnails ?
-                        <div style={{ maxWidth: 180 }}>
                             <PageList
+                                style={{maxWidth : 160}}
                                 id="sn-document-viewer-thumbnails"
                                 canvas={this.canvas as HTMLCanvasElement}
                                 zoomMode="fit"
                                 onPageClick={(ev, index) => this.scrollTo(ev, index)}
                                 elementNamePrefix="Thumbnail-"
                                 images="thumbnail"
-                                tolerance={256}
+                                tolerance={2048}
                                 padding={8}
                                 activePage={this.state.activePage}
                                 imageUtil={this.imageUtils}
                             />
-                        </div>
                         : null
                     }
 
