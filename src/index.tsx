@@ -9,14 +9,16 @@ import { pollDocumentData } from './store/Document'
 
 import './style'
 
+const SITE_URL = 'http://sensenet7-local'
+
 const settings: DocumentViewerSettings = {
-    pollInterval: 250,
+    pollInterval: 2000,
     getExistingPreviewImages: async (docData, version) => {
-        const response = await fetch(`http://sensenet7-local/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, {method: 'POST'})
+        const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, {method: 'POST'})
         const availablePreviews = (await response.json() as Array<PreviewImageData & {PreviewAvailable?: string}>).map((a) => {
             if (a.PreviewAvailable) {
-                a.PreviewImageUrl = `http://sensenet7-local${a.PreviewAvailable}`
-                a.ThumbnailImageUrl = `http://sensenet7-local${a.PreviewAvailable.replace('preview', 'thumbnail')}`
+                a.PreviewImageUrl = `${SITE_URL}${a.PreviewAvailable}`
+                a.ThumbnailImageUrl = `${SITE_URL}${a.PreviewAvailable.replace('preview', 'thumbnail')}`
             }
             return a
         })
@@ -29,13 +31,24 @@ const settings: DocumentViewerSettings = {
         }
         return allPreviews
     },
-    isPreviewAvailable: async (idOrPath) => undefined,
-    getDocumentData:  async (idOrPath: number | string) => {
-        const docData = await fetch('http://sensenet7-local/odata.svc/' + idOrPath)
-        const body = await docData.json()
-        await new Promise<void>((resolve, reject) => {
-            setTimeout(() => resolve(), 250)
+    isPreviewAvailable: async (docData, version, page: number) => {
+        const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/PreviewAvailable?version=${version}`, {
+            method: 'POST',
+            body: JSON.stringify({page}),
         })
+        if (response.ok) {
+            const responseBody = await response.json()
+            if (responseBody.PreviewAvailable) {
+                responseBody.PreviewImageUrl = `${SITE_URL}${responseBody.PreviewAvailable}`
+                responseBody.ThumbnailImageUrl = `${SITE_URL}${responseBody.PreviewAvailable.replace('preview', 'thumbnail')}`
+                return responseBody as PreviewImageData
+            }
+        }
+        return
+    },
+    getDocumentData:  async (idOrPath: number | string) => {
+        const docData = await fetch(`${SITE_URL}/odata.svc/` + idOrPath)
+        const body = await docData.json()
         return {
             idOrPath,
             fileSizekB: body.d.Size as number,
@@ -50,7 +63,7 @@ const settings: DocumentViewerSettings = {
 
 const store = configureStore(settings)
 
-store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library('uxpin_guide_to_uxdesign_process_and_documentation.pdf')`))
+store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('1000-Lorem.docx')`))
 
 ReactDOM.render(
     <Provider store={store}>

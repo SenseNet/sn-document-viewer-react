@@ -43,6 +43,45 @@ export const getAvailableImages: ActionCreator<ThunkAction<Promise<void>, Previe
         dispatch(availabelImagesReceivedAction(docData))
     }
 }
+export const previewAvailableAction: (documentData: DocumentData, version: string, page: number) => Action = (documentData, version, page) => ({
+    type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_AVAILABLE',
+    documentData,
+})
+
+export const previewAvailableReceivedAction: (documentData: DocumentData, version: string, page: number, imageData: PreviewImageData) => Action = (documentData, version, page, imageData) => ({
+    type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_AVAILABLE_RECEIVED',
+    documentData,
+    version,
+    page,
+    imageData,
+})
+
+export const previewNotAvailableReceivedAction: () => Action = () => ({
+    type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_NOT_AVAILABLE_RECEIVED',
+})
+
+export const previewAvailableErrorAction: (error: string) => Action = (error) => ({
+    type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_AVAILABLE_ERROR',
+    error,
+})
+
+export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, PreviewImagesStateType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A', page: number = 1) => {
+    return async (dispatch, getState, api) => {
+        dispatch(previewAvailableAction(documentData, version, page))
+        let docData: PreviewImageData | undefined
+        try {
+            docData = await api.isPreviewAvailable(documentData, version, page)
+        } catch (error) {
+            dispatch(availabelImagesReceiveErrorAction(error.message || Error(`Error getting preview image for page ${page}`)))
+            return
+        }
+        if (docData) {
+            dispatch(previewAvailableReceivedAction(documentData, version, page, docData))
+        } else {
+            dispatch(previewNotAvailableReceivedAction)
+        }
+    }
+}
 
 export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], Error: null }, action) => {
     const actionCasted = action as Action & PreviewImagesStateType
@@ -67,6 +106,20 @@ export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { 
                             }
                         }
                         return newImg
+                    }),
+            }
+        case 'SN_DOCVIEWER_PREVIEWS_PREVIEW_AVAILABLE_RECEIVED':
+            return {
+                ...state,
+                AvailableImages:
+                    state.AvailableImages.map((img) => {
+                        if (img.Index === action.page) {
+                            return {
+                                Index: img.Index,
+                                ...action.imageData,
+                            }
+                        }
+                        return img
                     }),
             }
         default:

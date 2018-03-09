@@ -99,7 +99,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
 
         const pages = props.pages.map((p) => {
 
-            if (!defaultWidth || !defaultHeight) {
+            if (p && !defaultWidth || !defaultHeight) {
                 [defaultWidth, defaultHeight] = [p.Width, p.Height]
             }
 
@@ -187,12 +187,13 @@ class PageList extends React.Component<PageListProps, PageListState> {
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    paddingTop: this.state.marginTop,
-                    paddingBottom: this.state.marginBottom,
+                    paddingTop: this.state.marginTop || 0,
+                    paddingBottom: this.state.marginBottom || 0,
                 }}>
                     {this.state.visiblePages.map((value) => (
                         <Page
                             canvas={this.props.canvas as HTMLCanvasElement}
+                            pollInterval={1000}
                             viewportWidth={this.state.viewportWidth}
                             viewportHeight={this.state.viewportHeight}
                             key={value.Index}

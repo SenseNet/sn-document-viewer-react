@@ -20,6 +20,6 @@ export class DocumentViewerSettings {
     /**
      * Callback for checking if a preview is available for a specified page
      */
-    public isPreviewAvailable: (document: DocumentData, page: number) => Promise<PreviewImageData | undefined> = async (document) => (undefined)
+    public isPreviewAvailable: (document: DocumentData, version: string, page: number) => Promise<PreviewImageData | undefined> = async (document) => (undefined)
 
 }

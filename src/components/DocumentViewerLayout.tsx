@@ -114,7 +114,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                         onPageClick={(ev, index) => this.scrollTo(ev, index)}
                         elementNamePrefix="Page-"
                         images="preview"
-                        tolerance={2048}
+                        tolerance={0}
                         padding={8}
                         activePage={this.state.activePage}
                         imageUtil={this.imageUtils}
@@ -129,7 +129,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                                 onPageClick={(ev, index) => this.scrollTo(ev, index)}
                                 elementNamePrefix="Thumbnail-"
                                 images="thumbnail"
-                                tolerance={2048}
+                                tolerance={0}
                                 padding={8}
                                 activePage={this.state.activePage}
                                 imageUtil={this.imageUtils}

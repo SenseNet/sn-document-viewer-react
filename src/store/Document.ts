@@ -1,22 +1,27 @@
 import { Action, ActionCreator, Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
+import { PreviewState } from '../Enums'
 import { DocumentData, DocumentViewerSettings } from '../models'
 import { getAvailableImages } from './PreviewImages'
 
 export interface DocumentStateType {
-    idOrPath: number | string | undefined
-    document: DocumentData | undefined
-    error: string | undefined
+    idOrPath?: number | string
+    version?: string
+    document?: DocumentData
+    error?: string
     isLoading: boolean
 }
 
-export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings>> = (idOrPath: string) => {
+export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings>> = (idOrPath: string, version: string) => {
     return async (dispatch, getState, api) => {
-        dispatch(setDocumentAction(idOrPath))
+        dispatch(setDocumentAction(idOrPath, version))
         let docData: DocumentData | undefined
-        while (!docData) {
+        while (!docData || docData.pageCount === PreviewState.Loading) {
             try {
                 docData = await api.getDocumentData(idOrPath)
+                if (!docData || docData.pageCount === PreviewState.Loading) {
+                    await new Promise<void>((resolve, reject) => setTimeout(() => {resolve()}, api.pollInterval))
+                }
             } catch (error) {
                 dispatch(documentReceiveErrorAction(error || Error('Error loading document')))
                 return
@@ -27,9 +32,10 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
     }
 }
 
-export const setDocumentAction: (idOrPath: number | string) => Action = (idOrPath) => ({
+export const setDocumentAction: (idOrPath: number | string, version: string) => Action = (idOrPath, version) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT',
     idOrPath,
+    version,
 })
 
 export const documentReceivedAction: (document: DocumentData) => Action = (document: DocumentData) => ({
@@ -42,11 +48,11 @@ export const documentReceiveErrorAction: (error: string) => Action = (error: str
     error,
 })
 
-export const documentStateReducer: Reducer<DocumentStateType> = (state = { document: undefined, error: undefined, isLoading: true, idOrPath: undefined }, action) => {
+export const documentStateReducer: Reducer<DocumentStateType> = (state = { document: undefined, error: undefined, isLoading: true, idOrPath: undefined, version: undefined }, action) => {
     const actionCasted = action as Action & DocumentStateType
     switch (actionCasted.type) {
         case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
-            return Object.assign({}, state, { document: undefined, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath })
+            return Object.assign({}, state, { document: undefined, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath, version: actionCasted.version })
         case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
             return Object.assign({}, state, { document: actionCasted.document, error: undefined, isLoading: false })
         case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':

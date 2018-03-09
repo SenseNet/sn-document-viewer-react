@@ -1,24 +1,34 @@
 import { Button, Paper } from 'material-ui'
+import { CircularProgress } from 'material-ui/Progress'
 import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { Element } from 'react-scroll'
-import { PreviewImageData } from '../models'
+import { Action } from 'redux'
+import { DocumentData, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
+import { previewAvailable } from '../store/PreviewImages'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
 
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
+        documentData: state.documentState.document,
+        version: state.documentState.version,
         page: state.previewImages.AvailableImages[ownProps.imageIndex - 1] || {},
         activePages: state.viewer.activePages,
     }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {},
+    actions: {
+        previewAvailable: (docData: DocumentData, version: string, page: number) => dispatch<any>(previewAvailable(docData, version, page)),
+    },
 })
 
 export interface PageProps {
+    documentData: DocumentData,
+    version: string,
+    pollInterval: number
     page: PreviewImageData,
     imageIndex: number,
     viewportHeight: number,
@@ -30,7 +40,9 @@ export interface PageProps {
     activePages: number[]
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
     imageUtil: ImageUtil,
-    actions: {}
+    actions: {
+        previewAvailable: (docData: DocumentData, version: string, page: number) => Action,
+    }
     image: 'preview' | 'thumbnail'
 }
 
@@ -45,6 +57,19 @@ export interface PageState {
 
 class Page extends React.Component<PageProps, PageState> {
 
+    private pollPreview?: number
+
+    private stopPolling() {
+        if (this.pollPreview) {
+            clearInterval(this.pollPreview)
+            this.pollPreview = undefined
+        }
+    }
+
+    public componentWillUnmount() {
+        this.stopPolling()
+    }
+
     private getStateFromProps(props: this['props']): this['state'] {
         const imageRotation = ImageUtil.normalizeDegrees(props.page.Attributes && props.page.Attributes.degree || 0)
         const imageRotationRads = (imageRotation % 180) * Math.PI / 180
@@ -57,6 +82,16 @@ class Page extends React.Component<PageProps, PageState> {
         }, imageRotation)
 
         const diffWidth = Math.sin(imageRotationRads) * ((pageStyle.width - pageStyle.height) / 2)
+
+        if (!imgSrc) {
+            this.stopPolling()
+            this.pollPreview = setInterval(() => {
+                this.props.actions.previewAvailable(this.props.documentData, this.props.version, this.props.imageIndex)
+            }, this.props.pollInterval) as any as number
+        } else {
+            this.stopPolling()
+        }
+
         return {
             isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
             imgSrc,
@@ -87,8 +122,8 @@ class Page extends React.Component<PageProps, PageState> {
                 height: props.page.Height,
                 rotation: props.page.Attributes && props.page.Attributes.degree || 0,
             }, props.zoomMode)
-        style.width = relativeSize.width
-        style.height = relativeSize.height
+        style.width = relativeSize.width || '100%'
+        style.height = relativeSize.height || '100%'
         return style
     }
 
@@ -97,9 +132,12 @@ class Page extends React.Component<PageProps, PageState> {
             <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
                 <Paper elevation={this.state.isActive ? 8 : 2}>
                     <Button style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
+                        {this.state.imgSrc ?
                         <img src={this.state.imgSrc}
                             style={{width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform}}
-                        />
+                        /> :
+                            <CircularProgress />
+                        }
                     </Button>
                 </Paper>
             </Element>
