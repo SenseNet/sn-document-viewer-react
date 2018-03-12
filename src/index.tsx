@@ -70,7 +70,7 @@ store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Projec
 
 ReactDOM.render(
     <Provider store={store}>
-        <DocumentViewer documentActions={[zoomModeAction, rotateDocumentAction]} settings={settings} />
+        <DocumentViewer documentActions={[rotateDocumentAction, zoomModeAction]} settings={settings} />
     </Provider>,
     document.getElementById('example'),
 )

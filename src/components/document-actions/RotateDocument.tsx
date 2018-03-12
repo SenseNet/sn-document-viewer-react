@@ -9,6 +9,7 @@ import { RootReducerType } from '../../store/RootReducer'
 
 export interface RotateDocumentActionProps {
     pages: PreviewImageData[],
+    activePages: number[],
     actions: {
         rotateImages: (imageIndexes: number[], amount: number) => Action,
     }
@@ -17,6 +18,7 @@ export interface RotateDocumentActionProps {
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
         pages: state.previewImages.AvailableImages,
+        activePages: state.viewer.activePages,
     }
 }
 
@@ -28,24 +30,42 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 
 export class RotateComponent extends React.Component<RotateDocumentActionProps> {
 
-    private rotateLeft() {
+    private rotateDocumentLeft() {
         this.props.actions.rotateImages(this.props.pages.map((p) => p.Index), -90)
     }
 
-    private rotateRight() {
+    private rotateDocumentRight() {
         this.props.actions.rotateImages(this.props.pages.map((p) => p.Index), 90)
+    }
+
+    private rotatePageLeft() {
+        this.props.actions.rotateImages(this.props.activePages, -90)
+    }
+
+    private rotatePageRight() {
+        this.props.actions.rotateImages(this.props.activePages, 90)
     }
 
     public render() {
         return (
             <div style={{display: 'inline-block'}}>
-                <IconButton onClick={() => this.rotateLeft()}>
+
+                <IconButton onClick={() => this.rotatePageLeft()}>
                     <RotateLeft />
                 </IconButton>
 
-                <IconButton onClick={() => this.rotateRight()}>
+                <IconButton onClick={() => this.rotatePageRight()}>
                     <RotateRight />
                 </IconButton>
+
+                <IconButton onClick={() => this.rotateDocumentLeft()}>
+                    <RotateLeft style={{border: '2px solid', borderRadius: '5px'}} />
+                </IconButton>
+
+                <IconButton onClick={() => this.rotateDocumentRight()}>
+                    <RotateRight style={{border: '2px solid', borderRadius: '5px'}}/>
+                </IconButton>
+
             </div>)
     }
 }
