@@ -1,3 +1,4 @@
+export * from './DocumentAction'
 export * from './DocumentData'
 export * from './DocumentViewerSettings'
 export * from './PageAttribute'

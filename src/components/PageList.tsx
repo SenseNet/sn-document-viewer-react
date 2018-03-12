@@ -8,7 +8,7 @@ import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
 import Page from './Page'
 
-const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
+const mapStateToProps = (state: RootReducerType) => {
     return {
         pages: state.previewImages.AvailableImages || [],
     }
@@ -20,12 +20,12 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 
 export interface PageListProps {
 
+    pages: PreviewImageData[]
+    actions: {}
     tolerance: number
     padding: number
-    pages: PreviewImageData[]
     id: string
     elementNamePrefix: string
-    actions: {}
     zoomMode: ZoomMode
     canvas: HTMLCanvasElement
     images: 'preview' | 'thumbnail'
@@ -84,11 +84,11 @@ class PageList extends React.Component<PageListProps, PageListState> {
         this.canUpdate = false
     }
 
-    public componentWillReceiveProps(newProps: PageListProps) {
+    public componentWillReceiveProps(newProps: this['props']) {
         this.setupVisiblePages(newProps, newProps.activePage !== this.props.actions ? newProps.activePage : undefined)
     }
 
-    private setupVisiblePages(props: PageListProps, pageNo?: number) {
+    private setupVisiblePages(props: this['props'], pageNo?: number) {
 
         if (!props.pages.length || !this.canUpdate) {
             return

@@ -2,6 +2,8 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
+import { rotateDocumentAction} from './components/document-actions/RotateDocument'
+import { zoomModeAction } from './components/document-actions/ZoomMode'
 import DocumentViewer from './components/DocumentViewer'
 import { DocumentViewerSettings, PreviewImageData } from './models'
 import { configureStore } from './store'
@@ -12,10 +14,11 @@ import './style'
 const SITE_URL = 'http://sensenet7-local'
 
 const settings: DocumentViewerSettings = {
+    documentActions: [],
     pollInterval: 2000,
     getExistingPreviewImages: async (docData, version) => {
-        const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, {method: 'POST'})
-        const availablePreviews = (await response.json() as Array<PreviewImageData & {PreviewAvailable?: string}>).map((a) => {
+        const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, { method: 'POST' })
+        const availablePreviews = (await response.json() as Array<PreviewImageData & { PreviewAvailable?: string }>).map((a) => {
             if (a.PreviewAvailable) {
                 a.PreviewImageUrl = `${SITE_URL}${a.PreviewAvailable}`
                 a.ThumbnailImageUrl = `${SITE_URL}${a.PreviewAvailable.replace('preview', 'thumbnail')}`
@@ -25,7 +28,7 @@ const settings: DocumentViewerSettings = {
 
         const allPreviews: PreviewImageData[] = []
         for (let i = 0; i < docData.pageCount; i++) {
-            allPreviews[i] = availablePreviews[i] || {Index: i + 1}
+            allPreviews[i] = availablePreviews[i] || { Index: i + 1 }
             const pageAttributes = docData.pageAttributes.find((p) => p.pageNum === allPreviews[i].Index)
             allPreviews[i].Attributes = pageAttributes && pageAttributes.options
         }
@@ -34,7 +37,7 @@ const settings: DocumentViewerSettings = {
     isPreviewAvailable: async (docData, version, page: number) => {
         const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/PreviewAvailable?version=${version}`, {
             method: 'POST',
-            body: JSON.stringify({page}),
+            body: JSON.stringify({ page }),
         })
         if (response.ok) {
             const responseBody = await response.json()
@@ -46,7 +49,7 @@ const settings: DocumentViewerSettings = {
         }
         return
     },
-    getDocumentData:  async (idOrPath: number | string) => {
+    getDocumentData: async (idOrPath: number | string) => {
         const docData = await fetch(`${SITE_URL}/odata.svc/` + idOrPath)
         const body = await docData.json()
         return {
@@ -67,7 +70,7 @@ store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Projec
 
 ReactDOM.render(
     <Provider store={store}>
-        <DocumentViewer settings={settings} />
+        <DocumentViewer documentActions={[zoomModeAction, rotateDocumentAction]} settings={settings} />
     </Provider>,
     document.getElementById('example'),
 )

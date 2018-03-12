@@ -134,7 +134,7 @@ class Page extends React.Component<PageProps, PageState> {
                     <Button style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
                         {this.state.imgSrc ?
                         <img src={this.state.imgSrc}
-                            style={{width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform}}
+                            style={{transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform}}
                         /> :
                             <CircularProgress />
                         }

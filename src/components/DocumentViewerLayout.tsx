@@ -2,7 +2,7 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action, Dispatch } from 'redux'
-import { DocumentData, PreviewImageData } from '../models'
+import { DocumentAction, DocumentData, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
 import { RootReducerType } from '../store/RootReducer'
 import { setActivePages, ViewerStateType } from '../store/Viewer'
@@ -24,6 +24,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 })
 
 export interface DocumentLayoutProps {
+    documentActions: DocumentAction[]
     document: DocumentData
     images: PreviewImageData[]
     viewer: ViewerStateType
@@ -36,16 +37,9 @@ export interface DocumentLayoutState {
 }
 
 class DocumentViewerLayout extends React.Component<DocumentLayoutProps, DocumentLayoutState> {
-
+    public state = { showThumbnails: true, activePage: 1}
     public canvas!: HTMLCanvasElement | null
     private imageUtils: ImageUtil = new ImageUtil()
-    constructor(props: DocumentLayoutProps) {
-        super(props)
-        this.state = {
-            showThumbnails: true,
-        }
-    }
-
     public viewPort: HTMLDivElement | null = null
 
     public scrollTo(ev: React.MouseEvent<HTMLElement>, index: number) {
@@ -100,7 +94,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                 height: '100%',
             }}>
                 <canvas ref={((c) => this.canvas = c)} style={{ display: 'none' }} />
-                <LayoutAppBar />
+                <LayoutAppBar documentActions={this.props.documentActions} />
                 <div style={{
                     display: 'flex',
                     height: 'calc(100% - 64px)',

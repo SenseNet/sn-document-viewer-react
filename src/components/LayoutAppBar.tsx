@@ -1,146 +1,104 @@
-import { AppBar, Divider, IconButton, Menu, MenuItem, MobileStepper, Toolbar, Typography } from 'material-ui'
-import { AspectRatio, Code, Error, RotateLeft, RotateRight, ZoomIn, ZoomOut, ZoomOutMap } from 'material-ui-icons'
+import { AppBar, Toolbar, Typography } from 'material-ui'
 import React = require('react')
 import { connect, Dispatch } from 'react-redux'
-import { Action } from 'redux'
-import { DocumentData } from '../models'
-import { rotateImages } from '../store/PreviewImages'
+import { DocumentAction, DocumentData } from '../models'
 import { RootReducerType } from '../store/RootReducer'
 
-import { setActivePages, setCustomZoomLevel, setZoomMode, ViewerStateType, ZoomMode } from '../store/Viewer'
+import {  ViewerStateType } from '../store/Viewer'
 
 export interface AppBarProps {
     document: DocumentData,
+    store: RootReducerType,
     viewer: ViewerStateType,
+    documentActions: DocumentAction[]
     actions: {
-        setActivePages: (page: number) => Action,
-        setZoomMode: (zoomMode: ZoomMode) => Action,
-        setZoomLevel: (zoomLevel: number) => Action,
-        rotateImages: (imageIndexes: number[], amount: number) => Action,
+    //     setActivePages: (page: number) => Action,
+    //     setZoomMode: (zoomMode: ZoomMode) => Action,
+    //     setZoomLevel: (zoomLevel: number) => Action,
+    //     rotateImages: (imageIndexes: number[], amount: number) => Action,
     }
+}
+
+export interface AppBarState {
+    isLoading: boolean
+    availableActions: DocumentAction[]
 }
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
-        document: state.documentState.document as DocumentData,
+        store: state,
+        document: state.documentState.document,
         viewer: state.viewer,
     }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
-        setActivePages: (page: number) => dispatch(setActivePages([page])),
-        setZoomMode: (zoomMode: ZoomMode) => dispatch(setZoomMode(zoomMode)),
-        setZoomLevel: (zoomLevel: number) => dispatch(setCustomZoomLevel(zoomLevel)),
-        rotateImages: (imageIndexes: number[], amount: number) => dispatch(rotateImages(imageIndexes, amount)),
+        // setActivePages: (page: number) => dispatch(setActivePages([page])),
+        // setZoomMode: (zoomMode: ZoomMode) => dispatch(setZoomMode(zoomMode)),
+        // setZoomLevel: (zoomLevel: number) => dispatch(setCustomZoomLevel(zoomLevel)),
+        // rotateImages: (imageIndexes: number[], amount: number) => dispatch(rotateImages(imageIndexes, amount)),
     },
 })
 
-class LayoutAppBar extends React.Component<AppBarProps, { zoomMenuAnchor?: HTMLElement }> {
+class LayoutAppBar extends React.Component<AppBarProps, AppBarState> {
 
-    /**
-     *
-     */
-    constructor(props: AppBarProps) {
-        super(props)
-        this.state = {}
+    public state = {
+        isLoading: true,
+        availableActions: [] as DocumentAction[],
     }
 
-    private openZoomMenu(event: React.MouseEvent<any>) {
-        this.setState({ zoomMenuAnchor: event.currentTarget })
-    }
+    private documentActionAvailabilityCache: Map<DocumentAction, boolean> = new Map()
 
-    private closeZoomMenu(newZoomMode?: ZoomMode) {
-        if (newZoomMode) {
-            this.props.actions.setZoomMode(newZoomMode)
+    public async componentWillReceiveProps(newProps: this['props']) {
+
+        this.setState({ ...this.state, isLoading: true, availableActions: [] })
+        const availableActions: DocumentAction[] = []
+        try {
+            await Promise.all(this.props.documentActions.map(async (action) => {
+                if (!action.shouldCheckAvailable(this.props.store, newProps.store) && this.documentActionAvailabilityCache.has(action)) {
+                    availableActions.push(action)
+                } else {
+                    const isAvailable = await action.isAvailable(newProps.store)
+                    if (isAvailable) {
+                        availableActions.push(action)
+                    }
+                    this.documentActionAvailabilityCache.set(action, isAvailable)
+                }
+            }))
+        } catch (error) {
+            /** */
+            // tslint:disable-next-line:no-console
+            console.warn(error)
         }
-        this.setState({ zoomMenuAnchor: undefined })
+        this.setState({ ...this.state, isLoading: false, availableActions })
     }
 
-    private zoomIn() {
-        this.props.actions.setZoomLevel(this.props.viewer.customZoomLevel + 1 || 1)
-    }
+    // private rotateClockWise() {
+    //     this.props.actions.rotateImages(this.props.viewer.activePages, 90)
+    // }
 
-    private zoomOut() {
-        this.props.actions.setZoomLevel(this.props.viewer.customZoomLevel - 1 || 0)
-    }
-
-    private rotateClockWise() {
-        this.props.actions.rotateImages(this.props.viewer.activePages, 90)
-    }
-
-    private rotateCounterClockwise() {
-        this.props.actions.rotateImages(this.props.viewer.activePages, -90)
-    }
+    // private rotateCounterClockwise() {
+    //     this.props.actions.rotateImages(this.props.viewer.activePages, -90)
+    // }
 
     public render() {
+
+        const documentActions = this.state.availableActions.map((action, i) =>
+            React.createElement(action.component, { data: {}, key: i }),
+        )
+
         return (
             <AppBar position="static">
                 <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="title" color="inherit">
                         {this.props.document.documentName}
                     </Typography>
-                    <div className="rightActionBar" style={{ color: 'white' }}>
-                        <IconButton onClick={() => this.rotateCounterClockwise()}>
-                            <RotateLeft />
-                        </IconButton>
-
-                        <IconButton onClick={() => this.rotateClockWise()}>
-                            <RotateRight />
-                        </IconButton>
-
-                        <IconButton onClick={(ev) => this.openZoomMenu(ev)} >
-                            {(() => {
-                                switch (this.props.viewer.zoomMode) {
-                                    case 'custom':
-                                        if (this.props.viewer.customZoomLevel > 0) {
-                                            return <ZoomIn />
-                                        }
-                                        return <ZoomOut />
-                                    case 'fitHeight':
-                                        return <Code style={{ transform: 'rotate(90deg)' }} />
-                                    case 'fitWidth':
-                                        return <Code />
-                                    case 'originalSize':
-                                        return <AspectRatio />
-                                    case 'fit':
-                                        return (<ZoomOutMap />)
-                                    default:
-                                        return <Error />
-                                }
-                            })()}
-                        </IconButton>
+                    <div>
+                    {
+                        documentActions
+                    }
                     </div>
-
-                    <Menu
-                        id="zoom-menu"
-                        anchorEl={this.state.zoomMenuAnchor}
-                        open={Boolean(this.state.zoomMenuAnchor)}
-                        onClose={() => this.closeZoomMenu()}
-                    >
-                        <MenuItem onClick={() => this.closeZoomMenu('fit')}><ZoomOutMap /> &nbsp; Fit </MenuItem>
-                        <MenuItem onClick={() => this.closeZoomMenu('originalSize')}><AspectRatio />&nbsp; Original size </MenuItem>
-                        <MenuItem onClick={() => this.closeZoomMenu('fitHeight')}><Code style={{ transform: 'rotate(90deg)' }} /> &nbsp; Fit height </MenuItem>
-                        <MenuItem onClick={() => this.closeZoomMenu('fitWidth')}><Code /> &nbsp; Fit width </MenuItem>
-                        <Divider light />
-                        &nbsp; Custom <br />
-                        <MobileStepper
-                            variant="progress"
-                            steps={6}
-                            position="static"
-                            activeStep={this.props.viewer.customZoomLevel}
-                            nextButton={
-                                <IconButton disabled={this.props.viewer.customZoomLevel === 5} onClick={() => this.zoomIn()}>
-                                    <ZoomIn />
-                                </IconButton>
-                            }
-                            backButton={
-                                <IconButton disabled={this.props.viewer.customZoomLevel === 0} onClick={() => this.zoomOut()}>
-                                    <ZoomOut />
-                                </IconButton>
-                            }
-                        />
-                    </Menu>
                 </Toolbar>
             </AppBar>
         )

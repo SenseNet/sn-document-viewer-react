@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { DocumentViewerSettings } from '../models'
+import { DocumentAction, DocumentViewerSettings } from '../models'
 import { DocumentStateType, pollDocumentData } from '../store/Document'
 import { RootReducerType } from '../store/RootReducer'
 import { DocumentViewerError } from './DocumentViewerError'
@@ -14,6 +14,7 @@ import { DocumentViewerLoading } from './DocumentViewerLoading'
 export interface DocumentViewerProps {
     idOrPath: number | string
     settings: DocumentViewerSettings
+    documentActions: DocumentAction[],
 
 }
 
@@ -30,7 +31,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 /**
  * Main document viewer component
  */
-class DocumentViewer extends React.Component<DocumentViewerProps & DocumentStateType & {actions: any}, {}> {
+class DocumentViewer extends React.Component<DocumentViewerProps & DocumentStateType & { actions: any }, {}> {
     /**
      * renders the component
      */
@@ -42,7 +43,7 @@ class DocumentViewer extends React.Component<DocumentViewerProps & DocumentState
             return <DocumentViewerLoading />
 
         }
-        return <DocumentViewerLayout />
+        return <DocumentViewerLayout documentActions={this.props.documentActions} />
     }
 }
 

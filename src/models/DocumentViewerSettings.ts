@@ -1,9 +1,11 @@
-import { DocumentData, PreviewImageData } from '.'
+import { DocumentAction, DocumentData, PreviewImageData } from '.'
 
 /**
  * Main settings for the Document Viewer component
  */
 export class DocumentViewerSettings {
+
+    public documentActions: DocumentAction[] = []
 
     /**
      * The interval between polling the server for pagecount / generated previews.
