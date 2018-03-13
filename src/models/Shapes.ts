@@ -1,4 +1,4 @@
-export interface Redaction {
+export interface Shape {
     h: number
     w: number
     x: number,
@@ -6,20 +6,11 @@ export interface Redaction {
     imageIndex: number
 }
 
-export interface Highlight {
-    h: number
-    w: number
-    x: number,
-    y: number
-    imageIndex: number
-}
+export type Redaction = Shape
 
-export interface Annotation {
-    h: number
-    w: number
-    x: number,
-    y: number
-    imageIndex: number
+export type Highlight = Shape
+
+export interface Annotation extends Shape {
     index: number
     lineHeight: number,
     text: string,

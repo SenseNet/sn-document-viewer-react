@@ -4,11 +4,13 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { PageWidget, PreviewImageData } from '../../models'
+import { Dimensions } from '../../services/ImageUtils'
 import { rotateImages } from '../../store/PreviewImages'
 import { RootReducerType } from '../../store/RootReducer'
 
 export interface RotatePageWidgetProps {
     page: PreviewImageData,
+    viewPort: Dimensions,
     actions: {
         rotateImages: (imageIndexes: number[], amount: number) => Action,
     }
@@ -38,7 +40,7 @@ export class RotatePageComponent extends React.Component<RotatePageWidgetProps> 
 
     public render() {
         return (
-            <div style={{display: 'inline-block'}}>
+            <div style={{ position: 'absolute', zIndex: 1, top: 0, right: 0 }}>
 
                 <IconButton onClick={() => this.rotatePageLeft()}>
                     <RotateLeft />

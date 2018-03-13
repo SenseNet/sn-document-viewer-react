@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 
 import { rotateDocumentWidget} from './components/document-widgets/RotateDocument'
 import { zoomModeWidget } from './components/document-widgets/ZoomMode'
+import { drawingsWidget} from './components/page-widgets/Drawings'
 import { rotatePageWidget } from './components/page-widgets/RotatePage'
 
 import DocumentViewer from './components/DocumentViewer'
@@ -60,7 +61,11 @@ const settings: DocumentViewerSettings = {
             pageCount: body.d.PageCount,
             documentName: body.d.DisplayName,
             documentType: body.d.Type,
-            shapes: body.d.Shapes && JSON.parse(body.d.Shapes) || [],
+            shapes: body.d.Shapes && {
+                redactions: JSON.parse(body.d.Shapes)[0].redactions || [],
+                annotations: JSON.parse(body.d.Shapes)[2].annotations || [],
+                highlights: JSON.parse(body.d.Shapes)[1].highlights || [],
+            },
             pageAttributes: body.d.PageAttributes && JSON.parse(body.d.PageAttributes) || [],
         }
     },
@@ -73,7 +78,7 @@ store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Projec
 
 ReactDOM.render(
     <Provider store={store} >
-        <DocumentViewer documentWidgets={[rotateDocumentWidget, zoomModeWidget]} settings={settings} pageWidgets={[rotatePageWidget]} />
+        <DocumentViewer documentWidgets={[rotateDocumentWidget, zoomModeWidget]} settings={settings} pageWidgets={[drawingsWidget, rotatePageWidget]} />
     </Provider>,
     document.getElementById('example'),
 )

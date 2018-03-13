@@ -5,7 +5,7 @@ import { connect, Dispatch } from 'react-redux'
 import { Element } from 'react-scroll'
 import { Action } from 'redux'
 import { DocumentData, PageWidget, PreviewImageData } from '../models'
-import { ImageUtil } from '../services/ImageUtils'
+import { Dimensions, ImageUtil } from '../services/ImageUtils'
 import { previewAvailable } from '../store/PreviewImages'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
@@ -50,9 +50,12 @@ export interface PageProps {
 }
 
 export interface PageState {
+    zoomRatio: number
     availableWidgets: PageWidget[]
     imgSrc: string
     pageStyle: React.CSSProperties
+    pageWidth: number
+    pageHeight: number
     isActive: boolean
     imageWidth: string
     imageHeight: string
@@ -79,7 +82,15 @@ class Page extends React.Component<PageProps, PageState> {
         const imageRotationRads = (imageRotation % 180) * Math.PI / 180
 
         const imgSrc = (this.props.image === 'preview' ? props.page.PreviewImageUrl : props.page.ThumbnailImageUrl) || ''
-        const pageStyle = this.getPageStyle(props)
+        const relativePageSize = this.props.imageUtil.getImageSize({
+            width: props.viewportWidth,
+            height: props.viewportHeight,
+        }, {
+                width: props.page.Width,
+                height: props.page.Height,
+                rotation: props.page.Attributes && props.page.Attributes.degree || 0,
+            }, props.zoomMode)
+        const pageStyle = this.getPageStyle(props, relativePageSize)
         const boundingBox = this.props.imageUtil.getRotatedBoundingBoxSize({
             width: props.page.Width,
             height: props.page.Height,
@@ -97,9 +108,12 @@ class Page extends React.Component<PageProps, PageState> {
         }
 
         return {
+            zoomRatio: boundingBox.zoomRatio,
             isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
             availableWidgets: [],
             imgSrc,
+            pageWidth: relativePageSize.width,
+            pageHeight: relativePageSize.height,
             pageStyle,
             imageWidth: `${100 * boundingBox.zoomRatio}%`,
             imageHeight: `${100 * boundingBox.zoomRatio}%`,
@@ -140,16 +154,8 @@ class Page extends React.Component<PageProps, PageState> {
         this.setState({ ...newState, availableWidgets })
     }
 
-    public getPageStyle(props: PageProps) {
+    public getPageStyle(props: PageProps, relativeSize: Dimensions) {
         const style: React.CSSProperties = {}
-        const relativeSize = this.props.imageUtil.getImageSize({
-            width: props.viewportWidth,
-            height: props.viewportHeight,
-        }, {
-                width: props.page.Width,
-                height: props.page.Height,
-                rotation: props.page.Attributes && props.page.Attributes.degree || 0,
-            }, props.zoomMode)
         style.width = relativeSize.width || '100%'
         style.height = relativeSize.height || '100%'
         return style
@@ -158,16 +164,14 @@ class Page extends React.Component<PageProps, PageState> {
     public render() {
 
         const pageWidgets = this.state.availableWidgets.map((widget, i) =>
-            React.createElement(widget.component, { Index: this.props.page.Index, key: i }),
+            React.createElement(widget.component, { Index: this.props.page.Index, key: i, viewPort: {width: this.state.pageWidth, height: this.state.pageHeight} }),
         )
 
         return (
             <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
                 <Paper elevation={this.state.isActive ? 8 : 2}>
                     <div style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden', position: 'relative' }} onClick={(ev) => this.props.onClick(ev)}>
-                        <div style={{ position: 'absolute', zIndex: 1, top: 0, right: 0 }}>
-                            {pageWidgets}
-                        </div>
+                        {pageWidgets}
                         <span style={{display: 'flex', justifyContent: 'center'}}>
                         {this.state.imgSrc ?
                             <img src={this.state.imgSrc}
