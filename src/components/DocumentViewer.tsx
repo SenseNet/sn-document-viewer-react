@@ -19,7 +19,7 @@ export interface DocumentViewerProps {
 }
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
-    return state.documentState
+    return state.sensenetDocumentViewer.documentState
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({

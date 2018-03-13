@@ -17,8 +17,8 @@ export interface RotateDocumentActionProps {
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
-        pages: state.previewImages.AvailableImages,
-        activePages: state.viewer.activePages,
+        pages: state.sensenetDocumentViewer.previewImages.AvailableImages,
+        activePages: state.sensenetDocumentViewer.viewer.activePages,
     }
 }
 

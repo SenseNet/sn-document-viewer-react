@@ -18,8 +18,8 @@ export interface ZoomModeActionProps {
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
-        document: state.documentState.document as DocumentData,
-        viewer: state.viewer,
+        document: state.sensenetDocumentViewer.documentState.document as DocumentData,
+        viewer: state.sensenetDocumentViewer.viewer,
     }
 }
 

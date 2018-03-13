@@ -6,12 +6,13 @@ import { rotateDocumentAction} from './components/document-actions/RotateDocumen
 import { zoomModeAction } from './components/document-actions/ZoomMode'
 import DocumentViewer from './components/DocumentViewer'
 import { DocumentViewerSettings, PreviewImageData } from './models'
-import { configureStore } from './store'
+import { getStoreConfig } from './store'
 import { pollDocumentData } from './store/Document'
 
+import { createStore } from 'redux'
 import './style'
 
-const SITE_URL = 'http://sensenet7-local'
+const SITE_URL = 'https://dmsservice.demo.sensenet.com/'
 
 const settings: DocumentViewerSettings = {
     documentActions: [],
@@ -64,12 +65,13 @@ const settings: DocumentViewerSettings = {
     },
 }
 
-const store = configureStore(settings)
+const storeConfig = getStoreConfig(settings)
+const store = createStore(storeConfig.rootReducer, storeConfig.preloadedState, storeConfig.enhancer)
 
-store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('1000-Lorem.docx')`))
+store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('BusinessPlan.docx')`))
 
 ReactDOM.render(
-    <Provider store={store}>
+    <Provider store={store} >
         <DocumentViewer documentActions={[rotateDocumentAction, zoomModeAction]} settings={settings} />
     </Provider>,
     document.getElementById('example'),

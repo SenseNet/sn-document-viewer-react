@@ -11,9 +11,9 @@ import PageList from './PageList'
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
-        document: state.documentState.document,
-        images: state.previewImages.AvailableImages,
-        viewer: state.viewer,
+        document: state.sensenetDocumentViewer.documentState.document,
+        images: state.sensenetDocumentViewer.previewImages.AvailableImages,
+        viewer: state.sensenetDocumentViewer.viewer,
     }
 }
 

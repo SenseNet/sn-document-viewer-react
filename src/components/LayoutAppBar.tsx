@@ -12,10 +12,6 @@ export interface AppBarProps {
     viewer: ViewerStateType,
     documentActions: DocumentAction[]
     actions: {
-    //     setActivePages: (page: number) => Action,
-    //     setZoomMode: (zoomMode: ZoomMode) => Action,
-    //     setZoomLevel: (zoomLevel: number) => Action,
-    //     rotateImages: (imageIndexes: number[], amount: number) => Action,
     }
 }
 
@@ -27,17 +23,13 @@ export interface AppBarState {
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
         store: state,
-        document: state.documentState.document,
-        viewer: state.viewer,
+        document: state.sensenetDocumentViewer.documentState.document,
+        viewer: state.sensenetDocumentViewer.viewer,
     }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
-        // setActivePages: (page: number) => dispatch(setActivePages([page])),
-        // setZoomMode: (zoomMode: ZoomMode) => dispatch(setZoomMode(zoomMode)),
-        // setZoomLevel: (zoomLevel: number) => dispatch(setCustomZoomLevel(zoomLevel)),
-        // rotateImages: (imageIndexes: number[], amount: number) => dispatch(rotateImages(imageIndexes, amount)),
     },
 })
 

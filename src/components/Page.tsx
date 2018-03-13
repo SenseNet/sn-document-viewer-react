@@ -12,10 +12,10 @@ import { ZoomMode } from '../store/Viewer'
 
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
-        documentData: state.documentState.document,
-        version: state.documentState.version,
-        page: state.previewImages.AvailableImages[ownProps.imageIndex - 1] || {},
-        activePages: state.viewer.activePages,
+        documentData: state.sensenetDocumentViewer.documentState.document,
+        version: state.sensenetDocumentViewer.documentState.version,
+        page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {},
+        activePages: state.sensenetDocumentViewer.viewer.activePages,
     }
 }
 

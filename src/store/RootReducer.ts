@@ -5,13 +5,18 @@ import { documentStateReducer, DocumentStateType } from './Document'
 import { viewerStateReducer, ViewerStateType } from './Viewer'
 
 export interface RootReducerType {
-    documentState: DocumentStateType,
-    previewImages: PreviewImagesStateType,
-    viewer: ViewerStateType
+    sensenetDocumentViewer: {
+        documentState: DocumentStateType,
+        previewImages: PreviewImagesStateType,
+        viewer: ViewerStateType,
+    }
 }
 
 export const rootReducer: Reducer<RootReducerType> = combineReducers<RootReducerType>({
-    documentState: documentStateReducer,
-    previewImages: previewImagesReducer,
-    viewer: viewerStateReducer,
+    sensenetDocumentViewer:
+        combineReducers({
+            documentState: documentStateReducer,
+            previewImages: previewImagesReducer,
+            viewer: viewerStateReducer,
+        }),
 })
