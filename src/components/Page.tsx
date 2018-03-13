@@ -1,10 +1,10 @@
-import { Button, Paper } from 'material-ui'
+import { Paper } from 'material-ui'
 import { CircularProgress } from 'material-ui/Progress'
 import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { Element } from 'react-scroll'
 import { Action } from 'redux'
-import { DocumentData, PreviewImageData } from '../models'
+import { DocumentData, PageWidget, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
 import { previewAvailable } from '../store/PreviewImages'
 import { RootReducerType } from '../store/RootReducer'
@@ -12,6 +12,7 @@ import { ZoomMode } from '../store/Viewer'
 
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
+        store: state,
         documentData: state.sensenetDocumentViewer.documentState.document,
         version: state.sensenetDocumentViewer.documentState.version,
         page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {},
@@ -26,6 +27,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 })
 
 export interface PageProps {
+    store: RootReducerType,
+    pageWidgets: PageWidget[],
     documentData: DocumentData,
     version: string,
     pollInterval: number
@@ -47,6 +50,7 @@ export interface PageProps {
 }
 
 export interface PageState {
+    availableWidgets: PageWidget[]
     imgSrc: string
     pageStyle: React.CSSProperties
     isActive: boolean
@@ -70,7 +74,7 @@ class Page extends React.Component<PageProps, PageState> {
         this.stopPolling()
     }
 
-    private getStateFromProps(props: this['props']): this['state'] {
+    private getStateFromProps(props: PageProps): PageState {
         const imageRotation = ImageUtil.normalizeDegrees(props.page.Attributes && props.page.Attributes.degree || 0)
         const imageRotationRads = (imageRotation % 180) * Math.PI / 180
 
@@ -94,10 +98,11 @@ class Page extends React.Component<PageProps, PageState> {
 
         return {
             isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
+            availableWidgets: [],
             imgSrc,
             pageStyle,
             imageWidth: `${100 * boundingBox.zoomRatio}%`,
-            imageHeight:  `${100 * boundingBox.zoomRatio}%`,
+            imageHeight: `${100 * boundingBox.zoomRatio}%`,
             imageTransform: `translateY(${-diffWidth}px) rotate(${imageRotation}deg)`,
         }
     }
@@ -107,9 +112,32 @@ class Page extends React.Component<PageProps, PageState> {
         this.state = this.getStateFromProps(props)
     }
 
-    public componentWillReceiveProps(nextProps: PageProps) {
+    private pageWidgetAvailabilityCache: Map<PageWidget, boolean> = new Map()
+
+    public async componentWillReceiveProps(nextProps: PageProps) {
+
+        this.setState({ ...this.state, availableWidgets: [] })
+        const availableWidgets: PageWidget[] = []
+        try {
+            await Promise.all(this.props.pageWidgets.map(async (action) => {
+                if (!action.shouldCheckAvailable(this.props.store, nextProps.store) && this.pageWidgetAvailabilityCache.has(action)) {
+                    availableWidgets.push(action)
+                } else {
+                    const isAvailable = await action.isAvailable(nextProps.store)
+                    if (isAvailable) {
+                        availableWidgets.push(action)
+                    }
+                    this.pageWidgetAvailabilityCache.set(action, isAvailable)
+                }
+            }))
+        } catch (error) {
+            /** */
+            // tslint:disable-next-line:no-console
+            console.warn(error)
+        }
+
         const newState = this.getStateFromProps(nextProps)
-        this.setState(newState)
+        this.setState({ ...newState, availableWidgets })
     }
 
     public getPageStyle(props: PageProps) {
@@ -128,17 +156,27 @@ class Page extends React.Component<PageProps, PageState> {
     }
 
     public render() {
+
+        const pageWidgets = this.state.availableWidgets.map((widget, i) =>
+            React.createElement(widget.component, { Index: this.props.page.Index, key: i }),
+        )
+
         return (
             <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
                 <Paper elevation={this.state.isActive ? 8 : 2}>
-                    <Button style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden' }} onClick={(ev) => this.props.onClick(ev)}>
+                    <div style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden', position: 'relative' }} onClick={(ev) => this.props.onClick(ev)}>
+                        <div style={{ position: 'absolute', zIndex: 1, top: 0, right: 0 }}>
+                            {pageWidgets}
+                        </div>
+                        <span style={{display: 'flex', justifyContent: 'center'}}>
                         {this.state.imgSrc ?
-                        <img src={this.state.imgSrc}
-                            style={{transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform}}
-                        /> :
+                            <img src={this.state.imgSrc}
+                                style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
+                            /> :
                             <CircularProgress />
                         }
-                    </Button>
+                        </span>
+                    </div>
                 </Paper>
             </Element>
         )

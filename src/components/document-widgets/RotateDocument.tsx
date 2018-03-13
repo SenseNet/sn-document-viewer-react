@@ -3,11 +3,11 @@ import { RotateLeft, RotateRight } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
-import { DocumentAction, PreviewImageData } from '../../models'
+import { DocumentWidget, PreviewImageData } from '../../models'
 import { rotateImages } from '../../store/PreviewImages'
 import { RootReducerType } from '../../store/RootReducer'
 
-export interface RotateDocumentActionProps {
+export interface RotateDocumentWidgetProps {
     pages: PreviewImageData[],
     activePages: number[],
     actions: {
@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     },
 })
 
-export class RotateComponent extends React.Component<RotateDocumentActionProps> {
+export class RotateDocumentComponent extends React.Component<RotateDocumentWidgetProps> {
 
     private rotateDocumentLeft() {
         this.props.actions.rotateImages(this.props.pages.map((p) => p.Index), -90)
@@ -70,9 +70,9 @@ export class RotateComponent extends React.Component<RotateDocumentActionProps> 
     }
 }
 
-const rotateComponent = connect(mapStateToProps, mapDispatchToProps)(RotateComponent)
+const rotateComponent = connect(mapStateToProps, mapDispatchToProps)(RotateDocumentComponent)
 
-export const rotateDocumentAction: DocumentAction = {
+export const rotateDocumentWidget: DocumentWidget = {
     shouldCheckAvailable: () => false,
     isAvailable: async () => true,
     component: rotateComponent,

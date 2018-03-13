@@ -2,7 +2,7 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action, Dispatch } from 'redux'
-import { DocumentAction, DocumentData, PreviewImageData } from '../models'
+import { DocumentData, DocumentWidget, PageWidget, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
 import { RootReducerType } from '../store/RootReducer'
 import { setActivePages, ViewerStateType } from '../store/Viewer'
@@ -24,7 +24,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 })
 
 export interface DocumentLayoutProps {
-    documentActions: DocumentAction[]
+    documentWidgets: DocumentWidget[]
+    pageWidgets: PageWidget[]
     document: DocumentData
     images: PreviewImageData[]
     viewer: ViewerStateType
@@ -94,7 +95,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                 height: '100%',
             }}>
                 <canvas ref={((c) => this.canvas = c)} style={{ display: 'none' }} />
-                <LayoutAppBar documentActions={this.props.documentActions} />
+                <LayoutAppBar documentWidgets={this.props.documentWidgets} />
                 <div style={{
                     display: 'flex',
                     height: 'calc(100% - 64px)',
@@ -103,6 +104,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                 }}>
                     <PageList
                         id="sn-document-viewer-pages"
+                        pageWidgets={this.props.pageWidgets}
                         canvas={this.canvas as HTMLCanvasElement}
                         zoomMode={this.props.viewer.zoomMode}
                         onPageClick={(ev, index) => this.scrollTo(ev, index)}
@@ -116,6 +118,7 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
 
                     {this.state.showThumbnails ?
                             <PageList
+                                pageWidgets={[]}
                                 style={{maxWidth : 160}}
                                 id="sn-document-viewer-thumbnails"
                                 canvas={this.canvas as HTMLCanvasElement}

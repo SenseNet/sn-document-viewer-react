@@ -2,8 +2,10 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { rotateDocumentAction} from './components/document-actions/RotateDocument'
-import { zoomModeAction } from './components/document-actions/ZoomMode'
+import { rotateDocumentWidget} from './components/document-widgets/RotateDocument'
+import { zoomModeWidget } from './components/document-widgets/ZoomMode'
+import { rotatePageWidget } from './components/page-widgets/RotatePage'
+
 import DocumentViewer from './components/DocumentViewer'
 import { DocumentViewerSettings, PreviewImageData } from './models'
 import { getStoreConfig } from './store'
@@ -15,7 +17,6 @@ import './style'
 const SITE_URL = 'https://dmsservice.demo.sensenet.com/'
 
 const settings: DocumentViewerSettings = {
-    documentActions: [],
     pollInterval: 2000,
     getExistingPreviewImages: async (docData, version) => {
         const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, { method: 'POST' })
@@ -72,7 +73,7 @@ store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Projec
 
 ReactDOM.render(
     <Provider store={store} >
-        <DocumentViewer documentActions={[rotateDocumentAction, zoomModeAction]} settings={settings} />
+        <DocumentViewer documentWidgets={[rotateDocumentWidget, zoomModeWidget]} settings={settings} pageWidgets={[rotatePageWidget]} />
     </Provider>,
     document.getElementById('example'),
 )

@@ -3,11 +3,11 @@ import { AspectRatio, Code, Error, ZoomIn, ZoomOut, ZoomOutMap } from 'material-
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
-import { DocumentAction, DocumentData } from '../../models'
+import { DocumentData, DocumentWidget } from '../../models'
 import { RootReducerType } from '../../store/RootReducer'
 import { setCustomZoomLevel, setZoomMode, ViewerStateType, ZoomMode } from '../../store/Viewer'
 
-export interface ZoomModeActionProps {
+export interface ZoomModeWidgetProps {
     document: DocumentData,
     viewer: ViewerStateType,
     actions: {
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     },
 })
 
-export class ZoomComponent extends React.Component<ZoomModeActionProps, { zoomMenuAnchor?: HTMLElement }> {
+export class ZoomWidgetComponent extends React.Component<ZoomModeWidgetProps, { zoomMenuAnchor?: HTMLElement }> {
 
     public state = { zoomMenuAnchor: undefined}
 
@@ -110,9 +110,9 @@ export class ZoomComponent extends React.Component<ZoomModeActionProps, { zoomMe
     }
 }
 
-const zoomComponent = connect(mapStateToProps, mapDispatchToProps)(ZoomComponent)
+const zoomComponent = connect(mapStateToProps, mapDispatchToProps)(ZoomWidgetComponent)
 
-export const zoomModeAction: DocumentAction = {
+export const zoomModeWidget: DocumentWidget = {
     shouldCheckAvailable: () => false,
     isAvailable: async () => true,
     component: zoomComponent,

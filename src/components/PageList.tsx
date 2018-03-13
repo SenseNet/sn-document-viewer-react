@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import { Grid } from 'material-ui'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import { PreviewImageData } from '../models'
+import { PageWidget, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 })
 
 export interface PageListProps {
-
+    pageWidgets: PageWidget[],
     pages: PreviewImageData[]
     actions: {}
     tolerance: number
@@ -192,6 +192,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
                 }}>
                     {this.state.visiblePages.map((value) => (
                         <Page
+                            pageWidgets={this.props.pageWidgets}
                             canvas={this.props.canvas as HTMLCanvasElement}
                             pollInterval={1000}
                             viewportWidth={this.state.viewportWidth}

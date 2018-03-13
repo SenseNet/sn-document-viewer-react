@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography } from 'material-ui'
 import React = require('react')
 import { connect, Dispatch } from 'react-redux'
-import { DocumentAction, DocumentData } from '../models'
+import { DocumentData, DocumentWidget } from '../models'
 import { RootReducerType } from '../store/RootReducer'
 
 import {  ViewerStateType } from '../store/Viewer'
@@ -10,14 +10,14 @@ export interface AppBarProps {
     document: DocumentData,
     store: RootReducerType,
     viewer: ViewerStateType,
-    documentActions: DocumentAction[]
+    documentWidgets: DocumentWidget[]
     actions: {
     }
 }
 
 export interface AppBarState {
     isLoading: boolean
-    availableActions: DocumentAction[]
+    availableWidgets: DocumentWidget[]
 }
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
@@ -37,23 +37,23 @@ class LayoutAppBar extends React.Component<AppBarProps, AppBarState> {
 
     public state = {
         isLoading: true,
-        availableActions: [] as DocumentAction[],
+        availableWidgets: [] as DocumentWidget[],
     }
 
-    private documentActionAvailabilityCache: Map<DocumentAction, boolean> = new Map()
+    private documentActionAvailabilityCache: Map<DocumentWidget, boolean> = new Map()
 
     public async componentWillReceiveProps(newProps: this['props']) {
 
-        this.setState({ ...this.state, isLoading: true, availableActions: [] })
-        const availableActions: DocumentAction[] = []
+        this.setState({ ...this.state, isLoading: true, availableWidgets: [] })
+        const availableWidgets: DocumentWidget[] = []
         try {
-            await Promise.all(this.props.documentActions.map(async (action) => {
+            await Promise.all(this.props.documentWidgets.map(async (action) => {
                 if (!action.shouldCheckAvailable(this.props.store, newProps.store) && this.documentActionAvailabilityCache.has(action)) {
-                    availableActions.push(action)
+                    availableWidgets.push(action)
                 } else {
                     const isAvailable = await action.isAvailable(newProps.store)
                     if (isAvailable) {
-                        availableActions.push(action)
+                        availableWidgets.push(action)
                     }
                     this.documentActionAvailabilityCache.set(action, isAvailable)
                 }
@@ -63,7 +63,7 @@ class LayoutAppBar extends React.Component<AppBarProps, AppBarState> {
             // tslint:disable-next-line:no-console
             console.warn(error)
         }
-        this.setState({ ...this.state, isLoading: false, availableActions })
+        this.setState({ ...this.state, isLoading: false, availableWidgets })
     }
 
     // private rotateClockWise() {
@@ -76,8 +76,8 @@ class LayoutAppBar extends React.Component<AppBarProps, AppBarState> {
 
     public render() {
 
-        const documentActions = this.state.availableActions.map((action, i) =>
-            React.createElement(action.component, { data: {}, key: i }),
+        const documentWidgets = this.state.availableWidgets.map((widget, i) =>
+            React.createElement(widget.component, { data: {}, key: i }),
         )
 
         return (
@@ -88,7 +88,7 @@ class LayoutAppBar extends React.Component<AppBarProps, AppBarState> {
                     </Typography>
                     <div>
                     {
-                        documentActions
+                        documentWidgets
                     }
                     </div>
                 </Toolbar>
