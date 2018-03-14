@@ -7,15 +7,22 @@ import { zoomModeWidget } from './components/document-widgets/ZoomMode'
 import { drawingsWidget} from './components/page-widgets/Drawings'
 import { rotatePageWidget } from './components/page-widgets/RotatePage'
 
+import { v1 } from 'uuid'
+
 import DocumentViewer from './components/DocumentViewer'
-import { DocumentViewerSettings, PreviewImageData } from './models'
+import { Annotation, DocumentViewerSettings, Highlight, PreviewImageData, Redaction, Shape } from './models'
 import { getStoreConfig } from './store'
 import { pollDocumentData } from './store/Document'
 
 import { createStore } from 'redux'
 import './style'
 
-const SITE_URL = 'https://dmsservice.demo.sensenet.com/'
+const SITE_URL = 'http://sensenet7-local/'
+
+const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
+    shape.guid = v1()
+    return shape
+}
 
 const settings: DocumentViewerSettings = {
     pollInterval: 2000,
@@ -62,9 +69,9 @@ const settings: DocumentViewerSettings = {
             documentName: body.d.DisplayName,
             documentType: body.d.Type,
             shapes: body.d.Shapes && {
-                redactions: JSON.parse(body.d.Shapes)[0].redactions || [],
-                annotations: JSON.parse(body.d.Shapes)[2].annotations || [],
-                highlights: JSON.parse(body.d.Shapes)[1].highlights || [],
+                redactions: (JSON.parse(body.d.Shapes)[0].redactions as Redaction[]).map((a) => addGuidToShape(a)) || [],
+                annotations: (JSON.parse(body.d.Shapes)[2].annotations as Annotation[]).map((a) => addGuidToShape(a)) || [],
+                highlights: (JSON.parse(body.d.Shapes)[1].highlights as Highlight[]).map((a) => addGuidToShape(a)) || [],
             },
             pageAttributes: body.d.PageAttributes && JSON.parse(body.d.PageAttributes) || [],
         }
@@ -74,7 +81,7 @@ const settings: DocumentViewerSettings = {
 const storeConfig = getStoreConfig(settings)
 const store = createStore(storeConfig.rootReducer, storeConfig.preloadedState, storeConfig.enhancer)
 
-store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('BusinessPlan.docx')`))
+store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('1000-Lorem.docx')`))
 
 ReactDOM.render(
     <Provider store={store} >

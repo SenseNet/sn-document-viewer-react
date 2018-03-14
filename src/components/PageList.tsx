@@ -27,7 +27,6 @@ export interface PageListProps {
     id: string
     elementNamePrefix: string
     zoomMode: ZoomMode
-    canvas: HTMLCanvasElement
     images: 'preview' | 'thumbnail'
     activePage?: number
     imageUtil: ImageUtil
@@ -193,7 +192,6 @@ class PageList extends React.Component<PageListProps, PageListState> {
                     {this.state.visiblePages.map((value) => (
                         <Page
                             pageWidgets={this.props.pageWidgets}
-                            canvas={this.props.canvas as HTMLCanvasElement}
                             pollInterval={1000}
                             viewportWidth={this.state.viewportWidth}
                             viewportHeight={this.state.viewportHeight}

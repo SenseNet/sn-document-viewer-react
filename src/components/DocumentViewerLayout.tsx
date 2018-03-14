@@ -39,7 +39,6 @@ export interface DocumentLayoutState {
 
 class DocumentViewerLayout extends React.Component<DocumentLayoutProps, DocumentLayoutState> {
     public state = { showThumbnails: true, activePage: 1}
-    public canvas!: HTMLCanvasElement | null
     private imageUtils: ImageUtil = new ImageUtil()
     public viewPort: HTMLDivElement | null = null
 
@@ -61,10 +60,12 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                     offset: -8,
                 })
             }
-            if (ev.ctrlKey) {
+            if (ev.ctrlKey && this.props.viewer.activePages.indexOf(index) === -1) {
                 this.props.actions.setActivePages([...this.props.viewer.activePages, index])
             } else {
-                this.props.actions.setActivePages([index])
+                if (this.props.viewer.activePages[0] !== index) {
+                    this.props.actions.setActivePages([index])
+                }
             }
         })
 
@@ -94,7 +95,6 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                 width: '100%',
                 height: '100%',
             }}>
-                <canvas ref={((c) => this.canvas = c)} style={{ display: 'none' }} />
                 <LayoutAppBar documentWidgets={this.props.documentWidgets} />
                 <div style={{
                     display: 'flex',
@@ -105,7 +105,6 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                     <PageList
                         id="sn-document-viewer-pages"
                         pageWidgets={this.props.pageWidgets}
-                        canvas={this.canvas as HTMLCanvasElement}
                         zoomMode={this.props.viewer.zoomMode}
                         onPageClick={(ev, index) => this.scrollTo(ev, index)}
                         elementNamePrefix="Page-"
@@ -121,7 +120,6 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                                 pageWidgets={[]}
                                 style={{maxWidth : 160}}
                                 id="sn-document-viewer-thumbnails"
-                                canvas={this.canvas as HTMLCanvasElement}
                                 zoomMode="fit"
                                 onPageClick={(ev, index) => this.scrollTo(ev, index)}
                                 elementNamePrefix="Thumbnail-"

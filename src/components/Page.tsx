@@ -39,7 +39,6 @@ export interface PageProps {
     viewportWidth: number,
     elementNamePrefix: string,
     zoomMode: ZoomMode,
-    canvas: HTMLCanvasElement,
     activePages: number[]
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
     imageUtil: ImageUtil,
@@ -66,11 +65,17 @@ class Page extends React.Component<PageProps, PageState> {
 
     private pollPreview?: number
 
+    public state = this.getStateFromProps(this.props)
+
     private stopPolling() {
         if (this.pollPreview) {
             clearInterval(this.pollPreview)
             this.pollPreview = undefined
         }
+    }
+
+    public componentDidMount() {
+        this.componentWillReceiveProps(this.props)
     }
 
     public componentWillUnmount() {
@@ -121,34 +126,21 @@ class Page extends React.Component<PageProps, PageState> {
         }
     }
 
-    constructor(props: PageProps) {
-        super(props)
-        this.state = this.getStateFromProps(props)
-    }
-
     private pageWidgetAvailabilityCache: Map<PageWidget, boolean> = new Map()
 
     public async componentWillReceiveProps(nextProps: PageProps) {
-
-        this.setState({ ...this.state, availableWidgets: [] })
         const availableWidgets: PageWidget[] = []
-        try {
-            await Promise.all(this.props.pageWidgets.map(async (action) => {
-                if (!action.shouldCheckAvailable(this.props.store, nextProps.store) && this.pageWidgetAvailabilityCache.has(action)) {
+        await Promise.all(this.props.pageWidgets.map(async (action) => {
+            if (!action.shouldCheckAvailable(this.props.store, nextProps.store) && this.pageWidgetAvailabilityCache.has(action)) {
+                availableWidgets.push(action)
+            } else {
+                const isAvailable = await action.isAvailable(nextProps.store)
+                if (isAvailable) {
                     availableWidgets.push(action)
-                } else {
-                    const isAvailable = await action.isAvailable(nextProps.store)
-                    if (isAvailable) {
-                        availableWidgets.push(action)
-                    }
-                    this.pageWidgetAvailabilityCache.set(action, isAvailable)
                 }
-            }))
-        } catch (error) {
-            /** */
-            // tslint:disable-next-line:no-console
-            console.warn(error)
-        }
+                this.pageWidgetAvailabilityCache.set(action, isAvailable)
+            }
+        }))
 
         const newState = this.getStateFromProps(nextProps)
         this.setState({ ...newState, availableWidgets })
@@ -164,7 +156,11 @@ class Page extends React.Component<PageProps, PageState> {
     public render() {
 
         const pageWidgets = this.state.availableWidgets.map((widget, i) =>
-            React.createElement(widget.component, { Index: this.props.page.Index, key: i, viewPort: {width: this.state.pageWidth, height: this.state.pageHeight} }),
+            React.createElement(widget.component, {
+                Index: this.props.page.Index,
+                key: i,
+                viewPort: { width: this.state.pageWidth, height: this.state.pageHeight },
+            }),
         )
 
         return (
@@ -172,13 +168,13 @@ class Page extends React.Component<PageProps, PageState> {
                 <Paper elevation={this.state.isActive ? 8 : 2}>
                     <div style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden', position: 'relative' }} onClick={(ev) => this.props.onClick(ev)}>
                         {pageWidgets}
-                        <span style={{display: 'flex', justifyContent: 'center'}}>
-                        {this.state.imgSrc ?
-                            <img src={this.state.imgSrc}
-                                style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
-                            /> :
-                            <CircularProgress />
-                        }
+                        <span style={{ display: 'flex', justifyContent: 'center' }}>
+                            {this.state.imgSrc ?
+                                <img src={this.state.imgSrc}
+                                    style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
+                                /> :
+                                <CircularProgress />
+                            }
                         </span>
                     </div>
                 </Paper>

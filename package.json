@@ -73,6 +73,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.104",
     "@types/react-fontawesome": "^1.6.2",
+    "@types/uuid": "^3.4.3",
     "lodash.debounce": "^4.0.8",
     "material-ui": "^1.0.0-beta.34",
     "material-ui-icons": "^1.0.0-beta.35",
@@ -83,7 +84,8 @@
     "react-scroll": "^1.7.7",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "uuid": "^3.2.1"
   },
   "config": {
     "commitizen": {

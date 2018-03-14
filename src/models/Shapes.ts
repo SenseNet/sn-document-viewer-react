@@ -1,9 +1,10 @@
 export interface Shape {
     h: number
     w: number
-    x: number,
+    x: number
     y: number
     imageIndex: number
+    guid: string
 }
 
 export type Redaction = Shape
