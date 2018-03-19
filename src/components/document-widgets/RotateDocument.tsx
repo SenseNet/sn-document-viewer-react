@@ -4,31 +4,28 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { DocumentWidget, PreviewImageData } from '../../models'
+import { componentType } from '../../services/TypeHelpers'
 import { rotateImages } from '../../store/PreviewImages'
 import { RootReducerType } from '../../store/RootReducer'
 
-export interface RotateDocumentWidgetProps {
-    pages: PreviewImageData[],
-    activePages: number[],
-    actions: {
-        rotateImages: (imageIndexes: number[], amount: number) => Action,
-    }
-}
-
-const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
+export const mapStateToProps = (state: RootReducerType) => {
     return {
-        pages: state.sensenetDocumentViewer.previewImages.AvailableImages,
+        pages: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
         activePages: state.sensenetDocumentViewer.viewer.activePages,
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
+export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) =>  {
+    actions: {
+        rotateImages: (imageIndexes: number[], amount: number) => Action,
+    },
+} = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
         rotateImages: (imageIndexes: number[], amount: number) => dispatch(rotateImages(imageIndexes, amount)),
     },
 })
 
-export class RotateDocumentComponent extends React.Component<RotateDocumentWidgetProps> {
+export class RotateDocumentComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private rotateDocumentLeft() {
         this.props.actions.rotateImages(this.props.pages.map((p) => p.Index), -90)

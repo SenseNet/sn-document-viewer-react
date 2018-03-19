@@ -3,54 +3,54 @@ import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { Annotation, Highlight, PageWidget, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
 import { Dimensions } from '../../services/ImageUtils'
+import { componentType } from '../../services/TypeHelpers'
 import { updateShapeData } from '../../store/Document'
 import { RootReducerType } from '../../store/RootReducer'
-
-export interface DrawingsWidgetProps {
-    page: PreviewImageData,
-    redactions: Redaction[],
-    highlights: Highlight[],
-    annotations: Annotation[],
-    viewPort: Dimensions,
-    actions: {
-        updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => Action,
-    }
-}
 
 export interface DrawingsWidgetState {
     zoomRatio: number,
     canEditShapes: boolean,
 }
 
-const mapStateToProps = (state: RootReducerType, ownProps: { Index: number, viewPort: Dimensions }) => {
+export interface OwnProps {
+    Index: number,
+    viewPort: Dimensions,
+}
+
+export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        page: state.sensenetDocumentViewer.previewImages.AvailableImages.find((p) => p.Index === ownProps.Index),
+        page: state.sensenetDocumentViewer.previewImages.AvailableImages.find((p) => p.Index === ownProps.Index) as PreviewImageData,
         redactions: state.sensenetDocumentViewer.documentState.document &&
             state.sensenetDocumentViewer.documentState.document.shapes.redactions &&
-            state.sensenetDocumentViewer.documentState.document.shapes.redactions.filter((r) => r.imageIndex === ownProps.Index) || [],
+            state.sensenetDocumentViewer.documentState.document.shapes.redactions.filter((r) => r.imageIndex === ownProps.Index) || [] as Redaction[],
         highlights: state.sensenetDocumentViewer.documentState.document &&
             state.sensenetDocumentViewer.documentState.document.shapes.highlights &&
-            state.sensenetDocumentViewer.documentState.document.shapes.highlights.filter((r) => r.imageIndex === ownProps.Index) || [],
+            state.sensenetDocumentViewer.documentState.document.shapes.highlights.filter((r) => r.imageIndex === ownProps.Index) || [] as Highlight[],
         annotations: state.sensenetDocumentViewer.documentState.document &&
             state.sensenetDocumentViewer.documentState.document.shapes.annotations &&
-            state.sensenetDocumentViewer.documentState.document.shapes.annotations.filter((r) => r.imageIndex === ownProps.Index) || [],
+            state.sensenetDocumentViewer.documentState.document.shapes.annotations.filter((r) => r.imageIndex === ownProps.Index) || [] as Annotation[],
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
+export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
+    actions: {
+        updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => Action,
+    },
+}
+ = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
         updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => dispatch(updateShapeData(shapeType, guid, shapeData)),
     },
 })
 
-export class DrawingsComponent extends React.Component<DrawingsWidgetProps, DrawingsWidgetState> {
+export class DrawingsComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, DrawingsWidgetState> {
 
     public state = {
         zoomRatio: this.props.viewPort.height / this.props.page.Height,
         canEditShapes: true,    // todo: check permission
     }
 
-    public componentWillReceiveProps(props: DrawingsWidgetProps) {
+    public componentWillReceiveProps(props: this['props']) {
         const zoomRatio = props.viewPort.height / props.page.Height
         if (zoomRatio !== this.state.zoomRatio) {
             this.setState({

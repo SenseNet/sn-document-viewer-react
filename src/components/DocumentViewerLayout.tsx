@@ -1,9 +1,11 @@
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
-import { Action, Dispatch } from 'redux'
+import { Dispatch } from 'redux'
+import { Action } from 'redux'
 import { DocumentData, DocumentWidget, PageWidget, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
+import { componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store/RootReducer'
 import { setActivePages, ViewerStateType } from '../store/Viewer'
 import LayoutAppBar from './LayoutAppBar'
@@ -11,25 +13,22 @@ import PageList from './PageList'
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
-        document: state.sensenetDocumentViewer.documentState.document,
-        images: state.sensenetDocumentViewer.previewImages.AvailableImages,
-        viewer: state.sensenetDocumentViewer.viewer,
+        document: state.sensenetDocumentViewer.documentState.document as DocumentData,
+        images: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
+        viewer: state.sensenetDocumentViewer.viewer as ViewerStateType,
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        setActivePages: (pages: number[]) => dispatch(setActivePages(pages)),
-    },
-})
+const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => { actions: { setActivePages: (pages: number[]) => Action } }
+    = (dispatch: Dispatch<RootReducerType>) => ({
+        actions: {
+            setActivePages: (pages: number[]) => dispatch(setActivePages(pages)),
+        },
+    })
 
-export interface DocumentLayoutProps {
+export interface OwnProps {
     documentWidgets: DocumentWidget[]
     pageWidgets: PageWidget[]
-    document: DocumentData
-    images: PreviewImageData[]
-    viewer: ViewerStateType
-    actions: { setActivePages: (pages: number[]) => Action }
 }
 
 export interface DocumentLayoutState {
@@ -37,8 +36,8 @@ export interface DocumentLayoutState {
     activePage?: number
 }
 
-class DocumentViewerLayout extends React.Component<DocumentLayoutProps, DocumentLayoutState> {
-    public state = { showThumbnails: true, activePage: 1}
+class DocumentViewerLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, DocumentLayoutState> {
+    public state = { showThumbnails: true, activePage: 1 }
     private imageUtils: ImageUtil = new ImageUtil()
     public viewPort: HTMLDivElement | null = null
 
@@ -116,19 +115,19 @@ class DocumentViewerLayout extends React.Component<DocumentLayoutProps, Document
                     />
 
                     {this.state.showThumbnails ?
-                            <PageList
-                                pageWidgets={[]}
-                                style={{maxWidth : 160}}
-                                id="sn-document-viewer-thumbnails"
-                                zoomMode="fit"
-                                onPageClick={(ev, index) => this.scrollTo(ev, index)}
-                                elementNamePrefix="Thumbnail-"
-                                images="thumbnail"
-                                tolerance={0}
-                                padding={8}
-                                activePage={this.state.activePage}
-                                imageUtil={this.imageUtils}
-                            />
+                        <PageList
+                            pageWidgets={[]}
+                            style={{ maxWidth: 160 }}
+                            id="sn-document-viewer-thumbnails"
+                            zoomMode="fit"
+                            onPageClick={(ev, index) => this.scrollTo(ev, index)}
+                            elementNamePrefix="Thumbnail-"
+                            images="thumbnail"
+                            tolerance={0}
+                            padding={8}
+                            activePage={this.state.activePage}
+                            imageUtil={this.imageUtils}
+                        />
                         : null
                     }
 

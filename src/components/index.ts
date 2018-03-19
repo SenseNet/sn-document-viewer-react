@@ -1,7 +1,4 @@
 export * from './DocumentViewer'
 export * from './DocumentViewerError'
 export * from './DocumentViewerLoading'
-export * from './DocumentViewerLayout'
-export * from './LayoutAppBar'
-export * from './Page'
 export * from './PageList'

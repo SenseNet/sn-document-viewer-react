@@ -4,15 +4,11 @@ import { connect, Dispatch } from 'react-redux'
 import { DocumentData, DocumentWidget } from '../models'
 import { RootReducerType } from '../store/RootReducer'
 
+import { componentType } from '../services/TypeHelpers'
 import {  ViewerStateType } from '../store/Viewer'
 
-export interface AppBarProps {
-    document: DocumentData,
-    store: RootReducerType,
-    viewer: ViewerStateType,
+export interface OwnProps {
     documentWidgets: DocumentWidget[]
-    actions: {
-    }
 }
 
 export interface AppBarState {
@@ -23,8 +19,8 @@ export interface AppBarState {
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
         store: state,
-        document: state.sensenetDocumentViewer.documentState.document,
-        viewer: state.sensenetDocumentViewer.viewer,
+        document: state.sensenetDocumentViewer.documentState.document as DocumentData,
+        viewer: state.sensenetDocumentViewer.viewer as ViewerStateType,
     }
 }
 
@@ -33,7 +29,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     },
 })
 
-class LayoutAppBar extends React.Component<AppBarProps, AppBarState> {
+class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, AppBarState> {
 
     public state = {
         isLoading: true,
@@ -60,19 +56,9 @@ class LayoutAppBar extends React.Component<AppBarProps, AppBarState> {
             }))
         } catch (error) {
             /** */
-            // tslint:disable-next-line:no-console
-            console.warn(error)
         }
         this.setState({ ...this.state, isLoading: false, availableWidgets })
     }
-
-    // private rotateClockWise() {
-    //     this.props.actions.rotateImages(this.props.viewer.activePages, 90)
-    // }
-
-    // private rotateCounterClockwise() {
-    //     this.props.actions.rotateImages(this.props.viewer.activePages, -90)
-    // }
 
     public render() {
 

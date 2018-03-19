@@ -4,13 +4,14 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { PageWidget, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
+import { componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
 import Page from './Page'
 
 const mapStateToProps = (state: RootReducerType) => {
     return {
-        pages: state.sensenetDocumentViewer.previewImages.AvailableImages || [],
+        pages: state.sensenetDocumentViewer.previewImages.AvailableImages || [] as PreviewImageData[],
     }
 }
 
@@ -20,8 +21,6 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 
 export interface PageListProps {
     pageWidgets: PageWidget[],
-    pages: PreviewImageData[]
-    actions: {}
     tolerance: number
     padding: number
     id: string
@@ -45,7 +44,7 @@ export interface PageListState {
     visiblePages: PreviewImageData[]
 }
 
-class PageList extends React.Component<PageListProps, PageListState> {
+class PageList extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, PageListProps>, PageListState> {
 
     public state: PageListState = {
         marginTop: 0,
@@ -55,7 +54,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
         viewportWidth: 110,
         viewportHeight: 110,
         pagesToTake: 32,
-        visiblePages: this.props.pages.slice(0, 32),
+        visiblePages: this.props.pages.slice(0, 3),
     }
 
     public canUpdate: boolean = false
@@ -84,7 +83,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
     }
 
     public componentWillReceiveProps(newProps: this['props']) {
-        this.setupVisiblePages(newProps, newProps.activePage !== this.props.actions ? newProps.activePage : undefined)
+        this.setupVisiblePages(newProps, newProps.activePage !== this.props.activePage ? newProps.activePage : undefined)
     }
 
     private setupVisiblePages(props: this['props'], pageNo?: number) {
@@ -106,14 +105,14 @@ class PageList extends React.Component<PageListProps, PageListState> {
                 [p.Width, p.Height] = [defaultWidth, defaultHeight]
             }
 
-            const relativeSize = this.props.imageUtil.getImageSize({
+            const relativeSize = props.imageUtil.getImageSize({
                 width: this.state.viewportWidth,
                 height: this.state.viewportHeight,
             }, {
                     width: p.Width,
                     height: p.Height,
                     rotation: p.Attributes && p.Attributes.degree || 0,
-                }, this.props.zoomMode)
+                }, props.zoomMode)
 
             return {
                 ...p,
@@ -154,7 +153,7 @@ class PageList extends React.Component<PageListProps, PageListState> {
                 scrollState,
                 visiblePages: pages.slice(pagesToSkip, pagesToSkip + pagesToTake),
             })
-            this.forceUpdate()
+            // this.forceUpdate()
         }
     }
 

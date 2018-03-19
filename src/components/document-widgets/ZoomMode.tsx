@@ -4,33 +4,30 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { DocumentData, DocumentWidget } from '../../models'
+import { componentType } from '../../services/TypeHelpers'
 import { RootReducerType } from '../../store/RootReducer'
 import { setCustomZoomLevel, setZoomMode, ViewerStateType, ZoomMode } from '../../store/Viewer'
 
-export interface ZoomModeWidgetProps {
-    document: DocumentData,
-    viewer: ViewerStateType,
+export const mapStateToProps = (state: RootReducerType) => {
+    return {
+        document: state.sensenetDocumentViewer.documentState.document as DocumentData,
+        viewer: state.sensenetDocumentViewer.viewer as ViewerStateType,
+    }
+}
+
+export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     actions: {
         setZoomMode: (zoomMode: ZoomMode) => Action,
         setZoomLevel: (zoomLevel: number) => Action,
-    }
-}
-
-const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
-    return {
-        document: state.sensenetDocumentViewer.documentState.document as DocumentData,
-        viewer: state.sensenetDocumentViewer.viewer,
-    }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
+    },
+} = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
         setZoomMode: (zoomMode: ZoomMode) => dispatch(setZoomMode(zoomMode)),
         setZoomLevel: (zoomLevel: number) => dispatch(setCustomZoomLevel(zoomLevel)),
     },
 })
 
-export class ZoomWidgetComponent extends React.Component<ZoomModeWidgetProps, { zoomMenuAnchor?: HTMLElement }> {
+export class ZoomWidgetComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { zoomMenuAnchor?: HTMLElement }> {
 
     public state = { zoomMenuAnchor: undefined}
 

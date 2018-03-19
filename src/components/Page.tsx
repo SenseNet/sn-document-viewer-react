@@ -6,6 +6,7 @@ import { Element } from 'react-scroll'
 import { Action } from 'redux'
 import { DocumentData, PageWidget, PreviewImageData } from '../models'
 import { Dimensions, ImageUtil } from '../services/ImageUtils'
+import { componentType } from '../services/TypeHelpers'
 import { previewAvailable } from '../store/PreviewImages'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
@@ -13,9 +14,9 @@ import { ZoomMode } from '../store/Viewer'
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
         store: state,
-        documentData: state.sensenetDocumentViewer.documentState.document,
-        version: state.sensenetDocumentViewer.documentState.version,
-        page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {},
+        documentData: state.sensenetDocumentViewer.documentState.document as DocumentData,
+        version: state.sensenetDocumentViewer.documentState.version as string,
+        page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {} as PreviewImageData,
         activePages: state.sensenetDocumentViewer.viewer.activePages,
     }
 }
@@ -26,20 +27,14 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     },
 })
 
-export interface PageProps {
-    store: RootReducerType,
+export interface OwnProps {
     pageWidgets: PageWidget[],
-    documentData: DocumentData,
-    version: string,
     pollInterval: number
-    page: PreviewImageData,
     imageIndex: number,
     viewportHeight: number,
-
     viewportWidth: number,
     elementNamePrefix: string,
     zoomMode: ZoomMode,
-    activePages: number[]
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
     imageUtil: ImageUtil,
     actions: {
@@ -61,9 +56,10 @@ export interface PageState {
     imageTransform: string
 }
 
-class Page extends React.Component<PageProps, PageState> {
+class Page extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, PageState> {
 
     private pollPreview?: number
+    private canUpdate: boolean = false
 
     public state = this.getStateFromProps(this.props)
 
@@ -76,13 +72,15 @@ class Page extends React.Component<PageProps, PageState> {
 
     public componentDidMount() {
         this.componentWillReceiveProps(this.props)
+        this.canUpdate = true
     }
 
     public componentWillUnmount() {
         this.stopPolling()
+        this.canUpdate = false
     }
 
-    private getStateFromProps(props: PageProps): PageState {
+    private getStateFromProps(props: this['props']): PageState {
         const imageRotation = ImageUtil.normalizeDegrees(props.page.Attributes && props.page.Attributes.degree || 0)
         const imageRotationRads = (imageRotation % 180) * Math.PI / 180
 
@@ -128,7 +126,7 @@ class Page extends React.Component<PageProps, PageState> {
 
     private pageWidgetAvailabilityCache: Map<PageWidget, boolean> = new Map()
 
-    public async componentWillReceiveProps(nextProps: PageProps) {
+    public async componentWillReceiveProps(nextProps: this['props']) {
         const availableWidgets: PageWidget[] = []
         await Promise.all(this.props.pageWidgets.map(async (action) => {
             if (!action.shouldCheckAvailable(this.props.store, nextProps.store) && this.pageWidgetAvailabilityCache.has(action)) {
@@ -141,12 +139,13 @@ class Page extends React.Component<PageProps, PageState> {
                 this.pageWidgetAvailabilityCache.set(action, isAvailable)
             }
         }))
-
-        const newState = this.getStateFromProps(nextProps)
-        this.setState({ ...newState, availableWidgets })
+        if (this.canUpdate) {
+            const newState = this.getStateFromProps(nextProps)
+            this.setState({ ...newState, availableWidgets })
+        }
     }
 
-    public getPageStyle(props: PageProps, relativeSize: Dimensions) {
+    public getPageStyle(props: this['props'], relativeSize: Dimensions) {
         const style: React.CSSProperties = {}
         style.width = relativeSize.width || '100%'
         style.height = relativeSize.height || '100%'
