@@ -3,7 +3,9 @@ import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import { rotateDocumentWidget} from './components/document-widgets/RotateDocument'
+import { saveDocumentWidget } from './components/document-widgets/SaveWidget'
 import { zoomModeWidget } from './components/document-widgets/ZoomMode'
+
 import { drawingsWidget} from './components/page-widgets/Drawings'
 import { rotatePageWidget } from './components/page-widgets/RotatePage'
 
@@ -15,6 +17,8 @@ import { getStoreConfig } from './store'
 import { pollDocumentData } from './store/Document'
 
 import { createStore } from 'redux'
+import { combineReducers } from 'redux'
+import { sensenetDocumentViewerReducer } from './store/RootReducer'
 import './style'
 
 const SITE_URL = 'http://sensenet7-local/'
@@ -26,6 +30,27 @@ const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
 
 const settings: DocumentViewerSettings = {
     pollInterval: 2000,
+    canEditDocument: async (idOrPath) => {
+        const response = await fetch(`${SITE_URL}/odata.svc/${idOrPath}/HasPermission?permissions=Save`, {method: 'GET'})
+        if (response.ok) {
+            return await response.text() === 'true'
+        }
+        return false
+    },
+    saveChanges: async (document, pages) => {
+        const reqBody = {
+            Shapes: JSON.stringify([
+                {redactions: document.shapes.redactions},
+                {highlights: document.shapes.highlights},
+                {annotations: document.shapes.annotations},
+            ]),
+            PageAttributes:  JSON.stringify(pages.map((p) => p.Attributes && { pageNum: p.Index, options: p.Attributes }).filter((p) => p !== undefined)),
+        }
+        await fetch(`${SITE_URL}/odata.svc/${document.idOrPath}`, {
+            method: 'PATCH',
+            body: JSON.stringify(reqBody),
+        })
+    },
     getExistingPreviewImages: async (docData, version) => {
         const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, { method: 'POST' })
         const availablePreviews = (await response.json() as Array<PreviewImageData & { PreviewAvailable?: string }>).map((a) => {
@@ -79,14 +104,26 @@ const settings: DocumentViewerSettings = {
 }
 
 const storeConfig = getStoreConfig(settings)
-const store = createStore(storeConfig.rootReducer, storeConfig.preloadedState, storeConfig.enhancer)
 
-store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('1000-Lorem.docx')`))
+const myReducer = combineReducers({
+    sensenetDocumentViewer: sensenetDocumentViewerReducer,
+    myStuff: (state = {}, action) => {
+        if (action.type === 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS') {
+            // tslint:disable-next-line:no-console
+            console.log('ALMAAAA')
+        }
+        return state
+    },
+})
+
+const store = createStore(myReducer, storeConfig.preloadedState, storeConfig.enhancer)
+
+store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('Pro ASP.NET MVC 4- 4th Edition.pdf')`))
 
 ReactDOM.render(
     <Provider store={store} >
         <DocumentViewer
-            documentWidgets={[rotateDocumentWidget, zoomModeWidget]}
+            documentWidgets={[rotateDocumentWidget, zoomModeWidget, saveDocumentWidget]}
             settings={settings}
             pageWidgets={[drawingsWidget, rotatePageWidget]}/>
     </Provider>,

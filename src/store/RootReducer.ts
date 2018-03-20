@@ -20,3 +20,9 @@ export const rootReducer: Reducer<RootReducerType> = combineReducers<RootReducer
             viewer: viewerStateReducer,
         }),
 })
+
+export const sensenetDocumentViewerReducer = combineReducers({
+    documentState: documentStateReducer,
+    previewImages: previewImagesReducer,
+    viewer: viewerStateReducer,
+})

@@ -19,6 +19,7 @@ export interface AppBarState {
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
         store: state,
+        isLoading: state.sensenetDocumentViewer.documentState.isLoading,
         document: state.sensenetDocumentViewer.documentState.document as DocumentData,
         viewer: state.sensenetDocumentViewer.viewer as ViewerStateType,
     }
@@ -57,7 +58,9 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
         } catch (error) {
             /** */
         }
-        this.setState({ ...this.state, isLoading: false, availableWidgets })
+        if (!this.props.isLoading) {
+            this.setState({ ...this.state, isLoading: false, availableWidgets })
+        }
     }
 
     public render() {

@@ -9,7 +9,6 @@ import { RootReducerType } from '../../store/RootReducer'
 
 export interface DrawingsWidgetState {
     zoomRatio: number,
-    canEditShapes: boolean,
 }
 
 export interface OwnProps {
@@ -19,16 +18,20 @@ export interface OwnProps {
 
 export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        page: state.sensenetDocumentViewer.previewImages.AvailableImages.find((p) => p.Index === ownProps.Index) as PreviewImageData,
+        page: state.sensenetDocumentViewer.previewImages.AvailableImages.find((p) => p.Index === ownProps.Index) as PreviewImageData || {Height: 1},
         redactions: state.sensenetDocumentViewer.documentState.document &&
+            state.sensenetDocumentViewer.documentState.document.shapes &&
             state.sensenetDocumentViewer.documentState.document.shapes.redactions &&
             state.sensenetDocumentViewer.documentState.document.shapes.redactions.filter((r) => r.imageIndex === ownProps.Index) || [] as Redaction[],
         highlights: state.sensenetDocumentViewer.documentState.document &&
+            state.sensenetDocumentViewer.documentState.document.shapes &&
             state.sensenetDocumentViewer.documentState.document.shapes.highlights &&
             state.sensenetDocumentViewer.documentState.document.shapes.highlights.filter((r) => r.imageIndex === ownProps.Index) || [] as Highlight[],
         annotations: state.sensenetDocumentViewer.documentState.document &&
+            state.sensenetDocumentViewer.documentState.document.shapes &&
             state.sensenetDocumentViewer.documentState.document.shapes.annotations &&
             state.sensenetDocumentViewer.documentState.document.shapes.annotations.filter((r) => r.imageIndex === ownProps.Index) || [] as Annotation[],
+        canEdit: state.sensenetDocumentViewer.documentState.canEdit,
     }
 }
 
@@ -37,17 +40,16 @@ export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
         updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => Action,
     },
 }
- = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => dispatch(updateShapeData(shapeType, guid, shapeData)),
-    },
-})
+    = (dispatch: Dispatch<RootReducerType>) => ({
+        actions: {
+            updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => dispatch(updateShapeData(shapeType, guid, shapeData)),
+        },
+    })
 
 export class DrawingsComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, DrawingsWidgetState> {
 
     public state = {
         zoomRatio: this.props.viewPort.height / this.props.page.Height,
-        canEditShapes: true,    // todo: check permission
     }
 
     public componentWillReceiveProps(props: this['props']) {
@@ -81,15 +83,18 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
     }
 
     private onDrop(ev: React.DragEvent<HTMLElement>, page: PreviewImageData) {
-        ev.preventDefault()
-        const shapeData = JSON.parse(ev.dataTransfer.getData('shape')) as { type: keyof Shapes, shape: Shape, offset: Dimensions }
-        const boundingBox = ev.currentTarget.getBoundingClientRect()
-        this.props.actions.updateShapeData(shapeData.type, shapeData.shape.guid, {
-            ...shapeData.shape,
-            imageIndex: page.Index,
-            x: ((ev.clientX - boundingBox.left - shapeData.offset.width) * (1 / this.state.zoomRatio)),
-            y: ((ev.clientY - boundingBox.top - shapeData.offset.height) * (1 / this.state.zoomRatio)),
-        })
+        if (this.props.canEdit) {
+
+            ev.preventDefault()
+            const shapeData = JSON.parse(ev.dataTransfer.getData('shape')) as { type: keyof Shapes, shape: Shape, offset: Dimensions }
+            const boundingBox = ev.currentTarget.getBoundingClientRect()
+            this.props.actions.updateShapeData(shapeData.type, shapeData.shape.guid, {
+                ...shapeData.shape,
+                imageIndex: page.Index,
+                x: ((ev.clientX - boundingBox.left - shapeData.offset.width) * (1 / this.state.zoomRatio)),
+                y: ((ev.clientY - boundingBox.top - shapeData.offset.height) * (1 / this.state.zoomRatio)),
+            })
+        }
     }
 
     private onResized(ev: React.MouseEvent<HTMLElement>, type: keyof Shapes, shape: Shape) {
@@ -114,13 +119,14 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
                 {this.props.redactions.map((redaction) => {
                     return (<div
-                        draggable={this.state.canEditShapes}
+                        onClickCapture={(ev) => { ev.stopPropagation() }}
+                        draggable={this.props.canEdit}
                         onDragStart={(ev) => this.onDragStart(ev, 'redactions', redaction)}
                         key={`r-${redaction.h}-${redaction.w}`}
                         onMouseUp={(ev) => this.onResized(ev, 'redactions', redaction)}
                         style={{
                             ...this.getShapeDimensions(redaction),
-                            resize: 'both',
+                            resize: this.props.canEdit && 'both',
                             position: 'absolute',
                             overflow: 'auto',
                             backgroundColor: 'black',
@@ -130,14 +136,15 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
 
                 {this.props.highlights.map((highlight) => {
                     return (<div
-                        draggable={this.state.canEditShapes}
+                        onClickCapture={(ev) => { ev.stopPropagation() }}
+                        draggable={this.props.canEdit}
                         onDragStart={(ev) => this.onDragStart(ev, 'highlights', highlight)}
                         onMouseUp={(ev) => this.onResized(ev, 'highlights', highlight)}
                         key={`h-${highlight.h}-${highlight.w}`}
                         style={{
                             ...this.getShapeDimensions(highlight),
                             position: 'absolute',
-                            resize: 'both',
+                            resize: this.props.canEdit && 'both',
                             overflow: 'auto',
                             backgroundColor: 'yellow',
                             opacity: .5,
@@ -147,15 +154,16 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
 
                 {this.props.annotations.map((annotation) => {
                     return (<div
+                        onClickCapture={(ev) => { ev.stopPropagation() }}
                         key={`a-${annotation.h}-${annotation.w}`}
-                        draggable={this.state.canEditShapes}
+                        draggable={this.props.canEdit}
                         onDragStart={(ev) => this.onDragStart(ev, 'annotations', annotation, { width: -120 * this.state.zoomRatio, height: 0 })}
                         onMouseUp={(ev) => this.onResized(ev, 'annotations', annotation)}
                         style={{
                             ...this.getShapeDimensions(annotation, -120, 0),
                             position: 'absolute',
-                            resize: 'both',
-                            overflow: 'auto',
+                            resize: this.props.canEdit && 'both',
+                            overflow: 'hidden',
                             backgroundColor: 'blanchedalmond',
                             lineHeight: `${annotation.lineHeight * this.state.zoomRatio}pt`,
                             fontWeight: annotation.fontBold as any,
@@ -163,15 +171,14 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
                             fontFamily: annotation.fontFamily,
                             fontSize: parseFloat(annotation.fontSize.replace('pt', '')) * this.state.zoomRatio,
                             fontStyle: annotation.fontItalic as any,
+                            boxShadow: `${5 * this.state.zoomRatio}px ${5 * this.state.zoomRatio}px ${15 * this.state.zoomRatio}px rgba(0,0,0,.3)`,
                         }}>
                         <div
                             style={{
-                                width: '94%',
-                                height: '92%',
-                                margin: '3%',
+                                margin: `${10 * this.state.zoomRatio}pt`,
                                 userSelect: 'text',
                             }}
-                            contentEditable={this.state.canEditShapes}
+                            contentEditable={this.props.canEdit}
                             suppressContentEditableWarning={true}
                         >
                             {annotation.text}

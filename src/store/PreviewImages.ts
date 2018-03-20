@@ -6,6 +6,7 @@ import { ImageUtil } from '../services/ImageUtils'
 
 export interface PreviewImagesStateType {
     AvailableImages: PreviewImageData[]
+    hasChanges: boolean
     Error: string | null
 }
 
@@ -83,18 +84,19 @@ export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, PreviewI
     }
 }
 
-export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], Error: null }, action) => {
+export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], Error: null, hasChanges: false }, action) => {
     const actionCasted = action as Action & PreviewImagesStateType
     switch (actionCasted.type) {
         case 'SN_DOCVIEWER_PREVIEWS_GET_IMAGES':
             return { ...state, AvailableImages: [], Error: null }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVED':
-            return { ...state, AvailableImages: action.imageData }
+            return { ...state, hasChanges: false, AvailableImages: action.imageData }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVE_ERROR':
             return { ...state, AvailableImages: [], error: action.Error }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_ROTATE':
             return {
                 ...state,
+                hasChanges: true,
                 AvailableImages:
                     state.AvailableImages.map((img) => {
                         const newImg = { ...img }

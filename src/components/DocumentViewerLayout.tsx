@@ -46,7 +46,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
         this.setState({ ...this.state, activePage: index }, () => {
             scroller.scrollTo(`Page-${index}`, {
                 containerId: 'sn-document-viewer-pages',
-                smooth: 'easeOutQuint',
+                smooth: 'easeInOutQuint',
                 duration: 600,
                 offset: -8,
             })
@@ -54,7 +54,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
             if (this.state.showThumbnails) {
                 scroller.scrollTo(`Thumbnail-${index}`, {
                     containerId: 'sn-document-viewer-thumbnails',
-                    smooth: 'easeOutQuint',
+                    smooth: 'easeInOutQuint',
                     duration: 600,
                     offset: -8,
                 })

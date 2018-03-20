@@ -59,7 +59,7 @@ export class RotatePageComponent extends React.Component<componentType<typeof ma
 const rotateComponent = connect(mapStateToProps, mapDispatchToProps)(RotatePageComponent)
 
 export const rotatePageWidget: PageWidget = {
-    shouldCheckAvailable: () => false,
-    isAvailable: async () => true,
+    shouldCheckAvailable: () => true,
+    isAvailable: async (state) => state.sensenetDocumentViewer.documentState.canEdit,
     component: rotateComponent,
 }
