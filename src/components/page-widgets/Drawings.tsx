@@ -119,6 +119,7 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
                 {this.props.redactions.map((redaction) => {
                     return (<div
+                        tabIndex={0}
                         onClickCapture={(ev) => { ev.stopPropagation() }}
                         draggable={this.props.canEdit}
                         onDragStart={(ev) => this.onDragStart(ev, 'redactions', redaction)}
@@ -136,6 +137,7 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
 
                 {this.props.highlights.map((highlight) => {
                     return (<div
+                        tabIndex={0}
                         onClickCapture={(ev) => { ev.stopPropagation() }}
                         draggable={this.props.canEdit}
                         onDragStart={(ev) => this.onDragStart(ev, 'highlights', highlight)}
@@ -148,12 +150,14 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
                             overflow: 'auto',
                             backgroundColor: 'yellow',
                             opacity: .5,
+                            userFocus: 'all',
                         }}>
                     </div>)
                 })}
 
                 {this.props.annotations.map((annotation) => {
                     return (<div
+                        tabIndex={0}
                         onClickCapture={(ev) => { ev.stopPropagation() }}
                         key={`a-${annotation.h}-${annotation.w}`}
                         draggable={this.props.canEdit}
