@@ -124,6 +124,11 @@ export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { 
                         return img
                     }),
             }
+        case 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS':
+            return {
+                ...state,
+                hasChanges: false,
+            }
         default:
             return state
     }

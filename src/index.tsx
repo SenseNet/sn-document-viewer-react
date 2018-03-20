@@ -110,7 +110,7 @@ const myReducer = combineReducers({
     myStuff: (state = {}, action) => {
         if (action.type === 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS') {
             // tslint:disable-next-line:no-console
-            console.log('ALMAAAA')
+            // console.log('Changes saved')
         }
         return state
     },
