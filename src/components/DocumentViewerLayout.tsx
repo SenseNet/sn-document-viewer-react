@@ -70,7 +70,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
 
     }
 
-    private onResize(ev: Event) {
+    private onResize() {
         const showThumbnails = innerWidth > 800
         if (this.state.showThumbnails !== showThumbnails) {
             this.setState({
@@ -82,6 +82,11 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
 
     public componentWillMount() {
         addEventListener('resize', this.onResize.bind(this))
+    }
+
+    public componentDidMount() {
+        this.onResize()
+
     }
 
     public componentWillUnmount() {
