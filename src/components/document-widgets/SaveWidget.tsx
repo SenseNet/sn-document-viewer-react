@@ -37,7 +37,7 @@ export class SaveDocumentComponent extends React.Component<componentType<typeof 
     public render() {
         return (
             <div style={{display: 'inline-block'}}>
-                <IconButton disabled={!this.props.hasChanges} onClick={() => this.save()}>
+                <IconButton disabled={!this.props.hasChanges} onClick={() => this.save()} title="Save changes">
                     <Save />
                 </IconButton>
 
@@ -48,7 +48,7 @@ export class SaveDocumentComponent extends React.Component<componentType<typeof 
 const saveComponent = connect(mapStateToProps, mapDispatchToProps)(SaveDocumentComponent)
 
 export const saveDocumentWidget: DocumentWidget = {
-    shouldCheckAvailable: () => true,
+    shouldCheckAvailable: (oldState, newState) => oldState.sensenetDocumentViewer.documentState.idOrPath !== newState.sensenetDocumentViewer.documentState.idOrPath,
     isAvailable: async (state) => state.sensenetDocumentViewer.documentState.canEdit,
     component: saveComponent,
 }

@@ -5,7 +5,7 @@ import { DocumentData, DocumentWidget } from '../models'
 import { RootReducerType } from '../store/RootReducer'
 
 import { componentType } from '../services/TypeHelpers'
-import {  ViewerStateType } from '../store/Viewer'
+import { ViewerStateType } from '../store/Viewer'
 
 export interface OwnProps {
     documentWidgets: DocumentWidget[]
@@ -41,25 +41,27 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
 
     public async componentWillReceiveProps(newProps: this['props']) {
 
-        this.setState({ ...this.state, isLoading: true, availableWidgets: [] })
-        const availableWidgets: DocumentWidget[] = []
-        try {
-            await Promise.all(this.props.documentWidgets.map(async (action) => {
-                if (!action.shouldCheckAvailable(this.props.store, newProps.store) && this.documentActionAvailabilityCache.has(action)) {
-                    availableWidgets.push(action)
-                } else {
-                    const isAvailable = await action.isAvailable(newProps.store)
-                    if (isAvailable) {
+        if (this.props.documentWidgets.filter((d) => d.shouldCheckAvailable(this.props.store, newProps.store) || !this.documentActionAvailabilityCache.has(d)).length > 0) {
+            this.setState({ ...this.state, isLoading: true, availableWidgets: [] })
+            const availableWidgets: DocumentWidget[] = []
+            try {
+                await Promise.all(this.props.documentWidgets.map(async (action) => {
+                    if (!action.shouldCheckAvailable(this.props.store, newProps.store) && this.documentActionAvailabilityCache.has(action)) {
                         availableWidgets.push(action)
+                    } else {
+                        const isAvailable = await action.isAvailable(newProps.store)
+                        if (isAvailable) {
+                            availableWidgets.push(action)
+                        }
+                        this.documentActionAvailabilityCache.set(action, isAvailable)
                     }
-                    this.documentActionAvailabilityCache.set(action, isAvailable)
-                }
-            }))
-        } catch (error) {
-            /** */
-        }
-        if (!this.props.isLoading) {
-            this.setState({ ...this.state, isLoading: false, availableWidgets })
+                }))
+            } catch (error) {
+                /** */
+            }
+            if (!this.props.isLoading) {
+                this.setState({ ...this.state, isLoading: false, availableWidgets })
+            }
         }
     }
 
@@ -76,9 +78,9 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
                         {this.props.document.documentName}
                     </Typography>
                     <div>
-                    {
-                        documentWidgets
-                    }
+                        {
+                            documentWidgets
+                        }
                     </div>
                 </Toolbar>
             </AppBar>

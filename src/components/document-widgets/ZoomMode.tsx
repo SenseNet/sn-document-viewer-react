@@ -42,18 +42,22 @@ export class ZoomWidgetComponent extends React.Component<componentType<typeof ma
         this.setState({ zoomMenuAnchor: undefined })
     }
 
-    private zoomIn() {
+    private zoomIn(ev: React.MouseEvent<HTMLElement>) {
+        ev.preventDefault()
+        ev.stopPropagation()
         this.props.actions.setZoomLevel(this.props.viewer.customZoomLevel + 1 || 1)
     }
 
-    private zoomOut() {
+    private zoomOut(ev: React.MouseEvent<HTMLElement>) {
+        ev.preventDefault()
+        ev.stopPropagation()
         this.props.actions.setZoomLevel(this.props.viewer.customZoomLevel - 1 || 0)
     }
 
     public render() {
         return (
             <div style={{display: 'inline-block'}}>
-                <IconButton onClick={(ev) => this.openZoomMenu(ev)} >
+                <IconButton onClick={(ev) => this.openZoomMenu(ev)} title="Zoom mode">
                     {(() => {
                         switch (this.props.viewer.zoomMode) {
                             case 'custom':
@@ -92,12 +96,12 @@ export class ZoomWidgetComponent extends React.Component<componentType<typeof ma
                         position="static"
                         activeStep={this.props.viewer.customZoomLevel}
                         nextButton={
-                            <IconButton disabled={this.props.viewer.customZoomLevel === 5} onClick={() => this.zoomIn()}>
+                            <IconButton disabled={this.props.viewer.customZoomLevel === 5} onClickCapture={(ev) => this.zoomIn(ev)}>
                                 <ZoomIn />
                             </IconButton>
                         }
                         backButton={
-                            <IconButton disabled={this.props.viewer.customZoomLevel === 0} onClick={() => this.zoomOut()}>
+                            <IconButton disabled={this.props.viewer.customZoomLevel === 0} onClickCapture={(ev) => this.zoomOut(ev)}>
                                 <ZoomOut />
                             </IconButton>
                         }

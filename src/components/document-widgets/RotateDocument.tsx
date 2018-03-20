@@ -38,10 +38,10 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
     public render() {
         return (
             <div style={{display: 'inline-block'}}>
-                <IconButton onClick={() => this.rotateDocumentLeft()}>
+                <IconButton onClick={() => this.rotateDocumentLeft()} title="Rotate document left">
                     <RotateLeft style={{border: '2px solid', borderRadius: '5px'}} />
                 </IconButton>
-                <IconButton onClick={() => this.rotateDocumentRight()}>
+                <IconButton onClick={() => this.rotateDocumentRight()} title="Rotate document right">
                     <RotateRight style={{border: '2px solid', borderRadius: '5px'}}/>
                 </IconButton>
             </div>)
@@ -51,7 +51,7 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
 const rotateComponent = connect(mapStateToProps, mapDispatchToProps)(RotateDocumentComponent)
 
 export const rotateDocumentWidget: DocumentWidget = {
-    shouldCheckAvailable: () => true,
+    shouldCheckAvailable: (oldState, newState) => oldState.sensenetDocumentViewer.documentState.idOrPath !== newState.sensenetDocumentViewer.documentState.idOrPath,
     isAvailable: async (state) => state.sensenetDocumentViewer.documentState.canEdit,
     component: rotateComponent,
 }

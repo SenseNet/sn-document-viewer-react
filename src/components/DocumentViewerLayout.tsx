@@ -110,6 +110,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                         id="sn-document-viewer-pages"
                         pageWidgets={this.props.pageWidgets}
                         zoomMode={this.props.viewer.zoomMode}
+                        zoomLevel={this.props.viewer.customZoomLevel}
                         onPageClick={(ev, index) => this.scrollTo(ev, index)}
                         elementNamePrefix="Page-"
                         images="preview"
@@ -125,6 +126,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                             style={{ maxWidth: 160 }}
                             id="sn-document-viewer-thumbnails"
                             zoomMode="fit"
+                            zoomLevel={1}
                             onPageClick={(ev, index) => this.scrollTo(ev, index)}
                             elementNamePrefix="Thumbnail-"
                             images="thumbnail"

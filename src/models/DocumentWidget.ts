@@ -1,7 +1,7 @@
-import { RootReducerType } from '../store/RootReducer'
+import { Widget } from './Widget'
 
-export interface DocumentWidget {
-    shouldCheckAvailable: (lastState: RootReducerType, nextState: RootReducerType) => boolean
-    isAvailable: (state: RootReducerType) => Promise<boolean>
+export interface DocumentWidget extends Widget {
+    /** */
     component: { new(props: any): React.Component<any> }
+
 }

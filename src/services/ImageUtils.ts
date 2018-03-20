@@ -12,7 +12,13 @@ export class ImageUtil {
         return normalizedDegrees
     }
 
-    public getImageSize(viewPort: Dimensions, image: Dimensions & { rotation: number }, zoomMode: ZoomMode): Dimensions {
+    public getImageSize(viewPort: Dimensions, image: Dimensions & { rotation: number }, zoomMode: ZoomMode, relativeZoomLevel: number = 1): Dimensions {
+
+        if (zoomMode === 'custom') {
+            relativeZoomLevel = (relativeZoomLevel + 1) / 4
+        } else {
+            relativeZoomLevel = 1
+        }
 
         const boundingBox = this.getRotatedBoundingBoxSize(image, image.rotation)
         const [width, height] = [boundingBox.width, boundingBox.height]
@@ -23,22 +29,22 @@ export class ImageUtil {
         switch (zoomMode) {
             case 'fitWidth':
                 return {
-                    width: width * zoomWidth,
-                    height: height * zoomWidth,
+                    width: width * zoomWidth * relativeZoomLevel,
+                    height: height * zoomWidth * relativeZoomLevel,
                 }
             case 'fitHeight':
                 return {
-                    width: width * zoomHeight,
-                    height: height * zoomHeight,
+                    width: width * zoomHeight * relativeZoomLevel,
+                    height: height * zoomHeight * relativeZoomLevel,
                 }
             case 'fit':
                 const zoom = Math.min(zoomWidth, zoomHeight)
                 return {
-                    width: width * zoom,
-                    height: height * zoom,
+                    width: width * zoom * relativeZoomLevel,
+                    height: height * zoom * relativeZoomLevel,
                 }
             default:
-                return { width, height }
+                return { width: width * relativeZoomLevel, height: height * relativeZoomLevel }
         }
     }
 
@@ -65,8 +71,8 @@ export class ImageUtil {
             const w = image.height
             const angle2 = ((degrees % 180) - 90) * Math.PI / 180
             const dimensions = {
-                width: Math.cos(angle2) * w + Math.sin(angle2) * h,
-                height: Math.sin(angle2) * w + Math.cos(angle2) * h,
+                width: (Math.cos(angle2) * w + Math.sin(angle2) * h),
+                height: (Math.sin(angle2) * w + Math.cos(angle2) * h),
             }
             return {
                 ...dimensions,
