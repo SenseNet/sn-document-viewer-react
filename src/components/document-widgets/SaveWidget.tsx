@@ -30,8 +30,6 @@ export class SaveDocumentComponent extends React.Component<componentType<typeof 
 
     private save() {
         this.props.actions.save(this.props.document, this.props.pages)
-        /** */
-        // bang
     }
 
     public render() {

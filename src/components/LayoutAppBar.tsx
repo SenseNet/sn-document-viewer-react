@@ -73,8 +73,8 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
 
         return (
             <AppBar position="static">
-                <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="title" color="inherit">
+                <Toolbar style={{ display: 'flex', justifyContent: 'space-between'}}>
+                    <Typography variant="title" color="inherit" style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                         {this.props.document.documentName}
                     </Typography>
                     <div>

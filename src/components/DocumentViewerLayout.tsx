@@ -1,8 +1,9 @@
+import { Drawer } from 'material-ui'
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
-import { Dispatch } from 'redux'
 import { Action } from 'redux'
+import { Dispatch } from 'redux'
 import { DocumentData, DocumentWidget, PageWidget, PreviewImageData } from '../models'
 import { ImageUtil } from '../services/ImageUtils'
 import { componentType } from '../services/TypeHelpers'
@@ -75,7 +76,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
         if (this.state.showThumbnails !== showThumbnails) {
             this.setState({
                 ...this.state,
-                showThumbnails: innerWidth > 800,
+                showThumbnails,
             })
         }
     }
@@ -121,20 +122,22 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     />
 
                     {this.state.showThumbnails ?
-                        <PageList
-                            pageWidgets={[]}
-                            style={{ maxWidth: 160 }}
-                            id="sn-document-viewer-thumbnails"
-                            zoomMode="fit"
-                            zoomLevel={1}
-                            onPageClick={(ev, index) => this.scrollTo(ev, index)}
-                            elementNamePrefix="Thumbnail-"
-                            images="thumbnail"
-                            tolerance={0}
-                            padding={8}
-                            activePage={this.state.activePage}
-                            imageUtil={this.imageUtils}
-                        />
+                        <Drawer variant={'permanent'} open anchor="right" PaperProps={{style: {position: 'inherit', height: '100%'}}}>
+                                <PageList
+                                    pageWidgets={[]}
+                                    style={{ minWidth: 160 }}
+                                    id="sn-document-viewer-thumbnails"
+                                    zoomMode="fit"
+                                    zoomLevel={1}
+                                    onPageClick={(ev, index) => this.scrollTo(ev, index)}
+                                    elementNamePrefix="Thumbnail-"
+                                    images="thumbnail"
+                                    tolerance={0}
+                                    padding={8}
+                                    activePage={this.state.activePage}
+                                    imageUtil={this.imageUtils}
+                                />
+                        </Drawer>
                         : null
                     }
 
