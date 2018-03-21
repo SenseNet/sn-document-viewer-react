@@ -14,6 +14,7 @@ import { DocumentViewerLoading } from './DocumentViewerLoading'
 export interface OwnProps {
     settings: DocumentViewerSettings
     documentWidgets: DocumentWidget[]
+    sidebarWidgets: DocumentWidget[]
     pageWidgets: PageWidget[]
 }
 
@@ -45,7 +46,7 @@ class DocumentViewer extends React.Component<componentType<typeof mapStateToProp
             return <DocumentViewerLoading />
 
         }
-        return <DocumentViewerLayout documentWidgets={this.props.documentWidgets} pageWidgets={this.props.pageWidgets} />
+        return <DocumentViewerLayout documentWidgets={this.props.documentWidgets} pageWidgets={this.props.pageWidgets} sidebarWidgets={this.props.sidebarWidgets} />
     }
 }
 

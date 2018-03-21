@@ -40,7 +40,7 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
         )
 
         return (
-            <AppBar position="static">
+            <AppBar position="sticky" style={{position: 'relative', zIndex: 1}}>
                 <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {this.props.document.documentName}

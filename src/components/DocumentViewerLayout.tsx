@@ -1,5 +1,4 @@
-import { Drawer, IconButton } from 'material-ui'
-import { Save } from 'material-ui-icons'
+import { Drawer } from 'material-ui'
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
@@ -12,8 +11,9 @@ import { RootReducerType } from '../store/RootReducer'
 import { setActivePages, ViewerStateType } from '../store/Viewer'
 import LayoutAppBar from './LayoutAppBar'
 import PageList from './PageList'
+import WidgetList from './WidgetList'
 
-const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
+const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         document: state.sensenetDocumentViewer.documentState.document as DocumentData,
         canEdit: state.sensenetDocumentViewer.documentState.canEdit,
@@ -31,6 +31,7 @@ const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => { actions: { 
 
 export interface OwnProps {
     documentWidgets: DocumentWidget[]
+    sidebarWidgets: DocumentWidget[]
     pageWidgets: PageWidget[]
 }
 
@@ -108,13 +109,13 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     height: 'calc(100% - 64px)',
                     width: '100%',
                     overflow: 'hidden',
+                    zIndex: 0,
+                    position: 'relative',
                 }}>
 
-                    {this.props.canEdit ?
+                    {this.props.sidebarWidgets.length ?
                         <Drawer variant="permanent" anchor="left" PaperProps={{ style: { position: 'relative' } }}>
-                            <IconButton onClick={() => ({})}>
-                                <Save />
-                            </IconButton>
+                            <WidgetList widgets={this.props.sidebarWidgets} widgetProps={{}}/>
                         </Drawer> : null}
 
                     <PageList

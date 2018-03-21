@@ -123,7 +123,8 @@ store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Projec
 ReactDOM.render(
     <Provider store={store} >
         <DocumentViewer
-            documentWidgets={[rotateDocumentWidget, zoomModeWidget, saveDocumentWidget]}
+            documentWidgets={[rotateDocumentWidget, zoomModeWidget]}
+            sidebarWidgets={[saveDocumentWidget]}
             settings={settings}
             pageWidgets={[drawingsWidget, rotatePageWidget]}/>
     </Provider>,
