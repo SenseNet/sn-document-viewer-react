@@ -46,7 +46,9 @@ export class SaveDocumentComponent extends React.Component<componentType<typeof 
 const saveComponent = connect(mapStateToProps, mapDispatchToProps)(SaveDocumentComponent)
 
 export const saveDocumentWidget: DocumentWidget = {
-    shouldCheckAvailable: (oldState, newState) => oldState.sensenetDocumentViewer.documentState.idOrPath !== newState.sensenetDocumentViewer.documentState.idOrPath,
-    isAvailable: async (state) => state.sensenetDocumentViewer.documentState.canEdit,
+    shouldCheckAvailable: (oldState, newState) => true,
+    isAvailable: async (state) => {
+        return state.sensenetDocumentViewer.documentState.canEdit
+    },
     component: saveComponent,
 }

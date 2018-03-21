@@ -51,7 +51,7 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
 const rotateComponent = connect(mapStateToProps, mapDispatchToProps)(RotateDocumentComponent)
 
 export const rotateDocumentWidget: DocumentWidget = {
-    shouldCheckAvailable: (oldState, newState) => oldState.sensenetDocumentViewer.documentState.idOrPath !== newState.sensenetDocumentViewer.documentState.idOrPath,
+    shouldCheckAvailable: (oldState, newState) => true,
     isAvailable: async (state) => state.sensenetDocumentViewer.documentState.canEdit,
     component: rotateComponent,
 }

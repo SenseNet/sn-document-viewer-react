@@ -3,17 +3,13 @@ import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { DocumentData, DocumentWidget } from '../models'
 import { RootReducerType } from '../store/RootReducer'
+import WidgetList from './WidgetList'
 
 import { componentType } from '../services/TypeHelpers'
 import { ViewerStateType } from '../store/Viewer'
 
 export interface OwnProps {
     documentWidgets: DocumentWidget[]
-}
-
-export interface AppBarState {
-    isLoading: boolean
-    availableWidgets: DocumentWidget[]
 }
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
@@ -30,39 +26,11 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     },
 })
 
-class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, AppBarState> {
+class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
 
     public state = {
         isLoading: true,
         availableWidgets: [] as DocumentWidget[],
-    }
-
-    private documentActionAvailabilityCache: Map<DocumentWidget, boolean> = new Map()
-
-    public async componentWillReceiveProps(newProps: this['props']) {
-
-        if (this.props.documentWidgets.filter((d) => d.shouldCheckAvailable(this.props.store, newProps.store) || !this.documentActionAvailabilityCache.has(d)).length > 0) {
-            this.setState({ ...this.state, isLoading: true, availableWidgets: [] })
-            const availableWidgets: DocumentWidget[] = []
-            try {
-                await Promise.all(this.props.documentWidgets.map(async (action) => {
-                    if (!action.shouldCheckAvailable(this.props.store, newProps.store) && this.documentActionAvailabilityCache.has(action)) {
-                        availableWidgets.push(action)
-                    } else {
-                        const isAvailable = await action.isAvailable(newProps.store)
-                        if (isAvailable) {
-                            availableWidgets.push(action)
-                        }
-                        this.documentActionAvailabilityCache.set(action, isAvailable)
-                    }
-                }))
-            } catch (error) {
-                /** */
-            }
-            if (!this.props.isLoading) {
-                this.setState({ ...this.state, isLoading: false, availableWidgets })
-            }
-        }
     }
 
     public render() {
@@ -73,15 +41,14 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
 
         return (
             <AppBar position="static">
-                <Toolbar style={{ display: 'flex', justifyContent: 'space-between'}}>
-                    <Typography variant="title" color="inherit" style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {this.props.document.documentName}
                     </Typography>
-                    <div>
-                        {
-                            documentWidgets
-                        }
-                    </div>
+                    <WidgetList widgets={this.props.documentWidgets} widgetProps={{}} />
+                    {
+                        documentWidgets
+                    }
                 </Toolbar>
             </AppBar>
         )

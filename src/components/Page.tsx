@@ -10,6 +10,7 @@ import { componentType } from '../services/TypeHelpers'
 import { previewAvailable } from '../store/PreviewImages'
 import { RootReducerType } from '../store/RootReducer'
 import { ZoomMode } from '../store/Viewer'
+import WidgetList from './WidgetList'
 
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
@@ -46,7 +47,6 @@ export interface OwnProps {
 
 export interface PageState {
     zoomRatio: number
-    availableWidgets: PageWidget[]
     imgSrc: string
     pageStyle: React.CSSProperties
     pageWidth: number
@@ -60,8 +60,6 @@ export interface PageState {
 class Page extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, PageState> {
 
     private pollPreview?: number
-    private canUpdate: boolean = false
-
     public state = this.getStateFromProps(this.props)
 
     private stopPolling() {
@@ -73,12 +71,10 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
 
     public componentDidMount() {
         this.componentWillReceiveProps(this.props)
-        this.canUpdate = true
     }
 
     public componentWillUnmount() {
         this.stopPolling()
-        this.canUpdate = false
     }
 
     private getStateFromProps(props: this['props']): PageState {
@@ -114,7 +110,6 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         return {
             zoomRatio: boundingBox.zoomRatio,
             isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
-            availableWidgets: [],
             imgSrc,
             pageWidth: relativePageSize.width,
             pageHeight: relativePageSize.height,
@@ -125,25 +120,9 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         }
     }
 
-    private pageWidgetAvailabilityCache: Map<PageWidget, boolean> = new Map()
-
-    public async componentWillReceiveProps(nextProps: this['props']) {
-        const availableWidgets: PageWidget[] = []
-        await Promise.all(this.props.pageWidgets.map(async (action) => {
-            if (!action.shouldCheckAvailable(this.props.store, nextProps.store) && this.pageWidgetAvailabilityCache.has(action)) {
-                availableWidgets.push(action)
-            } else {
-                const isAvailable = await action.isAvailable(nextProps.store)
-                if (isAvailable) {
-                    availableWidgets.push(action)
-                }
-                this.pageWidgetAvailabilityCache.set(action, isAvailable)
-            }
-        }))
-        if (this.canUpdate) {
-            const newState = this.getStateFromProps(nextProps)
-            this.setState({ ...newState, availableWidgets })
-        }
+    public componentWillReceiveProps(nextProps: this['props']) {
+        const newState = this.getStateFromProps(nextProps)
+        this.setState({ ...newState })
     }
 
     public getPageStyle(props: this['props'], relativeSize: Dimensions) {
@@ -154,20 +133,15 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
     }
 
     public render() {
-
-        const pageWidgets = this.state.availableWidgets.map((widget, i) =>
-            React.createElement(widget.component, {
-                Index: this.props.page.Index,
-                key: i,
-                viewPort: { width: this.state.pageWidth, height: this.state.pageHeight },
-            }),
-        )
-
         return (
             <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
                 <Paper elevation={this.state.isActive ? 8 : 2}>
                     <div style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden', position: 'relative' }} onClick={(ev) => this.props.onClick(ev)}>
-                        {pageWidgets}
+                        <WidgetList widgets={this.props.pageWidgets} widgetProps={{
+                            Index: this.props.page.Index,
+                            key: this.props.page.Index,
+                            viewPort: { width: this.state.pageWidth, height: this.state.pageHeight },
+                        }} />
                         <span style={{ display: 'flex', justifyContent: 'center' }}>
                             {this.state.imgSrc ?
                                 <img src={this.state.imgSrc}

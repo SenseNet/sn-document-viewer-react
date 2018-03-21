@@ -1,4 +1,5 @@
-import { Drawer } from 'material-ui'
+import { Drawer, IconButton } from 'material-ui'
+import { Save } from 'material-ui-icons'
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
@@ -15,6 +16,7 @@ import PageList from './PageList'
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
         document: state.sensenetDocumentViewer.documentState.document as DocumentData,
+        canEdit: state.sensenetDocumentViewer.documentState.canEdit,
         images: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
         viewer: state.sensenetDocumentViewer.viewer as ViewerStateType,
     }
@@ -107,6 +109,14 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     width: '100%',
                     overflow: 'hidden',
                 }}>
+
+                    {this.props.canEdit ?
+                        <Drawer variant="permanent" anchor="left" PaperProps={{ style: { position: 'relative' } }}>
+                            <IconButton onClick={() => ({})}>
+                                <Save />
+                            </IconButton>
+                        </Drawer> : null}
+
                     <PageList
                         id="sn-document-viewer-pages"
                         pageWidgets={this.props.pageWidgets}
@@ -122,25 +132,24 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     />
 
                     {this.state.showThumbnails ?
-                        <Drawer variant={'permanent'} open anchor="right" PaperProps={{style: {position: 'inherit', height: '100%'}}}>
-                                <PageList
-                                    pageWidgets={[]}
-                                    style={{ minWidth: 160 }}
-                                    id="sn-document-viewer-thumbnails"
-                                    zoomMode="fit"
-                                    zoomLevel={1}
-                                    onPageClick={(ev, index) => this.scrollTo(ev, index)}
-                                    elementNamePrefix="Thumbnail-"
-                                    images="thumbnail"
-                                    tolerance={0}
-                                    padding={8}
-                                    activePage={this.state.activePage}
-                                    imageUtil={this.imageUtils}
-                                />
+                        <Drawer variant={'persistent'} open anchor="right" PaperProps={{ style: { position: 'relative', width: '200px', height: '100%' } }}>
+                            <PageList
+                                pageWidgets={[]}
+                                style={{ minWidth: 160 }}
+                                id="sn-document-viewer-thumbnails"
+                                zoomMode="fit"
+                                zoomLevel={1}
+                                onPageClick={(ev, index) => this.scrollTo(ev, index)}
+                                elementNamePrefix="Thumbnail-"
+                                images="thumbnail"
+                                tolerance={0}
+                                padding={8}
+                                activePage={this.state.activePage}
+                                imageUtil={this.imageUtils}
+                            />
                         </Drawer>
                         : null
                     }
-
                 </div>
             </div >
         )
