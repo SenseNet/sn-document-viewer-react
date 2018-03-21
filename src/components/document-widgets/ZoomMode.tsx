@@ -4,9 +4,8 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { DocumentData, DocumentWidget } from '../../models'
-import { componentType } from '../../services/TypeHelpers'
-import { RootReducerType } from '../../store/RootReducer'
-import { setCustomZoomLevel, setZoomMode, ViewerStateType, ZoomMode } from '../../store/Viewer'
+import { componentType } from '../../services'
+import { RootReducerType, setCustomZoomLevel, setZoomMode, ViewerStateType, ZoomMode } from '../../store'
 
 export const mapStateToProps = (state: RootReducerType) => {
     return {

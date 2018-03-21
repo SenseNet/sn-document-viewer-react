@@ -3,9 +3,8 @@ import { Save } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { DocumentData, DocumentWidget, PreviewImageData } from '../../models'
-import { componentType } from '../../services/TypeHelpers'
-import { saveChanges } from '../../store/Document'
-import { RootReducerType } from '../../store/RootReducer'
+import { componentType } from '../../services'
+import { RootReducerType, saveChanges } from '../../store'
 
 export const mapStateToProps = (state: RootReducerType) => {
     return {

@@ -1,4 +1,4 @@
-import { Dimensions } from '../services/ImageUtils'
+import { Dimensions } from '../services'
 import { Widget } from './Widget'
 
 export interface PageWidget extends Widget {

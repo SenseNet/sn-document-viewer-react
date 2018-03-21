@@ -1,5 +1,5 @@
 import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux'
-import { RootReducerType } from '../store/RootReducer'
+import { RootReducerType } from '../store'
 
 export type componentType<
     TStateToProps extends MapStateToProps<TState, TOwnProps, State>,

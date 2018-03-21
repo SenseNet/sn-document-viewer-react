@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { v1 } from 'uuid'
-import { Widget } from '../models/Widget'
-import { componentType } from '../services/TypeHelpers'
-import { RootReducerType } from '../store/RootReducer'
+import { Widget } from '../models'
+import { componentType } from '../services'
+import { RootReducerType } from '../store'
 
 const mapStateToProps = (state: RootReducerType, ownProps: WidgetListOwnProps<Widget>) => {
     return {
@@ -65,4 +65,6 @@ class WidgetListComponent<T extends Widget> extends React.Component<componentTyp
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WidgetListComponent)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(WidgetListComponent)
+
+export { connectedComponent as WidgetList }

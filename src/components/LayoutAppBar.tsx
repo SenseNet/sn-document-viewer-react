@@ -2,11 +2,10 @@ import { AppBar, Toolbar, Typography } from 'material-ui'
 import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { DocumentData, DocumentWidget } from '../models'
-import { RootReducerType } from '../store/RootReducer'
-import WidgetList from './WidgetList'
+import { RootReducerType, ViewerStateType } from '../store'
+import { WidgetList } from './'
 
-import { componentType } from '../services/TypeHelpers'
-import { ViewerStateType } from '../store/Viewer'
+import { componentType } from '../services'
 
 export interface OwnProps {
     documentWidgets: DocumentWidget[]
@@ -40,7 +39,7 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
         )
 
         return (
-            <AppBar position="sticky" style={{position: 'relative', zIndex: 1}}>
+            <AppBar position="sticky" style={{ position: 'relative', zIndex: 1 }}>
                 <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {this.props.document.documentName}
@@ -55,4 +54,5 @@ class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps,
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LayoutAppBar)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(LayoutAppBar)
+export { connectedComponent as LayoutAppBar }

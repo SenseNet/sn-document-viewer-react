@@ -2,10 +2,8 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { Annotation, Highlight, PageWidget, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
-import { Dimensions } from '../../services/ImageUtils'
-import { componentType } from '../../services/TypeHelpers'
-import { updateShapeData } from '../../store/Document'
-import { RootReducerType } from '../../store/RootReducer'
+import { componentType, Dimensions } from '../../services'
+import { RootReducerType, updateShapeData } from '../../store'
 
 export interface DrawingsWidgetState {
     zoomRatio: number,

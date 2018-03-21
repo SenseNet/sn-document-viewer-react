@@ -3,11 +3,9 @@ import { Grid } from 'material-ui'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { PageWidget, PreviewImageData } from '../models'
-import { ImageUtil } from '../services/ImageUtils'
-import { componentType } from '../services/TypeHelpers'
-import { RootReducerType } from '../store/RootReducer'
-import { ZoomMode } from '../store/Viewer'
-import Page from './Page'
+import { componentType, ImageUtil } from '../services'
+import { RootReducerType, ZoomMode } from '../store'
+import { Page } from './'
 
 const mapStateToProps = (state: RootReducerType) => {
     return {
@@ -210,4 +208,5 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageList)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(PageList)
+export { connectedComponent as PageList }

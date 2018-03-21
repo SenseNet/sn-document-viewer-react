@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import { Reducer } from 'redux'
-import { previewImagesReducer, PreviewImagesStateType } from '../store/PreviewImages'
 import { documentStateReducer, DocumentStateType } from './Document'
+import { previewImagesReducer, PreviewImagesStateType } from './PreviewImages'
 import { viewerStateReducer, ViewerStateType } from './Viewer'
 
 export interface RootReducerType {

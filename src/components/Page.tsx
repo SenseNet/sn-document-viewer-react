@@ -5,12 +5,9 @@ import { connect, Dispatch } from 'react-redux'
 import { Element } from 'react-scroll'
 import { Action } from 'redux'
 import { DocumentData, PageWidget, PreviewImageData } from '../models'
-import { Dimensions, ImageUtil } from '../services/ImageUtils'
-import { componentType } from '../services/TypeHelpers'
-import { previewAvailable } from '../store/PreviewImages'
-import { RootReducerType } from '../store/RootReducer'
-import { ZoomMode } from '../store/Viewer'
-import WidgetList from './WidgetList'
+import { componentType, Dimensions, ImageUtil } from '../services'
+import { previewAvailable, RootReducerType, ZoomMode } from '../store'
+import { WidgetList } from './'
 
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
@@ -157,4 +154,5 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Page)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Page)
+export { connectedComponent as Page }

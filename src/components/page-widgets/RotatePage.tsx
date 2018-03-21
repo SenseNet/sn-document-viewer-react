@@ -4,10 +4,8 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { PageWidget, PreviewImageData } from '../../models'
-import { Dimensions } from '../../services/ImageUtils'
-import { componentType } from '../../services/TypeHelpers'
-import { rotateImages } from '../../store/PreviewImages'
-import { RootReducerType } from '../../store/RootReducer'
+import { componentType, Dimensions } from '../../services'
+import { RootReducerType, rotateImages } from '../../store'
 
 export interface OwnProps {
     Index: number,

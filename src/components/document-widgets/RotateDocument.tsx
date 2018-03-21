@@ -4,9 +4,8 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { DocumentWidget, PreviewImageData } from '../../models'
-import { componentType } from '../../services/TypeHelpers'
-import { rotateImages } from '../../store/PreviewImages'
-import { RootReducerType } from '../../store/RootReducer'
+import { componentType } from '../../services'
+import { RootReducerType, rotateImages } from '../../store'
 
 export const mapStateToProps = (state: RootReducerType) => {
     return {

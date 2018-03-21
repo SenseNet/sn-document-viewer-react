@@ -2,7 +2,7 @@ import { Action, ActionCreator } from 'redux'
 import { Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../models'
-import { ImageUtil } from '../services/ImageUtils'
+import { ImageUtil } from '../services'
 
 export interface PreviewImagesStateType {
     AvailableImages: PreviewImageData[]

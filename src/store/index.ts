@@ -20,3 +20,8 @@ export const configureStore: (settings: DocumentViewerSettings) => Store<RootRed
     const config = getStoreConfig(settings)
     return createStore<RootReducerType>(config.rootReducer, config.preloadedState, config.enhancer)
 }
+
+export * from './Document'
+export * from './PreviewImages'
+export * from './RootReducer'
+export * from './Viewer'

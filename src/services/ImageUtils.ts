@@ -1,4 +1,4 @@
-import { ZoomMode } from '../store/Viewer'
+import { ZoomMode } from '../store'
 
 export interface Dimensions { width: number, height: number }
 

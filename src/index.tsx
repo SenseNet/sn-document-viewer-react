@@ -2,23 +2,18 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { rotateDocumentWidget} from './components/document-widgets/RotateDocument'
-import { saveDocumentWidget } from './components/document-widgets/SaveWidget'
-import { zoomModeWidget } from './components/document-widgets/ZoomMode'
+import { rotateDocumentWidget, saveDocumentWidget, zoomModeWidget} from './components/document-widgets'
 
-import { drawingsWidget} from './components/page-widgets/Drawings'
-import { rotatePageWidget } from './components/page-widgets/RotatePage'
+import { drawingsWidget, rotatePageWidget} from './components/page-widgets'
 
 import { v1 } from 'uuid'
 
-import DocumentViewer from './components/DocumentViewer'
+import { DocumentViewer } from './components/DocumentViewer'
 import { Annotation, DocumentViewerSettings, Highlight, PreviewImageData, Redaction, Shape } from './models'
-import { getStoreConfig } from './store'
-import { pollDocumentData } from './store/Document'
+import { getStoreConfig, pollDocumentData, sensenetDocumentViewerReducer } from './store'
 
 import { createStore } from 'redux'
 import { combineReducers } from 'redux'
-import { sensenetDocumentViewerReducer } from './store/RootReducer'
 import './style'
 
 const SITE_URL = 'http://sensenet7-local/'

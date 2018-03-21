@@ -5,13 +5,9 @@ import { scroller } from 'react-scroll'
 import { Action } from 'redux'
 import { Dispatch } from 'redux'
 import { DocumentData, DocumentWidget, PageWidget, PreviewImageData } from '../models'
-import { ImageUtil } from '../services/ImageUtils'
-import { componentType } from '../services/TypeHelpers'
-import { RootReducerType } from '../store/RootReducer'
-import { setActivePages, ViewerStateType } from '../store/Viewer'
-import LayoutAppBar from './LayoutAppBar'
-import PageList from './PageList'
-import WidgetList from './WidgetList'
+import { componentType, ImageUtil } from '../services'
+import { RootReducerType, setActivePages, ViewerStateType } from '../store'
+import { LayoutAppBar, PageList, WidgetList } from './'
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
@@ -115,7 +111,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
 
                     {this.props.sidebarWidgets.length ?
                         <Drawer variant="permanent" anchor="left" PaperProps={{ style: { position: 'relative' } }}>
-                            <WidgetList widgets={this.props.sidebarWidgets} widgetProps={{}}/>
+                            <WidgetList widgets={this.props.sidebarWidgets} widgetProps={{}} />
                         </Drawer> : null}
 
                     <PageList
@@ -157,4 +153,6 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentViewerLayout)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewerLayout)
+
+export { connectedComponent as DocumentViewerLayout }

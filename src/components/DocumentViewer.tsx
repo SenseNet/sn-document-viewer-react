@@ -2,11 +2,9 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { DocumentViewerSettings, DocumentWidget, PageWidget } from '../models'
-import { componentType } from '../services/TypeHelpers'
-import { RootReducerType } from '../store/RootReducer'
-import { DocumentViewerError } from './DocumentViewerError'
-import DocumentViewerLayout from './DocumentViewerLayout'
-import { DocumentViewerLoading } from './DocumentViewerLoading'
+import { componentType } from '../services'
+import { RootReducerType } from '../store'
+import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from './'
 
 /**
  * Properties for main
@@ -50,4 +48,6 @@ class DocumentViewer extends React.Component<componentType<typeof mapStateToProp
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentViewer)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewer)
+
+export {connectedComponent as DocumentViewer}
