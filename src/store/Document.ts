@@ -12,6 +12,8 @@ export interface DocumentStateType {
     error?: string
     isLoading: boolean
     canEdit: boolean
+    canHideWatermark: boolean,
+    canHideRedaction: boolean,
     hasChanges: boolean
 }
 
@@ -31,10 +33,14 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
             }
         }
         try {
-            const canEdit = await api.canEditDocument(docData.idOrPath)
-            dispatch(documentEditPermissionReceived(canEdit))
+            const [canEdit, canHideRedaction, canHideWatermark ] = await Promise.all([
+                await api.canEditDocument(docData.idOrPath),
+                await api.canHideRedaction(docData.idOrPath),
+                await api.canHideWatermark(docData.idOrPath),
+            ])
+            dispatch(documentPermissionsReceived(canEdit, canHideRedaction, canHideWatermark))
         } catch (error) {
-            dispatch(documentEditPermissionReceived(false))
+            dispatch(documentPermissionsReceived(false, false, false))
         }
         dispatch(documentReceivedAction(docData))
         dispatch<any>(getAvailableImages(docData))
@@ -64,9 +70,12 @@ export const updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: 
     shapeData,
 })
 
-export const documentEditPermissionReceived: (canEdit: boolean) => Action = (canEdit) => ({
-    type: 'SN_DOCVEWER_DOCUMENT_EDIT_PERMISSION_RECEIVED',
+export const documentPermissionsReceived: (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => Action =
+(canEdit, canHideRedaction, canHideWatermark) => ({
+    type: 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED',
     canEdit,
+    canHideRedaction,
+    canHideWatermark,
 })
 
 export const saveChangesRequest: () => Action = () => ({
@@ -103,6 +112,8 @@ export const documentStateReducer: Reducer<DocumentStateType>
         version: undefined,
         canEdit: false,
         hasChanges: false,
+        canHideRedaction: false,
+        canHideWatermark: false,
     }, action) => {
         const actionCasted = action as Action & DocumentStateType
         switch (actionCasted.type) {
@@ -130,10 +141,12 @@ export const documentStateReducer: Reducer<DocumentStateType>
                         },
                     },
                 }
-            case 'SN_DOCVEWER_DOCUMENT_EDIT_PERMISSION_RECEIVED':
+            case 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED':
                 return {
                     ...state,
                     canEdit: actionCasted.canEdit,
+                    canHideRedaction: actionCasted.canHideRedaction,
+                    canHideWatermark: actionCasted.canHideWatermark,
                 }
             case 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS':
                 return {

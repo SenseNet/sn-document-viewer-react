@@ -1,3 +1,6 @@
 export { rotateDocumentWidget } from './RotateDocument'
 export { saveDocumentWidget } from './SaveWidget'
+export { toggleRedactionWidget } from './ToggleRedaction'
+export { toggleShapesWidget } from './ToggleShapes'
+export { toggleWatermarkWidget } from './ToggleWatermark'
 export { zoomModeWidget } from './ZoomMode'

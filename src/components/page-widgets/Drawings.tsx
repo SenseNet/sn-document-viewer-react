@@ -16,7 +16,10 @@ export interface OwnProps {
 
 export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        page: state.sensenetDocumentViewer.previewImages.AvailableImages.find((p) => p.Index === ownProps.Index) as PreviewImageData || {Height: 1},
+        page: state.sensenetDocumentViewer.previewImages.AvailableImages.find((p) => p.Index === ownProps.Index) as PreviewImageData || { Height: 1 },
+        showShapes: state.sensenetDocumentViewer.viewer.showShapes,
+        showRedactions: state.sensenetDocumentViewer.viewer.showRedaction,
+        canHideRedactions: state.sensenetDocumentViewer.documentState.canHideRedaction,
         redactions: state.sensenetDocumentViewer.documentState.document &&
             state.sensenetDocumentViewer.documentState.document.shapes &&
             state.sensenetDocumentViewer.documentState.document.shapes.redactions &&
@@ -110,12 +113,13 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
     }
 
     public render() {
+
         return (
             <div
                 onDrop={(ev) => this.onDrop(ev, this.props.page)}
                 onDragOver={(ev) => ev.preventDefault()}
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
-                {this.props.redactions.map((redaction) => {
+                {this.props.canHideRedactions && this.props.showRedactions && this.props.redactions.map((redaction) => {
                     return (<div
                         tabIndex={0}
                         onClickCapture={(ev) => { ev.stopPropagation() }}
@@ -133,7 +137,7 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
                     </div>)
                 })}
 
-                {this.props.highlights.map((highlight) => {
+                {this.props.showShapes && this.props.highlights.map((highlight) => {
                     return (<div
                         tabIndex={0}
                         onClickCapture={(ev) => { ev.stopPropagation() }}
@@ -153,7 +157,7 @@ export class DrawingsComponent extends React.Component<componentType<typeof mapS
                     </div>)
                 })}
 
-                {this.props.annotations.map((annotation) => {
+                {this.props.showShapes && this.props.annotations.map((annotation) => {
                     return (<div
                         tabIndex={0}
                         onClickCapture={(ev) => { ev.stopPropagation() }}

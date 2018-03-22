@@ -1,6 +1,7 @@
 import { Action, ActionCreator } from 'redux'
 import { Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
+import { RootReducerType } from '.'
 import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../models'
 import { ImageUtil } from '../services'
 
@@ -31,12 +32,13 @@ export const rotateImages: (imageIndexes: number[], amount: number) => Action = 
     amount,
 })
 
-export const getAvailableImages: ActionCreator<ThunkAction<Promise<void>, PreviewImagesStateType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A') => {
+export const getAvailableImages: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A') => {
     return async (dispatch, getState, api) => {
         dispatch(getAvailabelImagesAction(documentData))
         let docData: PreviewImageData[] | undefined
         try {
-            docData = await api.getExistingPreviewImages(documentData, version)
+            const state = getState()
+            docData = await api.getExistingPreviewImages(documentData, version, state.sensenetDocumentViewer.viewer.showWatermark)
         } catch (error) {
             dispatch(availabelImagesReceiveErrorAction(error.message || Error('Error getting preview images')))
             return
@@ -66,12 +68,13 @@ export const previewAvailableErrorAction: (error: string) => Action = (error) =>
     error,
 })
 
-export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, PreviewImagesStateType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A', page: number = 1) => {
+export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A', page: number = 1) => {
     return async (dispatch, getState, api) => {
         dispatch(previewAvailableAction(documentData, version, page))
         let docData: PreviewImageData | undefined
         try {
-            docData = await api.isPreviewAvailable(documentData, version, page)
+            const state = getState()
+            docData = await api.isPreviewAvailable(documentData, version, page, state.sensenetDocumentViewer.viewer.showWatermark)
         } catch (error) {
             dispatch(availabelImagesReceiveErrorAction(error.message || Error(`Error getting preview image for page ${page}`)))
             return

@@ -16,6 +16,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number 
         version: state.sensenetDocumentViewer.documentState.version as string,
         page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {} as PreviewImageData,
         activePages: state.sensenetDocumentViewer.viewer.activePages,
+        showWatermark: state.sensenetDocumentViewer.viewer.showWatermark,
     }
 }
 
@@ -141,7 +142,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                         }} />
                         <span style={{ display: 'flex', justifyContent: 'center' }}>
                             {this.state.imgSrc ?
-                                <img src={this.state.imgSrc}
+                                <img src={`${this.state.imgSrc}${this.props.showWatermark ? '?watermark=true' : '' }`}
                                     style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
                                 /> :
                                 <CircularProgress />

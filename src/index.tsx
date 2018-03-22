@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { rotateDocumentWidget, saveDocumentWidget, zoomModeWidget} from './components/document-widgets'
+import { rotateDocumentWidget, saveDocumentWidget, toggleRedactionWidget, toggleShapesWidget, toggleWatermarkWidget, zoomModeWidget} from './components/document-widgets'
 
 import { drawingsWidget, rotatePageWidget} from './components/page-widgets'
 
@@ -39,12 +39,26 @@ const settings: DocumentViewerSettings = {
                 {highlights: document.shapes.highlights},
                 {annotations: document.shapes.annotations},
             ]),
-            PageAttributes:  JSON.stringify(pages.map((p) => p.Attributes && { pageNum: p.Index, options: p.Attributes }).filter((p) => p !== undefined)),
+            PageAttributes:  JSON.stringify(pages.map((p) => p.Attributes && p.Attributes.degree && { pageNum: p.Index, options: p.Attributes } || undefined).filter((p) => p !== undefined)),
         }
         await fetch(`${SITE_URL}/odata.svc/${document.idOrPath}`, {
             method: 'PATCH',
             body: JSON.stringify(reqBody),
         })
+    },
+    canHideWatermark: async (idOrPath) => {
+        const response = await fetch(`${SITE_URL}/odata.svc/${idOrPath}/HasPermission?permissions=PreviewWithoutWatermark`)
+        if (response.ok) {
+            return await response.text() === 'true'
+        }
+        return false
+    },
+    canHideRedaction: async (idOrPath) => {
+        const response = await fetch(`${SITE_URL}/odata.svc/${idOrPath}/HasPermission?permissions=PreviewWithoutRedaction`)
+        if (response.ok) {
+            return await response.text() === 'true'
+        }
+        return false
     },
     getExistingPreviewImages: async (docData, version) => {
         const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/GetExistingPreviewImages?version=${version}`, { method: 'POST' })
@@ -64,7 +78,7 @@ const settings: DocumentViewerSettings = {
         }
         return allPreviews
     },
-    isPreviewAvailable: async (docData, version, page: number) => {
+    isPreviewAvailable: async (docData, version, page: number, showWatermark) => {
         const response = await fetch(`${SITE_URL}/odata.svc/${docData.idOrPath}/PreviewAvailable?version=${version}`, {
             method: 'POST',
             body: JSON.stringify({ page }),
@@ -118,7 +132,7 @@ store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Projec
 ReactDOM.render(
     <Provider store={store} >
         <DocumentViewer
-            documentWidgets={[rotateDocumentWidget, zoomModeWidget]}
+            documentWidgets={[rotateDocumentWidget, zoomModeWidget, toggleRedactionWidget, toggleWatermarkWidget, toggleShapesWidget]}
             sidebarWidgets={[saveDocumentWidget]}
             settings={settings}
             pageWidgets={[drawingsWidget, rotatePageWidget]}/>
