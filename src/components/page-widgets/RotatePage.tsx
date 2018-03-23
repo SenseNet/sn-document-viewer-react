@@ -41,7 +41,7 @@ export class RotatePageComponent extends React.Component<componentType<typeof ma
 
     public render() {
         return (
-            <div style={{ position: 'absolute', zIndex: 1, top: 0, right: 0 }}>
+            <div style={{ position: 'absolute', zIndex: 1, top: 0, right: 0, filter: 'drop-shadow(0 0 3px white) drop-shadow(0 0 5px white) drop-shadow(0 0 9px white)' }}>
 
                 <IconButton onClick={() => this.rotatePageLeft()}>
                     <RotateLeft />
