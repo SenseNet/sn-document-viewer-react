@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { DocumentViewerSettings, DocumentWidget, PageWidget } from '../models'
 import { componentType } from '../services'
-import { RootReducerType } from '../store'
+import { RootReducerType, pollDocumentData } from '../store'
 import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from './'
 
 /**
@@ -11,6 +11,7 @@ import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from
  */
 export interface OwnProps {
     settings: DocumentViewerSettings
+    documentIdOrPath: string | number
     documentWidgets: DocumentWidget[]
     sidebarWidgets: DocumentWidget[]
     pageWidgets: PageWidget[]
@@ -26,13 +27,31 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
+        pollDocumentData: (idOrPath: number | string) => dispatch<any>(pollDocumentData(idOrPath)) as void,
     },
 })
+
+type docViewerComponentType = componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>
 
 /**
  * Main document viewer component
  */
-class DocumentViewer extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
+class DocumentViewer extends React.Component<docViewerComponentType> {
+    
+    constructor(props: docViewerComponentType) {
+        super(props);
+        if (this.props.documentIdOrPath){
+            this.props.actions.pollDocumentData(this.props.documentIdOrPath)
+        }
+        
+    }
+
+    public componentWillReceiveProps(newProps: this['props']){
+        if (this.props.documentIdOrPath !== newProps.documentIdOrPath){
+            this.props.actions.pollDocumentData(newProps.documentIdOrPath)
+        }
+    }
+    
     /**
      * renders the component
      */

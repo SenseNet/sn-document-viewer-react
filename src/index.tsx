@@ -10,13 +10,13 @@ import { v1 } from 'uuid'
 
 import { DocumentViewer } from './components/DocumentViewer'
 import { Annotation, DocumentViewerSettings, Highlight, PreviewImageData, Redaction, Shape } from './models'
-import { getStoreConfig, pollDocumentData, sensenetDocumentViewerReducer } from './store'
+import { getStoreConfig, sensenetDocumentViewerReducer } from './store'
 
 import { createStore } from 'redux'
 import { combineReducers } from 'redux'
 import './style'
 
-const SITE_URL = 'http://sensenet7-local/'
+const SITE_URL = 'http://snbppc109.sn.hu/'
 
 const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
     shape.guid = v1()
@@ -127,11 +127,10 @@ const myReducer = combineReducers({
 
 const store = createStore(myReducer, storeConfig.preloadedState, storeConfig.enhancer)
 
-store.dispatch<any>(pollDocumentData(`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('Pro ASP.NET MVC 4- 4th Edition.pdf')`))
-
 ReactDOM.render(
     <Provider store={store} >
         <DocumentViewer
+            documentIdOrPath={`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('Pro ASP.NET MVC 4- 4th Edition.pdf')`}
             documentWidgets={[rotateDocumentWidget, zoomModeWidget, toggleRedactionWidget, toggleWatermarkWidget, toggleShapesWidget]}
             sidebarWidgets={[saveDocumentWidget]}
             settings={settings}
