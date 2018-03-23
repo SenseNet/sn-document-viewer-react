@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 
 import { rotateDocumentWidget, saveDocumentWidget, toggleRedactionWidget, toggleShapesWidget, toggleWatermarkWidget, zoomModeWidget} from './components/document-widgets'
 
-import { drawingsWidget, rotatePageWidget} from './components/page-widgets'
+import { shapesWidget, rotatePageWidget} from './components/page-widgets'
 
 import { v1 } from 'uuid'
 
@@ -134,7 +134,7 @@ ReactDOM.render(
             documentWidgets={[rotateDocumentWidget, zoomModeWidget, toggleRedactionWidget, toggleWatermarkWidget, toggleShapesWidget]}
             sidebarWidgets={[saveDocumentWidget]}
             settings={settings}
-            pageWidgets={[drawingsWidget, rotatePageWidget]}/>
+            pageWidgets={[shapesWidget, rotatePageWidget]}/>
     </Provider>,
     document.getElementById('example'),
 )
