@@ -41,7 +41,7 @@ export class ToggleShapesComponent extends React.Component<componentType<typeof 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ToggleShapesComponent)
 
 export const toggleShapesWidget: DocumentWidget = {
-    shouldCheckAvailable: (oldState, newState) => true,
+    shouldCheckAvailable: (oldState, newState) => false,
     isAvailable: async (state) => true,
     component: connectedComponent,
 }

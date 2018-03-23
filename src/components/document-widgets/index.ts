@@ -1,3 +1,4 @@
+export { pagerWidget } from './Pager'
 export { rotateDocumentWidget } from './RotateDocument'
 export { saveDocumentWidget } from './SaveWidget'
 export { toggleRedactionWidget } from './ToggleRedaction'

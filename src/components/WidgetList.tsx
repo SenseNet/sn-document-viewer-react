@@ -21,8 +21,8 @@ export interface WidgetListOwnProps<T extends Widget> {
     widgetProps: InstanceType<T['component']>['props']
 }
 
-class WidgetListComponent<T extends Widget> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, WidgetListOwnProps<T>>, { availableWidgets: T[] }> {
-    public state = { availableWidgets: [] as T[]}
+class WidgetListComponent<T extends Widget> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, WidgetListOwnProps<T>>, { availableWidgets: T[], widgets: any[] }> {
+    public state = { availableWidgets: [] as T[], widgets: []}
     private widgetAvailabilityCache: Map<T, boolean> = new Map()
 
     private canUpdate: boolean = false
@@ -37,29 +37,39 @@ class WidgetListComponent<T extends Widget> extends React.Component<componentTyp
 
     public async componentWillReceiveProps(nextProps: this['props']) {
         const availableWidgets: T[] = []
-        await Promise.all(this.props.widgets.map(async (action) => {
-            if (!action.shouldCheckAvailable(this.props.state, nextProps.state) && this.widgetAvailabilityCache.has(action)) {
-                availableWidgets.push(action)
+        for (const widget of this.props.widgets) {
+            if (!widget.shouldCheckAvailable(this.props.state, nextProps.state) && this.widgetAvailabilityCache.has(widget)) {
+                availableWidgets.push(widget)
             } else {
-                const isAvailable = await action.isAvailable(nextProps.state)
+                const isAvailable = await widget.isAvailable(nextProps.state)
                 if (isAvailable) {
-                    availableWidgets.push(action)
+                    availableWidgets.push(widget)
                 }
-                this.widgetAvailabilityCache.set(action, isAvailable)
+                this.widgetAvailabilityCache.set(widget, isAvailable)
             }
-        }))
-        if (this.canUpdate) {
-            this.setState({ ...this.state, availableWidgets })
+        }
+
+        let changed = false;
+        availableWidgets.forEach((w, i)=>{
+            if (w !== this.state.availableWidgets[i]){
+                changed = true
+            }
+        })
+
+        if (this.canUpdate && changed) {
+            this.setState({ ...this.state, 
+                availableWidgets, widgets:
+                availableWidgets.map((widget, i) =>
+                    React.createElement(widget.component, {...this.props.widgetProps as object, key: v1()
+                }),
+            ) })
         }
     }
 
     public render() {
-        const widgets = this.state.availableWidgets.map((widget, i) =>
-            React.createElement(widget.component, {...this.props.widgetProps as object, key: v1()}),
-        )
         return (
             <div className="widget-list">
-                {widgets}
+                {this.state.widgets}
             </div>)
     }
 

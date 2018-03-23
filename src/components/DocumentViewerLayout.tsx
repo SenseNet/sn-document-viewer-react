@@ -4,17 +4,16 @@ import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action } from 'redux'
 import { Dispatch } from 'redux'
-import { DocumentData, DocumentWidget, PageWidget, PreviewImageData } from '../models'
+import { DocumentWidget, PageWidget } from '../models'
 import { componentType, ImageUtil } from '../services'
-import { RootReducerType, setActivePages, ViewerStateType } from '../store'
+import { RootReducerType, setActivePages } from '../store'
 import { LayoutAppBar, PageList, WidgetList } from './'
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        document: state.sensenetDocumentViewer.documentState.document as DocumentData,
-        canEdit: state.sensenetDocumentViewer.documentState.canEdit,
-        images: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
-        viewer: state.sensenetDocumentViewer.viewer as ViewerStateType,
+        activePages: state.sensenetDocumentViewer.viewer.activePages,
+        zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
+        customZoomLevel: state.sensenetDocumentViewer.viewer.customZoomLevel,
     }
 }
 
@@ -41,8 +40,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
     private imageUtils: ImageUtil = new ImageUtil()
     public viewPort: HTMLDivElement | null = null
 
-    public scrollTo(ev: React.MouseEvent<HTMLElement>, index: number) {
-        ev.persist()
+    public scrollTo(index: number) {
         this.setState({ ...this.state, activePage: index }, () => {
             scroller.scrollTo(`Page-${index}`, {
                 containerId: 'sn-document-viewer-pages',
@@ -59,15 +57,19 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     offset: -8,
                 })
             }
-            if (ev.ctrlKey && this.props.viewer.activePages.indexOf(index) === -1) {
-                this.props.actions.setActivePages([...this.props.viewer.activePages, index])
-            } else {
-                if (this.props.viewer.activePages[0] !== index) {
+
+                if (this.props.activePages[0] !== index) {
                     this.props.actions.setActivePages([index])
                 }
-            }
+
         })
 
+    }
+
+    public componentWillReceiveProps(newProps: this['props']){
+        if (this.props.activePages[0] !== newProps.activePages[0]){
+            this.scrollTo(newProps.activePages[0])
+        }
     }
 
     private onResize() {
@@ -117,9 +119,9 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     <PageList
                         id="sn-document-viewer-pages"
                         pageWidgets={this.props.pageWidgets}
-                        zoomMode={this.props.viewer.zoomMode}
-                        zoomLevel={this.props.viewer.customZoomLevel}
-                        onPageClick={(ev, index) => this.scrollTo(ev, index)}
+                        zoomMode={this.props.zoomMode}
+                        zoomLevel={this.props.customZoomLevel}
+                        onPageClick={(ev, index) => this.scrollTo(index)}
                         elementNamePrefix="Page-"
                         images="preview"
                         tolerance={0}
@@ -136,7 +138,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                                 id="sn-document-viewer-thumbnails"
                                 zoomMode="fit"
                                 zoomLevel={1}
-                                onPageClick={(ev, index) => this.scrollTo(ev, index)}
+                                onPageClick={(ev, index) => this.scrollTo(index)}
                                 elementNamePrefix="Thumbnail-"
                                 images="thumbnail"
                                 tolerance={0}

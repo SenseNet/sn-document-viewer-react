@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { rotateDocumentWidget, saveDocumentWidget, toggleRedactionWidget, toggleShapesWidget, toggleWatermarkWidget, zoomModeWidget} from './components/document-widgets'
+import { rotateDocumentWidget, saveDocumentWidget, toggleRedactionWidget, toggleShapesWidget, toggleWatermarkWidget, zoomModeWidget, pagerWidget} from './components/document-widgets'
 
 import { shapesWidget, rotatePageWidget} from './components/page-widgets'
 
@@ -131,7 +131,7 @@ ReactDOM.render(
     <Provider store={store} >
         <DocumentViewer
             documentIdOrPath={`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('Pro ASP.NET MVC 4- 4th Edition.pdf')`}
-            documentWidgets={[rotateDocumentWidget, zoomModeWidget, toggleRedactionWidget, toggleWatermarkWidget, toggleShapesWidget]}
+            documentWidgets={[rotateDocumentWidget, zoomModeWidget, toggleRedactionWidget, toggleWatermarkWidget, toggleShapesWidget, pagerWidget]}
             sidebarWidgets={[saveDocumentWidget]}
             settings={settings}
             pageWidgets={[shapesWidget, rotatePageWidget]}/>
