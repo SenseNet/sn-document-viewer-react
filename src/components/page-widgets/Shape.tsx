@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Shape, Shapes, Annotation } from '../../models'
 import { componentType, Dimensions } from '../../services'
-import { RootReducerType, updateShapeData } from '../../store'
+import { RootReducerType, updateShapeData, removeShape } from '../../store'
 import { Action } from 'redux';
 
 export interface OwnProps<T extends Shape> {
@@ -21,10 +21,13 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
 const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     actions: {
         updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
+        removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => Action,
     },
 } = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
         updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => dispatch(updateShapeData<K>(shapeType, shapeGuid, shapeData)),
+        removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => dispatch(removeShape<K>(shapeType, shapeGuid)),
+
     },
 })
 
@@ -66,11 +69,27 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }))
     }
 
-    public abstract render(): any
+    public abstract renderShape(): JSX.Element
+
+    private handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>, shape: T){
+        console.log(ev, shape)
+        switch(ev.key){
+            case 'Backspace':
+            case 'Delete':
+                this.props.canEdit && this.props.actions.updateShapeData(this.props.shapeType, this.props.shape.guid, undefined as any)
+                break;
+        }
+    }
+
+    public render(){
+        return (<div onKeyUp={(ev)=>this.handleKeyPress(ev, this.props.shape)}>
+            {this.renderShape()}
+        </div>)
+    }
 }
 
 class ShapeRedaction extends ShapeComponent{
-    public render(){
+    public renderShape(){
         {
             return (<div
                 tabIndex={0}
@@ -94,7 +113,7 @@ class ShapeRedaction extends ShapeComponent{
 const shapeRedaction = connect(mapStateToProps, mapDispatchToProps)(ShapeRedaction)
 
 class ShapeAnnotation extends ShapeComponent<Annotation>{
-    public render(){
+    public renderShape(){
         {
             return (<div
                 tabIndex={0}
@@ -135,7 +154,7 @@ const shapeAnnotation = connect(mapStateToProps, mapDispatchToProps)(ShapeAnnota
 
 
 class ShapeHighlight extends ShapeComponent{
-    public render(){
+    public renderShape(){
         {
             return (<div
                 tabIndex={0}

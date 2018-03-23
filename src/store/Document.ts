@@ -70,6 +70,12 @@ export const updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: 
     shapeData,
 })
 
+export const removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => Action = (shapeType, shapeGuid) => ({
+    type: 'SN_DOCVIEWER_DOCUMENT_REMOVE_SHAPE',
+    shapeType,
+    shapeGuid
+})
+
 export const documentPermissionsReceived: (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => Action =
 (canEdit, canHideRedaction, canHideWatermark) => ({
     type: 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED',
@@ -137,10 +143,23 @@ export const documentStateReducer: Reducer<DocumentStateType>
                                         return action.shapeData
                                     }
                                     return shape
-                                }),
+                                }).filter(shape=>shape !== undefined),
                         },
                     },
                 }
+            case 'SN_DOCVIEWER_DOCUMENT_REMOVE_SHAPE':
+            return {
+                ...state,
+                hasChanges: true,
+                document: state.document && {
+                    ...state.document,
+                    shapes: {
+                        ...state.document && state.document.shapes,
+                        [action.shapeType as keyof Shapes]:
+                            state.document && state.document.shapes && (state.document.shapes[action.shapeType as keyof Shapes] as Shape[]).filter(shape=>shape.guid !== action.shapeGuid),
+                    },
+                },
+            }
             case 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED':
                 return {
                     ...state,
