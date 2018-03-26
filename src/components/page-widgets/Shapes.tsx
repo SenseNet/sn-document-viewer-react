@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
-import { Annotation, Highlight, PreviewImageData, Redaction, Shape, Shapes, PageWidget } from '../../models'
-import { ShapeAnnotation, ShapeHighlight, ShapeRedaction } from './Shape'
+import { Annotation, Highlight, PageWidget, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { RootReducerType, updateShapeData } from '../../store'
+import { ShapeAnnotation, ShapeHighlight, ShapeRedaction } from './Shape'
 
 export interface ShapesWidgetState {
     zoomRatio: number,
@@ -63,8 +63,6 @@ export class ShapesComponent extends React.Component<componentType<typeof mapSta
         }
     }
 
-
-
     private onDrop(ev: React.DragEvent<HTMLElement>, page: PreviewImageData) {
         if (this.props.canEdit) {
 
@@ -87,7 +85,7 @@ export class ShapesComponent extends React.Component<componentType<typeof mapSta
                 onDrop={(ev) => this.onDrop(ev, this.props.page)}
                 onDragOver={(ev) => ev.preventDefault()}
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
-                
+
                 {
                     this.props.canHideRedactions && this.props.showRedactions && this.props.redactions.map((redaction, index) => {
                         return (<ShapeRedaction shapeType="redactions" shape={redaction} canEdit={this.props.canEdit} zoomRatio={this.state.zoomRatio} key={index}/>)

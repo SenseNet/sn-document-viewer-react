@@ -1,3 +1,4 @@
+import _ = require('lodash')
 import { IconButton, TextField } from 'material-ui'
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from 'material-ui-icons'
 import * as React from 'react'
@@ -5,12 +6,11 @@ import { connect, Dispatch } from 'react-redux'
 import { DocumentWidget } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
-import _ = require('lodash');
 
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
-        lastPage: state.sensenetDocumentViewer.documentState.document.pageCount
+        lastPage: state.sensenetDocumentViewer.documentState.document.pageCount,
     }
 }
 
@@ -38,23 +38,23 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
         this.setState({
             currentPage: page,
         })
-        this.setPage();
+        this.setPage()
     }
 
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
                 <IconButton>
-                    <FirstPage onClick={ev=>this.gotoPage(1)} />
+                    <FirstPage onClick={(ev) => this.gotoPage(1)} />
                 </IconButton>
 
                 <IconButton>
-                    <NavigateBefore onClick={ev=>this.gotoPage(this.props.activePages[0] - 1)} />
+                    <NavigateBefore onClick={(ev) => this.gotoPage(this.props.activePages[0] - 1)} />
                 </IconButton>
 
                 <TextField
                     value={this.state.currentPage}
-                    onChange={ev=> this.gotoPage(parseInt(ev.currentTarget.value))}
+                    onChange={(ev) => this.gotoPage(parseInt(ev.currentTarget.value, 10))}
                     type="number"
                     required={true}
                     InputLabelProps={{
@@ -65,11 +65,11 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
                 />
 
                 <IconButton>
-                    <NavigateNext onClick={ev=>this.gotoPage(this.props.activePages[0] + 1)} />
+                    <NavigateNext onClick={(ev) => this.gotoPage(this.props.activePages[0] + 1)} />
                 </IconButton>
 
                 <IconButton>
-                    <LastPage onClick={ev=>this.gotoPage(this.props.lastPage)} />
+                    <LastPage onClick={(ev) => this.gotoPage(this.props.lastPage)} />
                 </IconButton>
             </div>)
     }

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import { Shape, Shapes, Annotation } from '../../models'
+import { Action } from 'redux'
+import { Annotation, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
-import { RootReducerType, updateShapeData, removeShape } from '../../store'
-import { Action } from 'redux';
+import { removeShape, RootReducerType, updateShapeData } from '../../store'
 
 export interface OwnProps<T extends Shape> {
     shape: T
@@ -14,7 +14,7 @@ export interface OwnProps<T extends Shape> {
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
     return {
-        
+
     }
 }
 
@@ -33,7 +33,6 @@ const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
 
 abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>> {
 
-    
     protected getShapeDimensions(shape: Shape, offsetX: number = 0, offsetY: number = 0): React.CSSProperties {
         return {
             top: shape.y * this.props.zoomRatio + offsetY * this.props.zoomRatio,
@@ -71,25 +70,24 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
 
     public abstract renderShape(): JSX.Element
 
-    private handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>, shape: T){
-        console.log(ev, shape)
-        switch(ev.key){
+    private handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>, shape: T) {
+        switch (ev.key) {
             case 'Backspace':
             case 'Delete':
                 this.props.canEdit && this.props.actions.updateShapeData(this.props.shapeType, this.props.shape.guid, undefined as any)
-                break;
+                break
         }
     }
 
-    public render(){
-        return (<div onKeyUp={(ev)=>this.handleKeyPress(ev, this.props.shape)}>
+    public render() {
+        return (<div onKeyUp={(ev) => this.handleKeyPress(ev, this.props.shape)}>
             {this.renderShape()}
         </div>)
     }
 }
 
-class ShapeRedaction extends ShapeComponent{
-    public renderShape(){
+class ShapeRedaction extends ShapeComponent {
+    public renderShape() {
         {
             return (<div
                 tabIndex={0}
@@ -112,8 +110,8 @@ class ShapeRedaction extends ShapeComponent{
 
 const shapeRedaction = connect(mapStateToProps, mapDispatchToProps)(ShapeRedaction)
 
-class ShapeAnnotation extends ShapeComponent<Annotation>{
-    public renderShape(){
+class ShapeAnnotation extends ShapeComponent<Annotation> {
+    public renderShape() {
         {
             return (<div
                 tabIndex={0}
@@ -152,9 +150,8 @@ class ShapeAnnotation extends ShapeComponent<Annotation>{
 
 const shapeAnnotation = connect(mapStateToProps, mapDispatchToProps)(ShapeAnnotation)
 
-
-class ShapeHighlight extends ShapeComponent{
-    public renderShape(){
+class ShapeHighlight extends ShapeComponent {
+    public renderShape() {
         {
             return (<div
                 tabIndex={0}

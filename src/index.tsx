@@ -2,9 +2,9 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { rotateDocumentWidget, saveDocumentWidget, toggleRedactionWidget, toggleShapesWidget, toggleWatermarkWidget, zoomModeWidget, pagerWidget} from './components/document-widgets'
+import { pagerWidget, rotateDocumentWidget, saveDocumentWidget, toggleRedactionWidget, toggleShapesWidget, toggleWatermarkWidget, zoomModeWidget} from './components/document-widgets'
 
-import { shapesWidget, rotatePageWidget} from './components/page-widgets'
+import { rotatePageWidget, shapesWidget} from './components/page-widgets'
 
 import { v1 } from 'uuid'
 

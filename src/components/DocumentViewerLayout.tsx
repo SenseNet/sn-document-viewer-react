@@ -58,7 +58,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                 })
             }
 
-                if (this.props.activePages[0] !== index) {
+            if (this.props.activePages[0] !== index) {
                     this.props.actions.setActivePages([index])
                 }
 
@@ -66,8 +66,8 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
 
     }
 
-    public componentWillReceiveProps(newProps: this['props']){
-        if (this.props.activePages[0] !== newProps.activePages[0]){
+    public componentWillReceiveProps(newProps: this['props']) {
+        if (this.props.activePages[0] !== newProps.activePages[0]) {
             this.scrollTo(newProps.activePages[0])
         }
     }

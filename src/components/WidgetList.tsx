@@ -49,18 +49,18 @@ class WidgetListComponent<T extends Widget> extends React.Component<componentTyp
             }
         }
 
-        let changed = false;
-        availableWidgets.forEach((w, i)=>{
-            if (w !== this.state.availableWidgets[i]){
+        let changed = false
+        availableWidgets.forEach((w, i) => {
+            if (w !== this.state.availableWidgets[i]) {
                 changed = true
             }
         })
 
         if (this.canUpdate && changed) {
-            this.setState({ ...this.state, 
+            this.setState({ ...this.state,
                 availableWidgets, widgets:
                 availableWidgets.map((widget, i) =>
-                    React.createElement(widget.component, {...this.props.widgetProps as object, key: v1()
+                    React.createElement(widget.component, {...this.props.widgetProps as object, key: v1(),
                 }),
             ) })
         }
