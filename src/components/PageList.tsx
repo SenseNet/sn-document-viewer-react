@@ -27,7 +27,6 @@ export interface PageListProps {
     zoomLevel: number
     images: 'preview' | 'thumbnail'
     activePage?: number
-    imageUtil: ImageUtil
     onPageClick: (ev: React.MouseEvent<HTMLElement>, pageIndex: number) => void
     style?: React.CSSProperties
 }
@@ -104,7 +103,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
                 [p.Width, p.Height] = [defaultWidth, defaultHeight]
             }
 
-            const relativeSize = props.imageUtil.getImageSize({
+            const relativeSize = ImageUtil.getImageSize({
                 width: this.state.viewportWidth,
                 height: this.state.viewportHeight,
             }, {
@@ -199,7 +198,6 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
                             zoomMode={this.props.zoomMode}
                             zoomLevel={this.props.zoomLevel}
                             elementNamePrefix={this.props.elementNamePrefix}
-                            imageUtil={this.props.imageUtil}
                             image={this.props.images}
                         />
                     ))}

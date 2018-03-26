@@ -5,7 +5,7 @@ import { scroller } from 'react-scroll'
 import { Action } from 'redux'
 import { Dispatch } from 'redux'
 import { DocumentWidget, PageWidget } from '../models'
-import { componentType, ImageUtil } from '../services'
+import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
 import { LayoutAppBar, PageList, WidgetList } from './'
 
@@ -37,7 +37,6 @@ export interface DocumentLayoutState {
 
 class DocumentViewerLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, DocumentLayoutState> {
     public state = { showThumbnails: true, activePage: 1 }
-    private imageUtils: ImageUtil = new ImageUtil()
     public viewPort: HTMLDivElement | null = null
 
     public scrollTo(index: number) {
@@ -127,7 +126,6 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                         tolerance={0}
                         padding={8}
                         activePage={this.state.activePage}
-                        imageUtil={this.imageUtils}
                     />
 
                     {this.state.showThumbnails ?
@@ -144,7 +142,6 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                                 tolerance={0}
                                 padding={8}
                                 activePage={this.state.activePage}
-                                imageUtil={this.imageUtils}
                             />
                         </Drawer>
                         : null

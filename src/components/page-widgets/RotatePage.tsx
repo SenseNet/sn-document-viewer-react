@@ -5,7 +5,9 @@ import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
 import { PageWidget, PreviewImageData } from '../../models'
 import { componentType, Dimensions } from '../../services'
-import { RootReducerType, rotateImages } from '../../store'
+import { RootReducerType, rotateImages, rotateShapesForPages } from '../../store'
+
+const ROTATION_AMOUNT = 90
 
 export interface OwnProps {
     Index: number,
@@ -22,21 +24,25 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
 export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     actions: {
         rotateImages: (imageIndexes: number[], amount: number) => Action,
+        rotateShapes: (pages: Array<{index: number, size: Dimensions}>, amount: number) => Action,
     },
 } = (dispatch: Dispatch<RootReducerType>) => ({
     actions: {
         rotateImages: (imageIndexes: number[], amount: number) => dispatch(rotateImages(imageIndexes, amount)),
+        rotateShapes: (pages: Array<{index: number, size: Dimensions}>, amount: number) => dispatch(rotateShapesForPages(pages, amount)),
     },
 })
 
 export class RotatePageComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
 
     private rotatePageLeft() {
-        this.props.actions.rotateImages([this.props.page.Index], -90)
+        this.props.actions.rotateImages([this.props.page.Index], -ROTATION_AMOUNT)
+        this.props.actions.rotateShapes([{index: this.props.page.Index, size: { width: this.props.page.Width, height: this.props.page.Height}}], -ROTATION_AMOUNT)
     }
 
     private rotatePageRight() {
-        this.props.actions.rotateImages([this.props.page.Index], 90)
+        this.props.actions.rotateImages([this.props.page.Index], ROTATION_AMOUNT)
+        this.props.actions.rotateShapes([{index: this.props.page.Index, size: { width: this.props.page.Width, height: this.props.page.Height}}], ROTATION_AMOUNT)
     }
 
     public render() {

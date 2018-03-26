@@ -12,7 +12,7 @@ export class ImageUtil {
         return normalizedDegrees
     }
 
-    public getImageSize(viewPort: Dimensions, image: Dimensions & { rotation: number }, zoomMode: ZoomMode, relativeZoomLevel: number = 1): Dimensions {
+    public static getImageSize(viewPort: Dimensions, image: Dimensions & { rotation: number }, zoomMode: ZoomMode, relativeZoomLevel: number = 1): Dimensions {
 
         if (zoomMode === 'custom') {
             relativeZoomLevel = (relativeZoomLevel + 1) / 4
@@ -48,7 +48,7 @@ export class ImageUtil {
         }
     }
 
-    public getRotatedBoundingBoxSize(image: Dimensions, degrees: number): Dimensions & { zoomRatio: number } {
+    public static getRotatedBoundingBoxSize(image: Dimensions, degrees: number): Dimensions & { zoomRatio: number } {
 
         if (ImageUtil.normalizeDegrees(degrees) === 0) {
             return {
@@ -56,71 +56,31 @@ export class ImageUtil {
                 zoomRatio: 1,
             }
         }
+
+        degrees = this.normalizeDegrees(degrees)
+
         if (degrees <= 90 || (degrees >= 180 && degrees <= 270)) {
             const angle1 = (degrees % 180) * Math.PI / 180
             const dimensions = {
-                width: Math.cos(angle1) * image.width + Math.sin(angle1) * image.height,
-                height: Math.sin(angle1) * image.width + Math.cos(angle1) * image.height,
+                width: (Math.cos(angle1) * image.width) + (Math.sin(angle1) * image.height),
+                height: (Math.sin(angle1) * image.width) + (Math.cos(angle1) * image.height),
             }
             return {
                 ...dimensions,
-                zoomRatio: dimensions.height / image.height,
+                zoomRatio: image.width / dimensions.width,
             }
         } else {
             const h = image.width
             const w = image.height
             const angle2 = ((degrees % 180) - 90) * Math.PI / 180
             const dimensions = {
-                width: (Math.cos(angle2) * w + Math.sin(angle2) * h),
-                height: (Math.sin(angle2) * w + Math.cos(angle2) * h),
+                width: (Math.cos(angle2) * w) + (Math.sin(angle2) * h),
+                height: (Math.sin(angle2) * w) + (Math.cos(angle2) * h),
             }
             return {
                 ...dimensions,
-                zoomRatio: dimensions.height / image.height,
+                zoomRatio: image.height / dimensions.width,
             }
         }
     }
-
-    // private rotationCache: Map<string, Map<number, string>> = new Map()
-
-    // public rotateImage(imgElement: HTMLImageElement, canvas: HTMLCanvasElement, degrees: number): string {
-    //     if (!degrees || !imgElement) {
-    //         return ''
-    //     }
-    //     if (this.rotationCache.has(imgElement.src) && (this.rotationCache.get(imgElement.src) as Map<number, string>).has(degrees)) {
-    //         return (this.rotationCache.get(imgElement.src) as Map<number, string>).get(degrees) as string
-    //     }
-
-    //     const [oldMaxWidth, oldMaxHeight] = [imgElement.style.maxWidth, imgElement.style.maxHeight]
-    //     imgElement.style.maxWidth = 'unset'
-    //     imgElement.style.maxHeight = 'unset'
-    //     let base64: string = ''
-    //     const ctx = canvas.getContext('2d')
-
-    //      if (ctx) {
-    //         ctx.fillStyle = 'red'
-    //         ctx.fillRect(0, 0, canvas.width, canvas.height)
-    //         ctx.translate(canvas.width / 2, canvas.height / 2)
-    //         ctx.rotate(rads)
-    //         ctx.drawImage(imgElement, -imgElement.width / 2, -imgElement.height / 2)
-    //         ctx.rotate(-rads)
-    //         ctx.translate(-canvas.width / 2, -canvas.height / 2)
-    //         const dataUrl = canvas.toDataURL()
-    //         if (dataUrl !== 'data:,') {
-    //             base64 = dataUrl
-    //         }
-    //     }
-    //     canvas.width = 0
-    //     canvas.height = 0
-    //     imgElement.style.maxWidth = oldMaxWidth
-    //     imgElement.style.maxHeight = oldMaxHeight
-    //     if (base64) {
-    //         if (!this.rotationCache.has(imgElement.src)) {
-    //             this.rotationCache.set(imgElement.src, new Map())
-    //         }
-    //         (this.rotationCache.get(imgElement.src) as Map<number, string>).set(degrees, base64)
-    //     }
-    //     return base64
-    // }
-
 }

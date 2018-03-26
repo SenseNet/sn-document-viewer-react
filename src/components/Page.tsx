@@ -36,7 +36,6 @@ export interface OwnProps {
     zoomMode: ZoomMode,
     zoomLevel: number,
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
-    imageUtil: ImageUtil,
     actions: {
         previewAvailable: (docData: DocumentData, version: string, page: number) => Action,
     }
@@ -44,7 +43,6 @@ export interface OwnProps {
 }
 
 export interface PageState {
-    zoomRatio: number
     imgSrc: string
     pageStyle: React.CSSProperties
     pageWidth: number
@@ -78,9 +76,8 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
     private getStateFromProps(props: this['props']): PageState {
         const imageRotation = ImageUtil.normalizeDegrees(props.page.Attributes && props.page.Attributes.degree || 0)
         const imageRotationRads = (imageRotation % 180) * Math.PI / 180
-
         const imgSrc = (this.props.image === 'preview' ? props.page.PreviewImageUrl : props.page.ThumbnailImageUrl) || ''
-        const relativePageSize = this.props.imageUtil.getImageSize({
+        const relativePageSize = ImageUtil.getImageSize({
             width: props.viewportWidth,
             height: props.viewportHeight,
         }, {
@@ -89,12 +86,13 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                 rotation: props.page.Attributes && props.page.Attributes.degree || 0,
             }, props.zoomMode, props.zoomLevel)
         const pageStyle = this.getPageStyle(props, relativePageSize)
-        const boundingBox = this.props.imageUtil.getRotatedBoundingBoxSize({
+        const boundingBox = ImageUtil.getRotatedBoundingBoxSize({
             width: props.page.Width,
             height: props.page.Height,
         }, imageRotation)
 
-        const diffWidth = Math.sin(imageRotationRads) * ((pageStyle.width - pageStyle.height) / 2)
+        const maxDiff = (relativePageSize.height - relativePageSize.width) / 2
+        const diffHeight = Math.sin(imageRotationRads) * maxDiff
 
         if (!imgSrc) {
             this.stopPolling()
@@ -106,7 +104,6 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         }
 
         return {
-            zoomRatio: boundingBox.zoomRatio,
             isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
             imgSrc,
             pageWidth: relativePageSize.width,
@@ -114,7 +111,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
             pageStyle,
             imageWidth: `${100 * boundingBox.zoomRatio}%`,
             imageHeight: `${100 * boundingBox.zoomRatio}%`,
-            imageTransform: `translateY(${-diffWidth}px) rotate(${imageRotation}deg)`,
+            imageTransform: `translateY(${diffHeight}px) rotate(${imageRotation}deg)`,
         }
     }
 
@@ -140,7 +137,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                             key: this.props.page.Index,
                             viewPort: { width: this.state.pageWidth, height: this.state.pageHeight },
                         }} />
-                        <span style={{ display: 'flex', justifyContent: 'center' }}>
+                        <span style={{ display: 'flex', justifyContent: 'center'}}>
                             {this.state.imgSrc ?
                                 <img src={`${this.state.imgSrc}${this.props.showWatermark ? '?watermark=true' : '' }`}
                                     style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
