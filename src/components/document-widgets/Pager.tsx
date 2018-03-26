@@ -24,21 +24,24 @@ export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     },
 })
 
-export class PagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, {currentPage: number}> {
+export class PagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { currentPage: number }> {
 
-    public state = { currentPage: this.props.activePages[0]}
+    public state = { currentPage: this.props.activePages[0] }
 
     public setPage = _.debounce(() => {
         this.props.actions.setActivePages([this.state.currentPage])
     }, 200).bind(this)
 
-    private gotoPage(page: number) {
-        page = Math.max(page, 1)
-        page = Math.min(page, this.props.lastPage)
-        this.setState({
-            currentPage: page,
-        })
-        this.setPage()
+    private gotoPage(page: string | number = 1) {
+        let pageInt = typeof page === 'string' ? parseInt(page, 10) : page
+        if (!isNaN(pageInt)) {
+            pageInt = Math.max(pageInt, 1)
+            pageInt = Math.min(pageInt, this.props.lastPage)
+            this.setState({
+                currentPage: pageInt,
+            })
+            this.setPage()
+        }
     }
 
     public render() {
@@ -54,13 +57,13 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
 
                 <TextField
                     value={this.state.currentPage}
-                    onChange={(ev) => this.gotoPage(parseInt(ev.currentTarget.value, 10))}
+                    onChange={(ev) => this.gotoPage(ev.currentTarget.value)}
                     type="number"
                     required={true}
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    inputProps={{min: 1, max: this.props.lastPage}}
+                    inputProps={{ min: 1, max: this.props.lastPage }}
                     margin="dense"
                 />
 
