@@ -38,7 +38,8 @@ class WidgetListComponent<T extends Widget> extends React.Component<componentTyp
     public async componentWillReceiveProps(nextProps: this['props']) {
         const availableWidgets: T[] = []
         for (const widget of this.props.widgets) {
-            if (!widget.shouldCheckAvailable(this.props.state, nextProps.state) && this.widgetAvailabilityCache.has(widget)) {
+            const cached = this.widgetAvailabilityCache.get(widget)
+            if (!widget.shouldCheckAvailable(this.props.state, nextProps.state) && cached) {
                 availableWidgets.push(widget)
             } else {
                 const isAvailable = await widget.isAvailable(nextProps.state)
@@ -49,17 +50,10 @@ class WidgetListComponent<T extends Widget> extends React.Component<componentTyp
             }
         }
 
-        let changed = false
-        availableWidgets.forEach((w, i) => {
-            if (w !== this.state.availableWidgets[i]) {
-                changed = true
-            }
-        })
-
-        if (this.canUpdate && changed) {
+        if (this.canUpdate) {
             this.setState({ ...this.state,
-                availableWidgets, widgets:
-                availableWidgets.map((widget, i) =>
+                availableWidgets,
+                widgets: availableWidgets.map((widget, i) =>
                     React.createElement(widget.component, {...this.props.widgetProps as object, key: v1(),
                 }),
             ) })
