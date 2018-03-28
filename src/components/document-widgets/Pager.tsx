@@ -24,9 +24,14 @@ export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     },
 })
 
-export class PagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { currentPage: number }> {
+export interface PagerState {
+    currentPage: number
+    lastPage: number
+}
 
-    public state = { currentPage: this.props.activePages[0] }
+export class PagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, PagerState> {
+
+    public state = { currentPage: this.props.activePages[0], lastPage: this.props.lastPage }
 
     public setPage = _.debounce(() => {
         this.props.actions.setActivePages([this.state.currentPage])
@@ -47,11 +52,11 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton>
+                <IconButton disabled={this.state.currentPage <= 1}>
                     <FirstPage onClick={(ev) => this.gotoPage(1)} />
                 </IconButton>
 
-                <IconButton>
+                <IconButton disabled={this.state.currentPage <= 1}>
                     <NavigateBefore onClick={(ev) => this.gotoPage(this.props.activePages[0] - 1)} />
                 </IconButton>
 
@@ -67,11 +72,11 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
                     margin="dense"
                 />
 
-                <IconButton>
+                <IconButton disabled={this.state.currentPage >= this.state.lastPage}>
                     <NavigateNext onClick={(ev) => this.gotoPage(this.props.activePages[0] + 1)} />
                 </IconButton>
 
-                <IconButton>
+                <IconButton disabled={this.state.currentPage >= this.state.lastPage}>
                     <LastPage onClick={(ev) => this.gotoPage(this.props.lastPage)} />
                 </IconButton>
             </div>)
