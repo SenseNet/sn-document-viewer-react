@@ -22,7 +22,7 @@ export interface WidgetListOwnProps<T extends Widget> {
 }
 
 class WidgetListComponent<T extends Widget> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, WidgetListOwnProps<T>>, { availableWidgets: T[], widgets: any[] }> {
-    public state = { availableWidgets: [] as T[], widgets: []}
+    public state = { availableWidgets: [] as T[], widgets: [] as T[]}
     private widgetAvailabilityCache: Map<T, boolean> = new Map()
 
     private canUpdate: boolean = false
@@ -50,7 +50,9 @@ class WidgetListComponent<T extends Widget> extends React.Component<componentTyp
             }
         }
 
-        if (this.canUpdate) {
+        const hasChanges = this.state.widgets.map((w) => (w as any).type.WrappedComponent.name).join('') !== availableWidgets.map((w) => (w.component as any).WrappedComponent.name).join('')
+
+        if (this.canUpdate && hasChanges) {
             this.setState({ ...this.state,
                 availableWidgets,
                 widgets: availableWidgets.map((widget, i) =>
