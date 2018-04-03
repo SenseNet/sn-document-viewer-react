@@ -1,3 +1,5 @@
+import { IconButton } from 'material-ui'
+import { Delete } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
@@ -34,9 +36,9 @@ const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     },
 })
 
-abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>, {focused: boolean}> {
+abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>, { focused: boolean }> {
 
-    public state = {focused: false}
+    public state = { focused: false }
     protected getShapeDimensions(shape: Shape, offsetX: number = 0, offsetY: number = 0): React.CSSProperties {
         return {
             top: shape.y * this.props.zoomRatio + offsetY * this.props.zoomRatio,
@@ -74,7 +76,7 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
 
     public abstract renderShape(): JSX.Element
 
-    private handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>, shape: T) {
+    protected handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>, shape: T) {
         switch (ev.key) {
             case 'Backspace':
             case 'Delete':
@@ -83,16 +85,23 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }
     }
 
-    public onFocus() {
-        this.setState({...this.state, focused: true})
+    public onFocus(ev: React.FocusEvent<HTMLDivElement>) {
+        if (!this.state.focused) {
+            this.setState({ ...this.state, focused: true })
+        }
     }
 
-    public onBlur() {
-        this.setState({...this.state, focused: false})
+    public onBlur(ev: React.FocusEvent<HTMLDivElement>) {
+        if (!ev.currentTarget.contains(ev.nativeEvent.relatedTarget as any)) {
+            this.setState({ ...this.state, focused: false })
+        }
     }
 
     public render() {
-        return (<div style={{filter: this.state.focused ? 'contrast(.9) brightness(1.1)' : ''}} onKeyUp={(ev) => this.handleKeyPress(ev, this.props.shape)} onFocus={() => this.onFocus()} onBlur={() => this.onBlur()}>
+        return (<div style={{ filter: this.state.focused ? 'contrast(.9) brightness(1.1)' : '' }}
+            onKeyUp={(ev) => this.handleKeyPress(ev, this.props.shape)}
+            onFocus={(ev) => this.onFocus(ev)}
+            onBlur={(ev) => this.onBlur(ev)}>
             {this.renderShape()}
         </div>)
     }
@@ -123,39 +132,65 @@ class ShapeRedaction extends ShapeComponent {
 const shapeRedaction = connect(mapStateToProps, mapDispatchToProps)(ShapeRedaction)
 
 class ShapeAnnotation extends ShapeComponent<Annotation> {
+
+    protected handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>) {
+        /** */
+    }
+
+    public onBlur(ev: React.FocusEvent<HTMLDivElement>) {
+        super.onBlur(ev)
+        this.props.actions.updateShapeData('annotations', this.props.shape.guid, {
+            ...this.props.shape,
+            text: ev.currentTarget.innerText.trim(),
+        })
+    }
+
+    private handleDeleteShape(ev: React.MouseEvent<any>) {
+        ev.preventDefault()
+        ev.stopPropagation()
+        this.props.actions.removeShape('annotations', this.props.shape.guid)
+    }
+
     public renderShape() {
         {
-            return (<div
-                tabIndex={0}
-                onClickCapture={(ev) => { ev.stopPropagation() }}
-                draggable={this.props.canEdit}
-                onDragStart={(ev) => this.onDragStart(ev, 'annotations', this.props.shape, { width: -120 * this.props.zoomRatio, height: 0 })}
-                onMouseUp={(ev) => this.onResized(ev, 'annotations', this.props.shape)}
-                style={{
-                    ...this.getShapeDimensions(this.props.shape, -120, 0),
-                    position: 'absolute',
-                    resize: this.props.canEdit && 'both',
-                    overflow: 'hidden',
-                    backgroundColor: 'blanchedalmond',
-                    lineHeight: `${this.props.shape.lineHeight * this.props.zoomRatio}pt`,
-                    fontWeight: this.props.shape.fontBold as any,
-                    color: this.props.shape.fontColor,
-                    fontFamily: this.props.shape.fontFamily,
-                    fontSize: parseFloat(this.props.shape.fontSize.replace('pt', '')) * this.props.zoomRatio,
-                    fontStyle: this.props.shape.fontItalic as any,
-                    boxShadow: `${5 * this.props.zoomRatio}px ${5 * this.props.zoomRatio}px ${15 * this.props.zoomRatio}px rgba(0,0,0,.3)`,
-                }}>
-                <div
-                    style={{
-                        margin: `${10 * this.props.zoomRatio}pt`,
-                        userSelect: 'text',
-                    }}
-                    contentEditable={this.props.canEdit}
-                    suppressContentEditableWarning={true}
-                >
-                    {this.props.shape.text}
-                </div>
-            </div>)
+            return (
+                <div>
+                    <div
+                        onKeyUp={(ev) => this.handleKeyPress(ev)}
+                        tabIndex={0}
+                        onClickCapture={(ev) => { ev.stopPropagation() }}
+                        draggable={this.props.canEdit}
+                        onDragStart={(ev) => this.onDragStart(ev, 'annotations', this.props.shape, { width: -120 * this.props.zoomRatio, height: 0 })}
+                        onMouseUp={(ev) => this.onResized(ev, 'annotations', this.props.shape)}
+                        style={{
+                            ...this.getShapeDimensions(this.props.shape, -120, 0),
+                            position: 'absolute',
+                            resize: this.props.canEdit && 'both',
+                            overflow: 'hidden',
+                            backgroundColor: 'blanchedalmond',
+                            lineHeight: `${this.props.shape.lineHeight * this.props.zoomRatio}pt`,
+                            fontWeight: this.props.shape.fontBold as any,
+                            color: this.props.shape.fontColor,
+                            fontFamily: this.props.shape.fontFamily,
+                            fontSize: parseFloat(this.props.shape.fontSize.replace('pt', '')) * this.props.zoomRatio,
+                            fontStyle: this.props.shape.fontItalic as any,
+                            boxShadow: `${5 * this.props.zoomRatio}px ${5 * this.props.zoomRatio}px ${15 * this.props.zoomRatio}px rgba(0,0,0,.3)`,
+                            padding: `${10 * this.props.zoomRatio}pt`,
+                            boxSizing: 'border-box',
+                        }}>
+                        <div style={{ width: '100%', height: '100%', overflow: 'auto' }}
+                            contentEditable={this.props.canEdit ? 'plaintext-only' as any : false}
+                            suppressContentEditableWarning={true}
+                            >{this.props.shape.text}</div>
+                        {this.state.focused ?
+                            <div style={{position: 'relative', top: `-${64 * this.props.zoomRatio}px`}}>
+                                <IconButton >
+                                    <Delete style={{color: 'black'}} scale={this.props.zoomRatio} onMouseUp={(ev) => this.handleDeleteShape(ev)} />
+                                </IconButton>
+                            </div>
+                            : null}
+                    </div>
+                </div>)
         }
     }
 }
@@ -187,4 +222,4 @@ class ShapeHighlight extends ShapeComponent {
 
 const shapeHighlight = connect(mapStateToProps, mapDispatchToProps)(ShapeHighlight)
 
-export {shapeAnnotation as ShapeAnnotation, shapeHighlight as ShapeHighlight, shapeRedaction as ShapeRedaction}
+export { shapeAnnotation as ShapeAnnotation, shapeHighlight as ShapeHighlight, shapeRedaction as ShapeRedaction }
