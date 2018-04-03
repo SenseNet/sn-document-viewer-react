@@ -181,6 +181,19 @@ export const documentStateReducer: Reducer<DocumentStateType>
                     },
                 }
             case 'SN_DOCVIEWER_DOCUMENT_REMOVE_SHAPE':
+            return {
+                ...state,
+                hasChanges: true,
+                document: state.document && {
+                    ...state.document,
+                    shapes: {
+                        ...state.document && state.document.shapes,
+                        [action.shapeType as keyof Shapes]:
+                            state.document && state.document.shapes && (state.document.shapes[action.shapeType as keyof Shapes] as Shape[])
+                                .filter((shape) => shape && shape.guid !== action.shapeGuid),
+                    },
+                },
+            }
             case 'SN_DOCVEWER_DOCUMENT_ROTATE_SHAPES_FOR_PAGES':
                 return {
                     ...state,
