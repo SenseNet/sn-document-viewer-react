@@ -10,14 +10,13 @@ import { RootReducerType, rotateImages, rotateShapesForPages } from '../../store
 const ROTATION_AMOUNT = 90
 
 export interface OwnProps {
-    Index: number,
+    page: PreviewImageData,
     viewPort: Dimensions,
-
+    zoomRatio: number,
 }
 
 export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        page: state.sensenetDocumentViewer.previewImages.AvailableImages.find((p) => p.Index === ownProps.Index) as PreviewImageData,
     }
 }
 

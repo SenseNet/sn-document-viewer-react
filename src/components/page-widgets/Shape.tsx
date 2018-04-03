@@ -5,6 +5,8 @@ import { Annotation, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { removeShape, RootReducerType, updateShapeData } from '../../store'
 
+// tslint:disable:max-classes-per-file
+
 export interface OwnProps<T extends Shape> {
     shape: T
     shapeType: keyof Shapes
@@ -14,7 +16,8 @@ export interface OwnProps<T extends Shape> {
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
     return {
-
+        zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
+        zoomLevel: state.sensenetDocumentViewer.viewer.customZoomLevel,
     }
 }
 
@@ -31,8 +34,9 @@ const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     },
 })
 
-abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>> {
+abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>, {focused: boolean}> {
 
+    public state = {focused: false}
     protected getShapeDimensions(shape: Shape, offsetX: number = 0, offsetY: number = 0): React.CSSProperties {
         return {
             top: shape.y * this.props.zoomRatio + offsetY * this.props.zoomRatio,
@@ -79,8 +83,16 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }
     }
 
+    public onFocus() {
+        this.setState({...this.state, focused: true})
+    }
+
+    public onBlur() {
+        this.setState({...this.state, focused: false})
+    }
+
     public render() {
-        return (<div onKeyUp={(ev) => this.handleKeyPress(ev, this.props.shape)}>
+        return (<div style={{filter: this.state.focused ? 'contrast(.9) brightness(1.1)' : ''}} onKeyUp={(ev) => this.handleKeyPress(ev, this.props.shape)} onFocus={() => this.onFocus()} onBlur={() => this.onBlur()}>
             {this.renderShape()}
         </div>)
     }

@@ -51,6 +51,7 @@ export interface PageState {
     imageWidth: string
     imageHeight: string
     imageTransform: string
+    zoomRatio: number
 }
 
 class Page extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, PageState> {
@@ -108,6 +109,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
             imgSrc,
             pageWidth: relativePageSize.width,
             pageHeight: relativePageSize.height,
+            zoomRatio: relativePageSize.height / props.page.Height,
             pageStyle,
             imageWidth: `${100 * boundingBox.zoomRatio}%`,
             imageHeight: `${100 * boundingBox.zoomRatio}%`,
@@ -133,9 +135,10 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                 <Paper elevation={this.state.isActive ? 8 : 2}>
                     <div style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden', position: 'relative' }} onClick={(ev) => this.props.onClick(ev)}>
                         <WidgetList widgets={this.props.pageWidgets} widgetProps={{
-                            Index: this.props.page.Index,
+                            page: this.props.page,
                             key: this.props.page.Index,
                             viewPort: { width: this.state.pageWidth, height: this.state.pageHeight },
+                            zoomRatio: this.state.zoomRatio,
                         }} />
                         <span style={{ display: 'flex', justifyContent: 'center'}}>
                             {this.state.imgSrc ?
@@ -147,7 +150,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                         </span>
                     </div>
                 </Paper>
-            </Element>
+            </Element >
         )
     }
 }

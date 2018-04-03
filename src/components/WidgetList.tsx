@@ -22,7 +22,7 @@ export interface WidgetListOwnProps<T extends Widget> {
 }
 
 class WidgetListComponent<T extends Widget> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, WidgetListOwnProps<T>>, { availableWidgets: T[], widgets: any[] }> {
-    public state = { availableWidgets: [] as T[], widgets: [] as T[]}
+    public state = { availableWidgets: [] as T[], widgets: [] as Array<InstanceType<T['component']>> }
     private widgetAvailabilityCache: Map<T, boolean> = new Map()
 
     private canUpdate: boolean = false
@@ -52,13 +52,24 @@ class WidgetListComponent<T extends Widget> extends React.Component<componentTyp
 
         const hasChanges = this.state.widgets.map((w) => (w as any).type.WrappedComponent.name).join('') !== availableWidgets.map((w) => (w.component as any).WrappedComponent.name).join('')
 
-        if (this.canUpdate && hasChanges) {
-            this.setState({ ...this.state,
-                availableWidgets,
-                widgets: availableWidgets.map((widget, i) =>
-                    React.createElement(widget.component, {...this.props.widgetProps as object, key: v1(),
-                }),
-            ) })
+        if (this.canUpdate) {
+            if (hasChanges) {
+                this.setState({
+                    ...this.state,
+                    availableWidgets,
+                    widgets: availableWidgets.map((widget, i) =>
+                        React.createElement(widget.component, {
+                            ...this.props.widgetProps as object, key: v1(),
+                        }),
+                    ),
+                })
+            } else if (this.props.widgetProps !== nextProps.widgetProps) {
+                for (const widget of this.state.widgets) {
+                    // tslint:disable-next-line:no-string-literal
+                    widget['props'] = nextProps.widgetProps
+                }
+            }
+
         }
     }
 
