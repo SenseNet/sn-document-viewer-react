@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { DocumentViewerSettings, DocumentWidget, PageWidget } from '../models'
 import { componentType } from '../services'
-import { RootReducerType, pollDocumentData } from '../store'
+import { pollDocumentData, RootReducerType } from '../store'
 import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from './'
 
 /**
@@ -37,21 +37,21 @@ type docViewerComponentType = componentType<typeof mapStateToProps, typeof mapDi
  * Main document viewer component
  */
 class DocumentViewer extends React.Component<docViewerComponentType> {
-    
+
     constructor(props: docViewerComponentType) {
-        super(props);
-        if (this.props.documentIdOrPath){
+        super(props)
+        if (this.props.documentIdOrPath) {
             this.props.actions.pollDocumentData(this.props.documentIdOrPath)
         }
-        
+
     }
 
-    public componentWillReceiveProps(newProps: this['props']){
-        if (this.props.documentIdOrPath !== newProps.documentIdOrPath){
+    public componentWillReceiveProps(newProps: this['props']) {
+        if (this.props.documentIdOrPath !== newProps.documentIdOrPath) {
             this.props.actions.pollDocumentData(newProps.documentIdOrPath)
         }
     }
-    
+
     /**
      * renders the component
      */

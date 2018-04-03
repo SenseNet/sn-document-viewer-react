@@ -81,8 +81,10 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
         }
     }
 
+    private resizeWatcher = this.onResize.bind(this)
+
     public componentWillMount() {
-        addEventListener('resize', this.onResize.bind(this))
+        addEventListener('resize', this.resizeWatcher)
     }
 
     public componentDidMount() {
@@ -91,7 +93,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
     }
 
     public componentWillUnmount() {
-        removeEventListener('resize', this.onResize.bind(this))
+        removeEventListener('resize', this.resizeWatcher)
     }
 
     public render() {
