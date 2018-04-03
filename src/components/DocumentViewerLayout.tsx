@@ -99,11 +99,13 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
             <div style={{
                 width: '100%',
                 height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
             }}>
                 {this.props.children}
                 <div style={{
                     display: 'flex',
-                    height: 'calc(100% - 64px)',
+                    height: '100%',
                     width: '100%',
                     overflow: 'hidden',
                     zIndex: 0,
