@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import { Grid } from 'material-ui'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import { PageWidget, PreviewImageData } from '../models'
+import { PreviewImageData } from '../models'
 import { componentType, ImageUtil } from '../services'
 import { RootReducerType, ZoomMode } from '../store'
 import { Page } from './'
@@ -18,7 +18,6 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 })
 
 export interface PageListProps {
-    pageWidgets: PageWidget[],
     tolerance: number
     padding: number
     id: string
@@ -29,6 +28,7 @@ export interface PageListProps {
     activePage?: number
     onPageClick: (ev: React.MouseEvent<HTMLElement>, pageIndex: number) => void
     style?: React.CSSProperties
+    showWidgets: boolean
 }
 
 export interface PageListState {
@@ -188,7 +188,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
                 }}>
                     {this.state.visiblePages.map((value) => (
                         <Page
-                            pageWidgets={this.props.pageWidgets}
+                            showWidgets={this.props.showWidgets}
                             pollInterval={1000}
                             viewportWidth={this.state.viewportWidth}
                             viewportHeight={this.state.viewportHeight}

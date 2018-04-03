@@ -1,2 +1,2 @@
-export { shapesWidget } from './Shapes'
-export { rotatePageWidget } from './RotatePage'
+export { ShapesWidget } from './Shapes'
+export { RotatePageWidget } from './RotatePage'

@@ -1,19 +1,17 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-
-import { pagerWidget, rotateDocumentWidget, saveDocumentWidget, toggleRedactionWidget, toggleShapesWidget, toggleWatermarkWidget, zoomModeWidget} from './components/document-widgets'
-
-import { rotatePageWidget, shapesWidget} from './components/page-widgets'
-
 import { v1 } from 'uuid'
 
 import { DocumentViewer } from './components/DocumentViewer'
 import { Annotation, DocumentViewerSettings, Highlight, PreviewImageData, Redaction, Shape } from './models'
 import { getStoreConfig, sensenetDocumentViewerReducer } from './store'
 
+import { PagerWidget, RotateDocumentWidget, SaveWidget, ToggleRedactionWidget, ToggleShapesWidget, ToggleWatermarkWidget, ZoomModeWidget } from './components/document-widgets'
+
 import { createStore } from 'redux'
 import { combineReducers } from 'redux'
+import { LayoutAppBar } from './components'
 import './style'
 
 const SITE_URL = 'http://snbppc109.sn.hu/'
@@ -26,7 +24,7 @@ const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
 const settings: DocumentViewerSettings = {
     pollInterval: 2000,
     canEditDocument: async (idOrPath) => {
-        const response = await fetch(`${SITE_URL}/odata.svc/${idOrPath}/HasPermission?permissions=Save`, {method: 'GET'})
+        const response = await fetch(`${SITE_URL}/odata.svc/${idOrPath}/HasPermission?permissions=Save`, { method: 'GET' })
         if (response.ok) {
             return await response.text() === 'true'
         }
@@ -35,11 +33,11 @@ const settings: DocumentViewerSettings = {
     saveChanges: async (document, pages) => {
         const reqBody = {
             Shapes: JSON.stringify([
-                {redactions: document.shapes.redactions},
-                {highlights: document.shapes.highlights},
-                {annotations: document.shapes.annotations},
+                { redactions: document.shapes.redactions },
+                { highlights: document.shapes.highlights },
+                { annotations: document.shapes.annotations },
             ]),
-            PageAttributes:  JSON.stringify(pages.map((p) => p.Attributes && p.Attributes.degree && { pageNum: p.Index, options: p.Attributes } || undefined).filter((p) => p !== undefined)),
+            PageAttributes: JSON.stringify(pages.map((p) => p.Attributes && p.Attributes.degree && { pageNum: p.Index, options: p.Attributes } || undefined).filter((p) => p !== undefined)),
         }
         await fetch(`${SITE_URL}/odata.svc/${document.idOrPath}`, {
             method: 'PATCH',
@@ -131,10 +129,20 @@ ReactDOM.render(
     <Provider store={store} >
         <DocumentViewer
             documentIdOrPath={`/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('Pro ASP.NET MVC 4- 4th Edition.pdf')`}
-            documentWidgets={[rotateDocumentWidget, zoomModeWidget, toggleRedactionWidget, toggleWatermarkWidget, toggleShapesWidget, pagerWidget]}
-            sidebarWidgets={[saveDocumentWidget]}
             settings={settings}
-            pageWidgets={[shapesWidget, rotatePageWidget]}/>
+        >
+            <LayoutAppBar>
+                <div>
+                    <RotateDocumentWidget />
+                    <ZoomModeWidget />
+                    <ToggleRedactionWidget />
+                    <ToggleWatermarkWidget />
+                    <ToggleShapesWidget />
+                    <PagerWidget />
+                    <SaveWidget />
+                </div>
+            </LayoutAppBar>
+        </DocumentViewer>
     </Provider>,
     document.getElementById('example'),
 )

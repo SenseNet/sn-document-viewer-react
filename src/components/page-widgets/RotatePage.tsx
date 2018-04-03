@@ -3,7 +3,7 @@ import { RotateLeft, RotateRight } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
-import { PageWidget, PreviewImageData } from '../../models'
+import { PreviewImageData } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { RootReducerType, rotateImages, rotateShapesForPages } from '../../store'
 
@@ -59,10 +59,6 @@ export class RotatePageComponent extends React.Component<componentType<typeof ma
     }
 }
 
-const rotateComponent = connect(mapStateToProps, mapDispatchToProps)(RotatePageComponent)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(RotatePageComponent)
 
-export const rotatePageWidget: PageWidget = {
-    shouldCheckAvailable: () => true,
-    isAvailable: async (state) => state.sensenetDocumentViewer.documentState.canEdit,
-    component: rotateComponent,
-}
+export {connectedComponent as RotatePageWidget}

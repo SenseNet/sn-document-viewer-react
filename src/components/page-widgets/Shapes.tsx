@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import { Action } from 'redux'
-import { Annotation, Highlight, PageWidget, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
+import { Annotation, Highlight, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { RootReducerType, updateShapeData } from '../../store'
 import { ShapeAnnotation, ShapeHighlight, ShapeRedaction } from './Shape'
@@ -81,10 +81,5 @@ export class ShapesComponent extends React.Component<componentType<typeof mapSta
     }
 }
 
-const shapesComponent = connect(mapStateToProps, mapDispatchToProps)(ShapesComponent)
-
-export const shapesWidget: PageWidget = {
-    shouldCheckAvailable: () => false,
-    isAvailable: async () => true,
-    component: shapesComponent,
-}
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ShapesComponent)
+export { connectedComponent as ShapesWidget }

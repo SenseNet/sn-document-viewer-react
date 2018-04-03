@@ -2,7 +2,6 @@ import { IconButton } from 'material-ui'
 import { Dashboard } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import { DocumentWidget } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, setShapes } from '../../store'
 
@@ -40,8 +39,10 @@ export class ToggleShapesComponent extends React.Component<componentType<typeof 
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ToggleShapesComponent)
 
-export const toggleShapesWidget: DocumentWidget = {
-    shouldCheckAvailable: (oldState, newState) => false,
-    isAvailable: async (state) => true,
-    component: connectedComponent,
-}
+export {connectedComponent as ToggleShapesWidget}
+
+// export const toggleShapesWidget: DocumentWidget = {
+//     shouldCheckAvailable: (oldState, newState) => false,
+//     isAvailable: async (state) => true,
+//     component: connectedComponent,
+// }

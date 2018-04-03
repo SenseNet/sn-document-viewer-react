@@ -2,7 +2,7 @@ import { IconButton } from 'material-ui'
 import { Save } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import { DocumentData, DocumentWidget, PreviewImageData } from '../../models'
+import { DocumentData, PreviewImageData } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, saveChanges } from '../../store'
 
@@ -42,12 +42,6 @@ export class SaveDocumentComponent extends React.Component<componentType<typeof 
     }
 }
 
-const saveComponent = connect(mapStateToProps, mapDispatchToProps)(SaveDocumentComponent)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(SaveDocumentComponent)
 
-export const saveDocumentWidget: DocumentWidget = {
-    shouldCheckAvailable: (oldState, newState) => true,
-    isAvailable: async (state) => {
-        return state.sensenetDocumentViewer.documentState.canEdit
-    },
-    component: saveComponent,
-}
+export { connectedComponent as SaveWidget }

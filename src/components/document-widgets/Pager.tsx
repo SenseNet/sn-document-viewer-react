@@ -3,7 +3,6 @@ import { IconButton, TextField } from 'material-ui'
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import { DocumentWidget } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
 
@@ -85,8 +84,4 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(PagerComponent)
 
-export const pagerWidget: DocumentWidget = {
-    shouldCheckAvailable: (oldState, newState) => false,
-    isAvailable: async (state) => true,
-    component: connectedComponent,
-}
+export {connectedComponent as PagerWidget}

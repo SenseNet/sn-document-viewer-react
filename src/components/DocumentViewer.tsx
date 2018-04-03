@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { DocumentViewerSettings, DocumentWidget, PageWidget } from '../models'
+import { DocumentViewerSettings } from '../models'
 import { componentType } from '../services'
 import { pollDocumentData, RootReducerType } from '../store'
 import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from './'
@@ -12,9 +12,6 @@ import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from
 export interface OwnProps {
     settings: DocumentViewerSettings
     documentIdOrPath: string | number
-    documentWidgets: DocumentWidget[]
-    sidebarWidgets: DocumentWidget[]
-    pageWidgets: PageWidget[]
 }
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
@@ -63,7 +60,7 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
             return <DocumentViewerLoading />
 
         }
-        return <DocumentViewerLayout documentWidgets={this.props.documentWidgets} pageWidgets={this.props.pageWidgets} sidebarWidgets={this.props.sidebarWidgets} />
+        return <DocumentViewerLayout children={this.props.children} />
     }
 }
 

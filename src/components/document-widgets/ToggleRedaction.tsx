@@ -2,7 +2,6 @@ import { IconButton } from 'material-ui'
 import { PictureInPicture } from 'material-ui-icons'
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import { DocumentWidget } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, setRedaction } from '../../store'
 
@@ -42,10 +41,5 @@ export class ToggleRedactionComponent extends React.Component<componentType<type
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ToggleRedactionComponent)
 
-export const toggleRedactionWidget: DocumentWidget = {
-    shouldCheckAvailable: (oldState, newState) => true,
-    isAvailable: async (state) => {
-        return state.sensenetDocumentViewer.documentState.canHideRedaction
-    },
-    component: connectedComponent,
-}
+// todo: disabled to state.sensenetDocumentViewer.documentState.canHideRedaction
+export {connectedComponent as ToggleRedactionWidget}

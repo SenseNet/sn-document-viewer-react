@@ -4,10 +4,11 @@ import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { Element } from 'react-scroll'
 import { Action } from 'redux'
-import { DocumentData, PageWidget, PreviewImageData } from '../models'
+import { DocumentData, PreviewImageData } from '../models'
 import { componentType, Dimensions, ImageUtil } from '../services'
 import { previewAvailable, RootReducerType, ZoomMode } from '../store'
-import { WidgetList } from './'
+
+import { RotatePageWidget, ShapesWidget } from './page-widgets'
 
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
@@ -27,7 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 })
 
 export interface OwnProps {
-    pageWidgets: PageWidget[],
+    showWidgets: boolean,
     pollInterval: number
     imageIndex: number,
     viewportHeight: number,
@@ -134,15 +135,15 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
             <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
                 <Paper elevation={this.state.isActive ? 8 : 2}>
                     <div style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden', position: 'relative' }} onClick={(ev) => this.props.onClick(ev)}>
-                        <WidgetList widgets={this.props.pageWidgets} widgetProps={{
-                            page: this.props.page,
-                            key: this.props.page.Index,
-                            viewPort: { width: this.state.pageWidth, height: this.state.pageHeight },
-                            zoomRatio: this.state.zoomRatio,
-                        }} />
-                        <span style={{ display: 'flex', justifyContent: 'center'}}>
+                        {this.props.showWidgets ?
+                            <div>
+                                <ShapesWidget zoomRatio={this.state.zoomRatio} page={this.props.page} viewPort={{ height: this.state.pageHeight, width: this.state.pageWidth }} />
+                                <RotatePageWidget zoomRatio={this.state.zoomRatio} page={this.props.page} viewPort={{ height: this.state.pageHeight, width: this.state.pageWidth }} />
+                            </div>
+                            : null}
+                        <span style={{ display: 'flex', justifyContent: 'center' }}>
                             {this.state.imgSrc ?
-                                <img src={`${this.state.imgSrc}${this.props.showWatermark ? '?watermark=true' : '' }`}
+                                <img src={`${this.state.imgSrc}${this.props.showWatermark ? '?watermark=true' : ''}`}
                                     style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
                                 /> :
                                 <CircularProgress />

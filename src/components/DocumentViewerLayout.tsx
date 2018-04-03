@@ -4,10 +4,9 @@ import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action } from 'redux'
 import { Dispatch } from 'redux'
-import { DocumentWidget, PageWidget } from '../models'
 import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
-import { LayoutAppBar, PageList, WidgetList } from './'
+import { PageList } from './'
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
@@ -24,10 +23,9 @@ const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => { actions: { 
         },
     })
 
+// tslint:disable-next-line:no-empty-interface
 export interface OwnProps {
-    documentWidgets: DocumentWidget[]
-    sidebarWidgets: DocumentWidget[]
-    pageWidgets: PageWidget[]
+    /** */
 }
 
 export interface DocumentLayoutState {
@@ -58,8 +56,8 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
             }
 
             if (this.props.activePages[0] !== index) {
-                    this.props.actions.setActivePages([index])
-                }
+                this.props.actions.setActivePages([index])
+            }
 
         })
 
@@ -102,7 +100,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                 width: '100%',
                 height: '100%',
             }}>
-                <LayoutAppBar documentWidgets={this.props.documentWidgets} />
+                {this.props.children}
                 <div style={{
                     display: 'flex',
                     height: 'calc(100% - 64px)',
@@ -111,15 +109,9 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     zIndex: 0,
                     position: 'relative',
                 }}>
-
-                    {this.props.sidebarWidgets.length ?
-                        <Drawer variant="permanent" anchor="left" PaperProps={{ style: { position: 'relative' } }}>
-                            <WidgetList widgets={this.props.sidebarWidgets} widgetProps={{}} />
-                        </Drawer> : null}
-
                     <PageList
+                        showWidgets={true}
                         id="sn-document-viewer-pages"
-                        pageWidgets={this.props.pageWidgets}
                         zoomMode={this.props.zoomMode}
                         zoomLevel={this.props.customZoomLevel}
                         onPageClick={(ev, index) => this.scrollTo(index)}
@@ -133,7 +125,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
                     {this.state.showThumbnails ?
                         <Drawer variant={'persistent'} open anchor="right" PaperProps={{ style: { position: 'relative', width: '200px', height: '100%' } }}>
                             <PageList
-                                pageWidgets={[]}
+                                showWidgets={false}
                                 style={{ minWidth: 160 }}
                                 id="sn-document-viewer-thumbnails"
                                 zoomMode="fit"
