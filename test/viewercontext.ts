@@ -1,4 +1,5 @@
 import { Store } from 'react-redux'
+import { v1 } from 'uuid'
 import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../src/models'
 import { configureStore, RootReducerType } from '../src/store'
 
@@ -7,12 +8,54 @@ export const exampleDocumentData: DocumentData = {
     documentType: 'word',
     idOrPath: 'example/id/or/path',
     shapes: {
-        annotations: [],
-        highlights: [],
-        redactions: [],
+        annotations: [
+            {
+                index: 1,
+                h: 100,
+                w: 100,
+                x: 10,
+                y: 10,
+                text: 'Example Text',
+                guid: v1(),
+                lineHeight: 15,
+                fontBold: '34',
+                imageIndex: 1,
+                fontColor: 'red',
+                fontFamily: 'arial',
+                fontItalic: 'false',
+                fontSize: '12pt',
+            },
+        ],
+        highlights: [
+            {
+                guid: v1(),
+                imageIndex: 1,
+                h: 100,
+                w: 100,
+                x: 100,
+                y: 100,
+            },
+        ],
+        redactions: [
+            {
+                guid: v1(),
+                imageIndex: 1,
+                h: 100,
+                w: 100,
+                x: 200,
+                y: 200,
+            },
+        ],
     },
     fileSizekB: 128,
-    pageAttributes: [],
+    pageAttributes: [
+        {
+            options: {
+                degree: 3,
+            },
+            pageNum: 1,
+        },
+    ],
     pageCount: 1,
 }
 
