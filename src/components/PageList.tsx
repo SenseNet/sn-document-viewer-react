@@ -189,7 +189,6 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
                     {this.state.visiblePages.map((value) => (
                         <Page
                             showWidgets={this.props.showWidgets}
-                            pollInterval={1000}
                             viewportWidth={this.state.viewportWidth}
                             viewportHeight={this.state.viewportHeight}
                             key={value.Index}

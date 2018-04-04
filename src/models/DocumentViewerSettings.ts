@@ -6,11 +6,6 @@ import { DocumentData, PreviewImageData } from '.'
 export class DocumentViewerSettings {
 
     /**
-     * The interval between polling the server for pagecount / generated previews.
-     */
-    public pollInterval: number = 250
-
-    /**
      * Callback that will retrieve if the current user has permission for document editing
      */
     public canEditDocument: (idOrPath: string | number ) => Promise<boolean> = async (idOrPath) => (false)

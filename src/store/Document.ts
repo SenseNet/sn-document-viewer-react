@@ -7,6 +7,7 @@ import { getAvailableImages } from './PreviewImages'
 import { RootReducerType } from './RootReducer'
 
 export interface DocumentStateType {
+    pollInterval: number
     idOrPath?: number | string
     version?: string
     document: DocumentData
@@ -26,7 +27,7 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
             try {
                 docData = await api.getDocumentData(idOrPath)
                 if (!docData || docData.pageCount === PreviewState.Loading) {
-                    await new Promise<void>((resolve, reject) => setTimeout(() => { resolve() }, api.pollInterval))
+                    await new Promise<void>((resolve, reject) => setTimeout(() => { resolve() }, getState().pollInterval))
                 }
             } catch (error) {
                 dispatch(documentReceiveErrorAction(error || Error('Error loading document')))
@@ -75,6 +76,11 @@ export const removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: stri
     type: 'SN_DOCVIEWER_DOCUMENT_REMOVE_SHAPE',
     shapeType,
     shapeGuid,
+})
+
+export const setPollInterval: (pollInterval: number) => Action = (pollInterval) => ({
+    type: 'SN_DOCVIEWER_DOCUMENT_SET_POLL_INTERVAL',
+    pollInterval,
 })
 
 export const documentPermissionsReceived: (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => Action =
@@ -153,6 +159,7 @@ export const documentStateReducer: Reducer<DocumentStateType>
         hasChanges: false,
         canHideRedaction: false,
         canHideWatermark: false,
+        pollInterval: 2000,
     }, action) => {
         const actionCasted = action as Action & DocumentStateType
         switch (actionCasted.type) {
@@ -218,6 +225,11 @@ export const documentStateReducer: Reducer<DocumentStateType>
                 return {
                     ...state,
                     hasChanges: false,
+                }
+            case 'SN_DOCVIEWER_DOCUMENT_SET_POLL_INTERVAL':
+                return {
+                    ...state,
+                    pollInterval: action.pollInterval,
                 }
             default:
                 return state

@@ -22,7 +22,6 @@ const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
 }
 
 const settings: DocumentViewerSettings = {
-    pollInterval: 2000,
     canEditDocument: async (idOrPath) => {
         const response = await fetch(`${SITE_URL}/odata.svc/${idOrPath}/HasPermission?permissions=Save`, { method: 'GET' })
         if (response.ok) {

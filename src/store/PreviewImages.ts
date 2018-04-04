@@ -6,6 +6,7 @@ import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../model
 import { ImageUtil } from '../services'
 
 export interface PreviewImagesStateType {
+    pollInterval: number
     AvailableImages: PreviewImageData[]
     hasChanges: boolean
     Error: string | null
@@ -68,6 +69,11 @@ export const previewAvailableErrorAction: (error: string) => Action = (error) =>
     error,
 })
 
+export const setPagePollInterval: (pollInterval: number) => Action = (pollInterval) => ({
+    type: 'SN_DOCVIEWER_DOCUMENT_PAGE_SET_POLL_INTERVAL',
+    pollInterval,
+})
+
 export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A', page: number = 1) => {
     return async (dispatch, getState, api) => {
         dispatch(previewAvailableAction(documentData, version, page))
@@ -87,7 +93,7 @@ export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, RootRedu
     }
 }
 
-export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], Error: null, hasChanges: false }, action) => {
+export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], Error: null, hasChanges: false, pollInterval: 2000 }, action) => {
     const actionCasted = action as Action & PreviewImagesStateType
     switch (actionCasted.type) {
         case 'SN_DOCVIEWER_PREVIEWS_GET_IMAGES':
@@ -132,6 +138,8 @@ export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { 
                 ...state,
                 hasChanges: false,
             }
+        case 'SN_DOCVIEWER_DOCUMENT_PAGE_SET_POLL_INTERVAL':
+            return { ...state, pollInterval: actionCasted.pollInterval }
         default:
             return state
     }

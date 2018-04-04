@@ -18,6 +18,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number 
         page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {} as PreviewImageData,
         activePages: state.sensenetDocumentViewer.viewer.activePages,
         showWatermark: state.sensenetDocumentViewer.viewer.showWatermark,
+        pollInterval: state.sensenetDocumentViewer.previewImages.pollInterval,
     }
 }
 
@@ -29,7 +30,6 @@ const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
 
 export interface OwnProps {
     showWidgets: boolean,
-    pollInterval: number
     imageIndex: number,
     viewportHeight: number,
     viewportWidth: number,
