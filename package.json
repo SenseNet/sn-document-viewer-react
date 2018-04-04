@@ -73,6 +73,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.104",
     "@types/react-fontawesome": "^1.6.2",
+    "@types/react-test-renderer": "^16.0.1",
     "@types/uuid": "^3.4.3",
     "lodash.debounce": "^4.0.8",
     "material-ui": "^1.0.0-beta.34",
@@ -82,6 +83,7 @@
     "react-fontawesome": "^1.6.1",
     "react-redux": "^5.0.7",
     "react-scroll": "^1.7.7",
+    "react-test-renderer": "^16.3.1",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",

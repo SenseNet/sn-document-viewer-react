@@ -8,7 +8,7 @@ import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
 import { PageList } from './'
 
-const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootReducerType) => {
     return {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
@@ -23,17 +23,12 @@ const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => { actions: { 
         },
     })
 
-// tslint:disable-next-line:no-empty-interface
-export interface OwnProps {
-    /** */
-}
-
 export interface DocumentLayoutState {
     showThumbnails: boolean
     activePage?: number
 }
 
-class DocumentViewerLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, DocumentLayoutState> {
+class DocumentViewerLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
     public state = { showThumbnails: true, activePage: 1 }
     public viewPort: HTMLDivElement | null = null
 

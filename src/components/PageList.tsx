@@ -70,7 +70,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
     public componentDidMount() {
         this.setupViewPort()
         this.onScroll = _.debounce(() => this.setupVisiblePages(this.props), 10).bind(this)
-        this.viewPort.addEventListener('scroll', this.onScroll)
+        this.viewPort && this.viewPort.addEventListener('scroll', this.onScroll)
         this.onScroll()
     }
 
