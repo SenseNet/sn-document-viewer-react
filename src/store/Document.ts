@@ -150,7 +150,13 @@ export const documentStateReducer: Reducer<DocumentStateType>
                 highlights: [],
                 redactions: [],
             },
-        } as any as DocumentData,
+            documentName: '',
+            documentType: '',
+            fileSizekB: 0,
+            idOrPath: 0,
+            pageAttributes: [],
+            pageCount: 0,
+        } as DocumentData,
         error: undefined,
         isLoading: true,
         idOrPath: undefined,
@@ -164,11 +170,11 @@ export const documentStateReducer: Reducer<DocumentStateType>
         const actionCasted = action as Action & DocumentStateType
         switch (actionCasted.type) {
             case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
-                return { ...state, document: {} as DocumentData, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath, version: actionCasted.version }
+                return { ...state, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath, version: actionCasted.version }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
                 return { ...state, document: actionCasted.document, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
-                return { ...state, document: actionCasted.document, error: actionCasted.error, isLoading: false }
+                return { ...state, error: actionCasted.error, isLoading: false }
             case 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE':
                 return {
                     ...state,
