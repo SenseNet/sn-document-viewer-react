@@ -36,7 +36,7 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
         this.props.actions.setActivePages([this.state.currentPage])
     }, 200).bind(this)
 
-    private gotoPage(page: string | number = 1) {
+    private gotoPage(page: string | number) {
         let pageInt = typeof page === 'string' ? parseInt(page, 10) : page
         if (!isNaN(pageInt)) {
             pageInt = Math.max(pageInt, 1)
