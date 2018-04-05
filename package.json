@@ -36,6 +36,8 @@
   "nyc": {
     "exclude": [
       "temp/test/**/*.*",
+      "temp/**/index.js",
+      "temp/src/style.js",
       "temp/src/**/I*.js",
       "temp/src/models/*.js",
       "**/index.js"
