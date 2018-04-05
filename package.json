@@ -37,6 +37,7 @@
     "exclude": [
       "temp/test/**/*.*",
       "temp/src/**/I*.js",
+      "temp/src/models/*.js",
       "**/index.js"
     ],
     "include": "temp/src/**/*.*",
