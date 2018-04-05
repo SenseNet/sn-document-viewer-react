@@ -1,9 +1,4 @@
-import { documentViewerTests } from './DocumentViewerTests'
-/**
- * Component tests
- */
-export const componentTests = describe('Components', () => {
-    return {
-        documentViewerTests,
-    }
-})
+export * from './DocumentViewerErrorTests'
+export * from './DocumentViewerLayoutTests'
+export * from './DocumentViewerTests'
+export * from './LayoutAppBarTests'

@@ -28,7 +28,7 @@ export interface DocumentLayoutState {
     activePage?: number
 }
 
-class DocumentViewerLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
+class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
     public state = { showThumbnails: true, activePage: 1 }
     public viewPort: HTMLDivElement | null = null
 
@@ -143,6 +143,6 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
     }
 }
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewerLayout)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewerLayoutComponent)
 
 export { connectedComponent as DocumentViewerLayout }

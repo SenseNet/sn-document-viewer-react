@@ -2,16 +2,13 @@ import { AppBar, Toolbar, Typography } from 'material-ui'
 import React = require('react')
 import { connect, Dispatch } from 'react-redux'
 import { DocumentData } from '../models'
-import { RootReducerType, ViewerStateType } from '../store'
+import { RootReducerType } from '../store'
 
 import { componentType } from '../services'
 
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
-        store: state,
-        isLoading: state.sensenetDocumentViewer.documentState.isLoading,
         document: state.sensenetDocumentViewer.documentState.document as DocumentData,
-        viewer: state.sensenetDocumentViewer.viewer as ViewerStateType,
     }
 }
 

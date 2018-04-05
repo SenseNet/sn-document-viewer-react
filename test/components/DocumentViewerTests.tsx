@@ -34,7 +34,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
             },
         }, (ctx) => {
             c = renderer.create(
-                <Provider store={ctx.store} >
+                <Provider store={ctx.store}>
                     <DocumentViewer settings={ctx.settings} documentIdOrPath={exampleIdOrPath} />
                 </Provider>)
         })
@@ -62,7 +62,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
                 </Provider>)
             setTimeout(() => {
                 const component = c.root.findByType(DocumentViewer).children[0] as renderer.ReactTestInstance
-                component.instance.componentWillReceiveProps({...component.instance.props, documentIdOrPath: 123456 })
+                component.instance.componentWillReceiveProps({ ...component.instance.props, documentIdOrPath: 123456 })
             }, 100)
         })
     })

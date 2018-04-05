@@ -4,7 +4,9 @@ import { Dispatch } from 'redux'
 import { DocumentViewerSettings } from '../models'
 import { componentType } from '../services'
 import { pollDocumentData, RootReducerType } from '../store'
-import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from './'
+import { DocumentViewerError } from './DocumentViewerError'
+import { DocumentViewerLayout } from './DocumentViewerLayout'
+import { DocumentViewerLoading } from './DocumentViewerLoading'
 
 /**
  * Properties for main
@@ -60,10 +62,12 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
             return <DocumentViewerLoading />
 
         }
-        return <DocumentViewerLayout children={this.props.children} />
+        return (<DocumentViewerLayout>
+            {this.props.children}
+        </DocumentViewerLayout>)
     }
 }
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewer)
 
-export {connectedComponent as DocumentViewer}
+export { connectedComponent as DocumentViewer }
