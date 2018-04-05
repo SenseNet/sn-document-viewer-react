@@ -18,7 +18,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         isLoading: state.sensenetDocumentViewer.documentState.isLoading,
         idOrPath: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.idOrPath,
-        error: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.error,
+        error: state.sensenetDocumentViewer.documentState.error,
     }
 }
 
