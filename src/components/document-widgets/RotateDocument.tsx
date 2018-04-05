@@ -37,11 +37,11 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
     public render() {
         return (
             <div style={{display: 'inline-block'}}>
-                <IconButton onClick={() => this.rotateDocumentLeft()} title="Rotate document left">
-                    <RotateLeft style={{border: '2px solid', borderRadius: '5px'}} />
+                <IconButton title="Rotate document left">
+                    <RotateLeft onClick={() => this.rotateDocumentLeft()} style={{border: '2px solid', borderRadius: '5px'}} />
                 </IconButton>
-                <IconButton onClick={() => this.rotateDocumentRight()} title="Rotate document right">
-                    <RotateRight style={{border: '2px solid', borderRadius: '5px'}}/>
+                <IconButton title="Rotate document right">
+                    <RotateRight onClick={() => this.rotateDocumentRight()} style={{border: '2px solid', borderRadius: '5px'}}/>
                 </IconButton>
             </div>)
     }
