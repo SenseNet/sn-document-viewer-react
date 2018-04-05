@@ -96,3 +96,15 @@ export const useTestContextWithSettings = (additionalSettings: Partial<DocumentV
 
 export const useTestContext: (callback: (context: DocViewerTestContext) => void) => void
     = (callback) => useTestContextWithSettings({}, callback)
+
+export const useTestContextWithSettingsAsync = async (additionalSettings: Partial<DocumentViewerSettings>, callback: (context: DocViewerTestContext) => Promise<void>) => {
+    const settings = {
+        ...defaultSettings,
+        ...additionalSettings,
+    }
+    const store = configureStore(settings)
+    await callback({ store, settings })
+}
+
+export const useTestContextAsync: (callback: (context: DocViewerTestContext) => Promise<void>) => Promise<void>
+    = (callback) => useTestContextWithSettingsAsync({}, callback)
