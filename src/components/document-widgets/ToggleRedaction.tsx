@@ -32,8 +32,8 @@ export class ToggleRedactionComponent extends React.Component<componentType<type
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton onClick={() => this.toggleRedaction()} title="Toggle redaction" style={{ opacity: this.props.showRedaction ? 1 : 0.5 }}>
-                    <PictureInPicture />
+                <IconButton title="Toggle redaction" style={{ opacity: this.props.showRedaction ? 1 : 0.5 }}>
+                    <PictureInPicture onClick={() => this.toggleRedaction()} />
                 </IconButton>
             </div>)
     }

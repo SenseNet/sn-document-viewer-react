@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 
+import { expect } from 'chai'
+import { Dashboard } from 'material-ui-icons'
 import * as renderer from 'react-test-renderer'
 import { ToggleShapesWidget } from '../../../src/components/document-widgets/ToggleShapes'
 import { documentReceivedAction } from '../../../src/store/Document'
@@ -23,6 +25,24 @@ export const toggleShapesWidgetTests = describe('ToggleShapesWidget component', 
                     <ToggleShapesWidget>
                     </ToggleShapesWidget>
                 </Provider>)
+        })
+    })
+
+    it('Click on toggle should toggle the shapes', () => {
+        useTestContext((ctx) => {
+            const originalValue = ctx.store.getState().sensenetDocumentViewer.viewer.showShapes
+            ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
+            c = renderer.create(
+                <Provider store={ctx.store}>
+                    <ToggleShapesWidget>
+                    </ToggleShapesWidget>
+                </Provider>)
+            const button = c.root.findByType(Dashboard)
+            button.props.onClick()
+            expect(ctx.store.getState().sensenetDocumentViewer.viewer.showShapes).to.not.eq(originalValue)
+
+            button.props.onClick()
+            expect(ctx.store.getState().sensenetDocumentViewer.viewer.showShapes).to.be.eq(originalValue)
         })
     })
 })

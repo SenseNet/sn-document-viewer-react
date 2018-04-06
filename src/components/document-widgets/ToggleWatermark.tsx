@@ -31,8 +31,8 @@ export class ToggleWatermarkComponent extends React.Component<componentType<type
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton onClick={() => this.toggleWatermark()} title="Toggle watermark" style={{ opacity: this.props.showWatermark ? 1 : 0.5 }}>
-                    <BrandingWatermark />
+                <IconButton title="Toggle watermark" style={{ opacity: this.props.showWatermark ? 1 : 0.5 }}>
+                    <BrandingWatermark onClick={() => this.toggleWatermark()} />
                 </IconButton>
             </div>)
     }

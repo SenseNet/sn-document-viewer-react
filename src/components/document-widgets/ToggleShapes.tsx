@@ -30,8 +30,8 @@ export class ToggleShapesComponent extends React.Component<componentType<typeof 
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton onClick={() => this.toggleRedaction()} title="Toggle redaction" style={{ opacity: this.props.showShapes ? 1 : 0.5 }}>
-                    <Dashboard />
+                <IconButton title="Toggle redaction" style={{ opacity: this.props.showShapes ? 1 : 0.5 }}>
+                    <Dashboard onClick={() => this.toggleRedaction()}  />
                 </IconButton>
             </div>)
     }
