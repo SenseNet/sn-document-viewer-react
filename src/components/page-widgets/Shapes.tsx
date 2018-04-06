@@ -17,9 +17,9 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
         showShapes: state.sensenetDocumentViewer.viewer.showShapes,
         showRedactions: state.sensenetDocumentViewer.viewer.showRedaction,
         canHideRedactions: state.sensenetDocumentViewer.documentState.canHideRedaction,
-        redactions: state.sensenetDocumentViewer.documentState.document.shapes.redactions.filter((r) => r.imageIndex === ownProps.page.Index) || [] as Redaction[],
-        highlights: state.sensenetDocumentViewer.documentState.document.shapes.highlights.filter((r) => r.imageIndex === ownProps.page.Index) || [] as Highlight[],
-        annotations: state.sensenetDocumentViewer.documentState.document.shapes.annotations.filter((r) => r.imageIndex === ownProps.page.Index) || [] as Annotation[],
+        redactions: state.sensenetDocumentViewer.documentState.document.shapes.redactions.filter((r) => r.imageIndex === ownProps.page.Index) as Redaction[],
+        highlights: state.sensenetDocumentViewer.documentState.document.shapes.highlights.filter((r) => r.imageIndex === ownProps.page.Index) as Highlight[],
+        annotations: state.sensenetDocumentViewer.documentState.document.shapes.annotations.filter((r) => r.imageIndex === ownProps.page.Index) as Annotation[],
         canEdit: state.sensenetDocumentViewer.documentState.canEdit,
     }
 }

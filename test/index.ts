@@ -6,5 +6,8 @@
 (global as any).innerWidth = 1024;
 (global as any).navigator = {userAgent: ''};
 (global as any).window = global;
-(global as any).document.parentWindow = global
+(global as any).document.parentWindow = global;
+(global as any).getElementById = () => ({});
+(global as any).getComputedStyle = () => ({})
+
 export * from './components'
