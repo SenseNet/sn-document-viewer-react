@@ -1,4 +1,5 @@
 export * from './document-widgets'
+export * from './page-widgets'
 
 export * from './DocumentViewerErrorTests'
 export * from './DocumentViewerLayoutTests'

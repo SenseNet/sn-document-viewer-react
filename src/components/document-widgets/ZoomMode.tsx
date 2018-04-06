@@ -112,9 +112,3 @@ export class ZoomWidgetComponent extends React.Component<componentType<typeof ma
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ZoomWidgetComponent)
 export {connectedComponent as ZoomModeWidget}
-
-// export const zoomModeWidget: DocumentWidget = {
-//     shouldCheckAvailable: () => false,
-//     isAvailable: async () => true,
-//     component: zoomComponent,
-// }

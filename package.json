@@ -40,6 +40,7 @@
       "temp/src/style.js",
       "temp/src/**/I*.js",
       "temp/src/models/*.js",
+      "temp/src/services/TypeHelpers.js",
       "**/index.js"
     ],
     "include": "temp/src/**/*.*",

@@ -71,9 +71,9 @@ export const examplePreviewImageData: PreviewImageData = {
 }
 
 export const defaultSettings: DocumentViewerSettings = {
-    canEditDocument: async () => false,
-    canHideRedaction: async () => false,
-    canHideWatermark: async () => false,
+    canEditDocument: async () => true,
+    canHideRedaction: async () => true,
+    canHideWatermark: async () => true,
     getDocumentData: async (idOrPath) => exampleDocumentData,
     getExistingPreviewImages: async () => [examplePreviewImageData],
     isPreviewAvailable: async () => examplePreviewImageData,
