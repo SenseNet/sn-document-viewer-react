@@ -119,7 +119,7 @@ class ShapeRedaction extends ShapeComponent {
                 onMouseUp={(ev) => this.onResized(ev, 'redactions', this.props.shape)}
                 style={{
                     ...this.getShapeDimensions(this.props.shape),
-                    resize: this.props.canEdit && 'both',
+                    resize: this.props.canEdit ? 'both' : 'none',
                     position: 'absolute',
                     overflow: 'auto',
                     backgroundColor: 'black',
@@ -165,7 +165,7 @@ class ShapeAnnotation extends ShapeComponent<Annotation> {
                         style={{
                             ...this.getShapeDimensions(this.props.shape, -120, 0),
                             position: 'absolute',
-                            resize: this.props.canEdit && 'both',
+                            resize: this.props.canEdit ? 'both' : 'none',
                             overflow: 'hidden',
                             backgroundColor: 'blanchedalmond',
                             lineHeight: `${this.props.shape.lineHeight * this.props.zoomRatio}pt`,
@@ -209,7 +209,7 @@ class ShapeHighlight extends ShapeComponent {
                 style={{
                     ...this.getShapeDimensions(this.props.shape),
                     position: 'absolute',
-                    resize: this.props.canEdit && 'both',
+                    resize: this.props.canEdit ? 'both' : 'none',
                     overflow: 'auto',
                     backgroundColor: 'yellow',
                     opacity: .5,
