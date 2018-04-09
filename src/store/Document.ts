@@ -104,7 +104,7 @@ export const saveChangesSuccess = () => ({
     type: 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS',
 } as Action)
 
-export const rotateShapesForPages = (pages: Array<{index: number, size: Dimensions}>, degree: number) => ({
+export const rotateShapesForPages = (pages: Array<{ index: number, size: Dimensions }>, degree: number) => ({
     type: 'SN_DOCVEWER_DOCUMENT_ROTATE_SHAPES_FOR_PAGES',
     pages,
     degree,
@@ -122,7 +122,7 @@ export const saveChanges: ActionCreator<ThunkAction<Promise<void>, RootReducerTy
     }
 }
 
-export const applyShapeRotations = <T extends Shape>(shapes: T[], degree: number, pages: Array<{index: number, size: Dimensions}>) => ([
+export const applyShapeRotations = <T extends Shape>(shapes: T[], degree: number, pages: Array<{ index: number, size: Dimensions }>) => ([
     ...shapes.map((s) => {
         const page = pages.find((p) => p.index === s.imageIndex)
         if (page) {
@@ -194,19 +194,19 @@ export const documentStateReducer: Reducer<DocumentStateType>
                     },
                 }
             case 'SN_DOCVIEWER_DOCUMENT_REMOVE_SHAPE':
-            return {
-                ...state,
-                hasChanges: true,
-                document: state.document && {
-                    ...state.document,
-                    shapes: {
-                        ...state.document && state.document.shapes,
-                        [action.shapeType as keyof Shapes]:
-                            state.document && state.document.shapes && (state.document.shapes[action.shapeType as keyof Shapes] as Shape[])
-                                .filter((shape) => shape && shape.guid !== action.shapeGuid),
+                return {
+                    ...state,
+                    hasChanges: true,
+                    document: state.document && {
+                        ...state.document,
+                        shapes: {
+                            ...state.document && state.document.shapes,
+                            [action.shapeType as keyof Shapes]:
+                                state.document && state.document.shapes && (state.document.shapes[action.shapeType as keyof Shapes] as Shape[])
+                                    .filter((shape) => shape && shape.guid !== action.shapeGuid),
+                        },
                     },
-                },
-            }
+                }
             case 'SN_DOCVEWER_DOCUMENT_ROTATE_SHAPES_FOR_PAGES':
                 return {
                     ...state,

@@ -7,7 +7,11 @@
 (global as any).navigator = {userAgent: ''};
 (global as any).window = global;
 (global as any).document.parentWindow = global;
-(global as any).getElementById = () => ({});
-(global as any).getComputedStyle = () => ({})
+(global as any).getElementById = () => ({
+    getBoundingClientRect: () => ({}),
+});
+(global as any).getComputedStyle = () => ({
+    getBoundingClientRect: () => ({}),
+})
 
 export * from './components'

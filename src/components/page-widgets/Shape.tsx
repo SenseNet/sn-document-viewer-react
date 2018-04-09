@@ -36,9 +36,17 @@ const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
     },
 })
 
-abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>, { focused: boolean }> {
+abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>> {
 
-    public state = { focused: false }
+    public state = {
+        focused: false,
+        onResized: this.onResized.bind(this),
+        onBlur: this.onBlur.bind(this),
+        onDragStart: this.onDragStart.bind(this),
+        handleKeyPress: this.handleKeyPress.bind(this),
+        onFocus: this.onFocus.bind(this),
+    }
+    public abstract shapeType: keyof Shapes
     protected getShapeDimensions(shape: Shape, offsetX: number = 0, offsetY: number = 0): React.CSSProperties {
         return {
             top: shape.y * this.props.zoomRatio + offsetY * this.props.zoomRatio,
@@ -80,7 +88,7 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         switch (ev.key) {
             case 'Backspace':
             case 'Delete':
-                this.props.canEdit && this.props.actions.updateShapeData(this.props.shapeType, this.props.shape.guid, undefined as any)
+                this.props.canEdit && this.props.actions.removeShape(this.props.shapeType, this.props.shape.guid)
                 break
         }
     }
@@ -108,15 +116,18 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
 }
 
 class ShapeRedaction extends ShapeComponent {
+
+    public readonly shapeType = 'redactions'
+
     public renderShape() {
         {
             return (<div
                 tabIndex={0}
                 onClickCapture={(ev) => { ev.stopPropagation() }}
                 draggable={this.props.canEdit}
-                onDragStart={(ev) => this.onDragStart(ev, 'redactions', this.props.shape)}
+                onDragStart={(ev) => this.onDragStart(ev, this.shapeType, this.props.shape)}
                 key={`r-${this.props.shape.h}-${this.props.shape.w}`}
-                onMouseUp={(ev) => this.onResized(ev, 'redactions', this.props.shape)}
+                onMouseUp={(ev) => this.onResized(ev, this.shapeType, this.props.shape)}
                 style={{
                     ...this.getShapeDimensions(this.props.shape),
                     resize: this.props.canEdit ? 'both' : 'none',
@@ -133,22 +144,18 @@ const shapeRedaction = connect(mapStateToProps, mapDispatchToProps)(ShapeRedacti
 
 class ShapeAnnotation extends ShapeComponent<Annotation> {
 
+    public readonly shapeType = 'annotations'
+
     protected handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>) {
         /** */
     }
 
     public onBlur(ev: React.FocusEvent<HTMLDivElement>) {
         super.onBlur(ev)
-        this.props.actions.updateShapeData('annotations', this.props.shape.guid, {
+        this.props.actions.updateShapeData(this.shapeType, this.props.shape.guid, {
             ...this.props.shape,
             text: ev.currentTarget.innerText.trim(),
         })
-    }
-
-    private handleDeleteShape(ev: React.MouseEvent<any>) {
-        ev.preventDefault()
-        ev.stopPropagation()
-        this.props.actions.removeShape('annotations', this.props.shape.guid)
     }
 
     public renderShape() {
@@ -160,8 +167,8 @@ class ShapeAnnotation extends ShapeComponent<Annotation> {
                         tabIndex={0}
                         onClickCapture={(ev) => { ev.stopPropagation() }}
                         draggable={this.props.canEdit}
-                        onDragStart={(ev) => this.onDragStart(ev, 'annotations', this.props.shape, { width: -120 * this.props.zoomRatio, height: 0 })}
-                        onMouseUp={(ev) => this.onResized(ev, 'annotations', this.props.shape)}
+                        onDragStart={(ev) => this.onDragStart(ev, this.shapeType, this.props.shape, { width: -120 * this.props.zoomRatio, height: 0 })}
+                        onMouseUp={(ev) => this.onResized(ev, this.shapeType, this.props.shape)}
                         style={{
                             ...this.getShapeDimensions(this.props.shape, -120, 0),
                             position: 'absolute',
@@ -185,7 +192,7 @@ class ShapeAnnotation extends ShapeComponent<Annotation> {
                         {this.state.focused ?
                             <div style={{position: 'relative', top: `-${64 * this.props.zoomRatio}px`}}>
                                 <IconButton >
-                                    <Delete style={{color: 'black'}} scale={this.props.zoomRatio} onMouseUp={(ev) => this.handleDeleteShape(ev)} />
+                                    <Delete style={{color: 'black'}} scale={this.props.zoomRatio} onMouseUp={(ev) => this.props.actions.removeShape(this.shapeType, this.props.shape.guid)} />
                                 </IconButton>
                             </div>
                             : null}
@@ -198,14 +205,17 @@ class ShapeAnnotation extends ShapeComponent<Annotation> {
 const shapeAnnotation = connect(mapStateToProps, mapDispatchToProps)(ShapeAnnotation)
 
 class ShapeHighlight extends ShapeComponent {
+
+    public readonly shapeType = 'highlights'
+
     public renderShape() {
         {
             return (<div
                 tabIndex={0}
                 onClickCapture={(ev) => { ev.stopPropagation() }}
                 draggable={this.props.canEdit}
-                onDragStart={(ev) => this.onDragStart(ev, 'highlights', this.props.shape)}
-                onMouseUp={(ev) => this.onResized(ev, 'highlights', this.props.shape)}
+                onDragStart={(ev) => this.onDragStart(ev, this.shapeType, this.props.shape)}
+                onMouseUp={(ev) => this.onResized(ev, this.shapeType, this.props.shape)}
                 style={{
                     ...this.getShapeDimensions(this.props.shape),
                     position: 'absolute',
