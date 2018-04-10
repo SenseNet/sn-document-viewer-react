@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { ActionCreator, Dispatch } from 'redux'
+import { Action } from 'redux'
 import { DocumentViewerSettings } from '../models'
 import { componentType } from '../services'
 import { DocumentStateType, pollDocumentData, RootReducerType } from '../store'
+import { LocalizationStateType, setLocalization } from '../store/Localization'
 import { DocumentViewerError } from './DocumentViewerError'
 import { DocumentViewerLayout } from './DocumentViewerLayout'
 import { DocumentViewerLoading } from './DocumentViewerLoading'
@@ -14,6 +16,7 @@ import { DocumentViewerLoading } from './DocumentViewerLoading'
 export interface OwnProps {
     settings: DocumentViewerSettings
     documentIdOrPath: string | number
+    localization?: Partial<LocalizationStateType>
 }
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
@@ -26,6 +29,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
 
 const mapDispatchToProps = {
     pollDocumentData: pollDocumentData as ActionCreator<(dispatch: Dispatch<DocumentStateType>, getState: () => DocumentStateType, extraArgument: DocumentViewerSettings) => Promise<void>>,
+    setLocalization: setLocalization as (localization: Partial<LocalizationStateType>) => Action,
 }
 
 type docViewerComponentType = componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>
@@ -37,16 +41,23 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
 
     constructor(props: docViewerComponentType) {
         super(props)
+
         if (this.props.documentIdOrPath) {
             this.props.pollDocumentData(this.props.documentIdOrPath)
         }
-
+        if (this.props.localization) {
+            this.props.setLocalization(this.props.localization)
+        }
     }
 
     public componentWillReceiveProps(newProps: this['props']) {
         if (this.props.documentIdOrPath !== newProps.documentIdOrPath) {
             this.props.pollDocumentData(newProps.documentIdOrPath)
         }
+        if (this.props.localization) {
+            this.props.setLocalization(this.props.localization)
+        }
+
     }
 
     /**

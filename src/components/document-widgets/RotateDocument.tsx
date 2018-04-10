@@ -11,6 +11,8 @@ export const mapStateToProps = (state: RootReducerType) => {
     return {
         pages: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
         activePages: state.sensenetDocumentViewer.viewer.activePages,
+        rotateDocumentLeft: state.sensenetDocumentViewer.localization.rotateDocumentLeft,
+        rotateDocumentRight: state.sensenetDocumentViewer.localization.rotateDocumentRight,
     }
 }
 
@@ -31,10 +33,10 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
     public render() {
         return (
             <div style={{display: 'inline-block'}}>
-                <IconButton title="Rotate document left">
+                <IconButton title={this.props.rotateDocumentLeft}>
                     <RotateLeft onClick={() => this.rotateDocumentLeft()} style={{border: '2px solid', borderRadius: '5px'}} />
                 </IconButton>
-                <IconButton title="Rotate document right">
+                <IconButton title={this.props.rotateDocumentRight}>
                     <RotateRight onClick={() => this.rotateDocumentRight()} style={{border: '2px solid', borderRadius: '5px'}}/>
                 </IconButton>
             </div>)
