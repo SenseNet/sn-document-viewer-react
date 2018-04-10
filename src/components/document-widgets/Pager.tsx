@@ -68,7 +68,7 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    inputProps={{ min: 1, max: this.props.lastPage }}
+                    inputProps={{ min: 1, max: this.state.lastPage }}
                     margin="dense"
                 />
 
@@ -77,7 +77,7 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
                 </IconButton>
 
                 <IconButton disabled={this.state.currentPage >= this.state.lastPage} title={this.props.lastPage}>
-                    <LastPage onClick={(ev) => this.gotoPage(this.props.lastPage)} />
+                    <LastPage onClick={(ev) => this.gotoPage(this.state.lastPage)} />
                 </IconButton>
             </div>)
     }
