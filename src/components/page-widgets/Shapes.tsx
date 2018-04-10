@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { Action } from 'redux'
 import { Annotation, Highlight, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
@@ -24,16 +24,9 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
-export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => Action,
-    },
-}
-    = (dispatch: Dispatch<RootReducerType>) => ({
-        actions: {
-            updateShapeData: <K extends keyof Shapes>(shapeType: K, guid: string, shapeData: Shapes[K][0]) => dispatch(updateShapeData(shapeType, guid, shapeData)),
-        },
-    })
+export const mapDispatchToProps = ({
+    updateShapeData: updateShapeData as <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
+})
 
 export class ShapesComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
 
@@ -43,7 +36,7 @@ export class ShapesComponent extends React.Component<componentType<typeof mapSta
             ev.preventDefault()
             const shapeData = JSON.parse(ev.dataTransfer.getData('shape')) as { type: keyof Shapes, shape: Shape, offset: Dimensions }
             const boundingBox = ev.currentTarget.getBoundingClientRect()
-            this.props.actions.updateShapeData(shapeData.type, shapeData.shape.guid, {
+            this.props.updateShapeData(shapeData.type, shapeData.shape.guid, {
                 ...shapeData.shape,
                 imageIndex: page.Index,
                 x: ((ev.clientX - boundingBox.left - shapeData.offset.width) * (1 / this.props.zoomRatio)),
@@ -61,19 +54,19 @@ export class ShapesComponent extends React.Component<componentType<typeof mapSta
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
                 {
                     this.props.canHideRedactions && this.props.showRedactions && this.props.redactions.map((redaction, index) => {
-                        return (<ShapeRedaction shapeType="redactions" shape={redaction} canEdit={this.props.canEdit} zoomRatio={this.props.zoomRatio} key={index}/>)
+                        return (<ShapeRedaction shapeType="redactions" shape={redaction} canEdit={this.props.canEdit} zoomRatio={this.props.zoomRatio} key={index} />)
                     })
                 }
 
                 {
                     this.props.showShapes && this.props.annotations.map((annotation, index) => {
-                        return (<ShapeAnnotation shapeType="annotations" shape={annotation} canEdit={this.props.canEdit} zoomRatio={this.props.zoomRatio} key={index}/>)
+                        return (<ShapeAnnotation shapeType="annotations" shape={annotation} canEdit={this.props.canEdit} zoomRatio={this.props.zoomRatio} key={index} />)
                     })
                 }
 
                 {
                     this.props.showShapes && this.props.highlights.map((highlight, index) => {
-                        return (<ShapeHighlight shapeType="highlights" shape={highlight} canEdit={this.props.canEdit} zoomRatio={this.props.zoomRatio} key={index}/>)
+                        return (<ShapeHighlight shapeType="highlights" shape={highlight} canEdit={this.props.canEdit} zoomRatio={this.props.zoomRatio} key={index} />)
                     })
                 }
 

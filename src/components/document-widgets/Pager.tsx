@@ -2,7 +2,8 @@ import _ = require('lodash')
 import { IconButton, TextField } from 'material-ui'
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from 'material-ui-icons'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
+import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
 
@@ -13,15 +14,9 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
-export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        setActivePages: (value: number[]) => void,
-    },
-} = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        setActivePages: (value: number[]) => dispatch(setActivePages(value)),
-    },
-})
+export const mapDispatchToProps = {
+    setActivePages: setActivePages as (activePages: number[]) => Action,
+}
 
 export interface PagerState {
     currentPage: number
@@ -33,7 +28,7 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
     public state = { currentPage: this.props.activePages[0], lastPage: this.props.lastPage }
 
     public setPage = _.debounce(() => {
-        this.props.actions.setActivePages([this.state.currentPage])
+        this.props.setActivePages([this.state.currentPage])
     }, 200).bind(this)
 
     private gotoPage(page: string | number) {

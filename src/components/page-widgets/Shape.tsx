@@ -1,7 +1,7 @@
 import { IconButton } from 'material-ui'
 import { Delete } from 'material-ui-icons'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { Action } from 'redux'
 import { Annotation, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
@@ -23,18 +23,10 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
     }
 }
 
-const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
-        removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => Action,
-    },
-} = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => dispatch(updateShapeData<K>(shapeType, shapeGuid, shapeData)),
-        removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => dispatch(removeShape<K>(shapeType, shapeGuid)),
-
-    },
-})
+const mapDispatchToProps = {
+    updateShapeData: updateShapeData as <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
+    removeShape,
+}
 
 abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>> {
 
@@ -63,7 +55,7 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
             h: boundingBox.height * (1 / this.props.zoomRatio),
         }
         if (Math.abs(newSize.w - shape.w) > 1 || Math.abs(newSize.h - shape.h) > 1) {
-            this.props.actions.updateShapeData(type, shape.guid, {
+            this.props.updateShapeData(type, shape.guid, {
                 ...shape,
                 ...newSize,
             })
@@ -88,7 +80,7 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         switch (ev.key) {
             case 'Backspace':
             case 'Delete':
-                this.props.canEdit && this.props.actions.removeShape(this.props.shapeType, this.props.shape.guid)
+                this.props.canEdit && this.props.removeShape(this.props.shapeType, this.props.shape.guid)
                 break
         }
     }
@@ -152,7 +144,7 @@ class ShapeAnnotation extends ShapeComponent<Annotation> {
 
     public onBlur(ev: React.FocusEvent<HTMLDivElement>) {
         super.onBlur(ev)
-        this.props.actions.updateShapeData(this.shapeType, this.props.shape.guid, {
+        this.props.updateShapeData(this.shapeType, this.props.shape.guid, {
             ...this.props.shape,
             text: ev.currentTarget.innerText.trim(),
         })
@@ -192,7 +184,7 @@ class ShapeAnnotation extends ShapeComponent<Annotation> {
                         {this.state.focused ?
                             <div style={{position: 'relative', top: `-${64 * this.props.zoomRatio}px`}}>
                                 <IconButton >
-                                    <Delete style={{color: 'black'}} scale={this.props.zoomRatio} onMouseUp={(ev) => this.props.actions.removeShape(this.shapeType, this.props.shape.guid)} />
+                                    <Delete style={{color: 'black'}} scale={this.props.zoomRatio} onMouseUp={(ev) => this.props.removeShape(this.shapeType, this.props.shape.guid)} />
                                 </IconButton>
                             </div>
                             : null}

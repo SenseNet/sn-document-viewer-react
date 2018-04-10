@@ -3,7 +3,6 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action } from 'redux'
-import { Dispatch } from 'redux'
 import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
 import { PageList } from './'
@@ -16,12 +15,9 @@ const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
-const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => { actions: { setActivePages: (pages: number[]) => Action } }
-    = (dispatch: Dispatch<RootReducerType>) => ({
-        actions: {
-            setActivePages: (pages: number[]) => dispatch(setActivePages(pages)),
-        },
-    })
+const mapDispatchToProps = {
+    setActivePages: setActivePages as (activePages: number[]) => Action,
+}
 
 export interface DocumentLayoutState {
     showThumbnails: boolean
@@ -51,7 +47,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
             }
 
             if (this.props.activePages[0] !== index) {
-                this.props.actions.setActivePages([index])
+                this.props.setActivePages([index])
             }
 
         })

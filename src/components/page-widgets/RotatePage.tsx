@@ -1,7 +1,7 @@
 import { IconButton } from 'material-ui'
 import { RotateLeft, RotateRight } from 'material-ui-icons'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { Action } from 'redux'
 import { PreviewImageData } from '../../models'
 import { componentType, Dimensions } from '../../services'
@@ -20,28 +20,22 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
-export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        rotateImages: (imageIndexes: number[], amount: number) => Action,
-        rotateShapes: (pages: Array<{index: number, size: Dimensions}>, amount: number) => Action,
-    },
-} = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        rotateImages: (imageIndexes: number[], amount: number) => dispatch(rotateImages(imageIndexes, amount)),
-        rotateShapes: (pages: Array<{index: number, size: Dimensions}>, amount: number) => dispatch(rotateShapesForPages(pages, amount)),
-    },
-})
+export const mapDispatchToProps = {
+        rotateImages,
+        rotateShapes: rotateShapesForPages as (pages: Array<{index: number; size: Dimensions; }>,
+                                               degree: number) => Action,
+}
 
 export class RotatePageComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
 
     private rotatePageLeft() {
-        this.props.actions.rotateImages([this.props.page.Index], -ROTATION_AMOUNT)
-        this.props.actions.rotateShapes([{index: this.props.page.Index, size: { width: this.props.page.Width, height: this.props.page.Height}}], -ROTATION_AMOUNT)
+        this.props.rotateImages([this.props.page.Index], -ROTATION_AMOUNT)
+        this.props.rotateShapes([{ index: this.props.page.Index, size: { width: this.props.page.Width, height: this.props.page.Height } }], -ROTATION_AMOUNT)
     }
 
     private rotatePageRight() {
-        this.props.actions.rotateImages([this.props.page.Index], ROTATION_AMOUNT)
-        this.props.actions.rotateShapes([{index: this.props.page.Index, size: { width: this.props.page.Width, height: this.props.page.Height}}], ROTATION_AMOUNT)
+        this.props.rotateImages([this.props.page.Index], ROTATION_AMOUNT)
+        this.props.rotateShapes([{ index: this.props.page.Index, size: { width: this.props.page.Width, height: this.props.page.Height } }], ROTATION_AMOUNT)
     }
 
     public render() {
@@ -53,7 +47,7 @@ export class RotatePageComponent extends React.Component<componentType<typeof ma
                 </IconButton>
 
                 <IconButton>
-                    <RotateRight onClick={() => this.rotatePageRight()}/>
+                    <RotateRight onClick={() => this.rotatePageRight()} />
                 </IconButton>
             </div>)
     }
@@ -61,4 +55,4 @@ export class RotatePageComponent extends React.Component<componentType<typeof ma
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(RotatePageComponent)
 
-export {connectedComponent as RotatePageWidget}
+export { connectedComponent as RotatePageWidget }

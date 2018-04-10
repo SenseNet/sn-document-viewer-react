@@ -1,7 +1,8 @@
 import { IconButton } from 'material-ui'
 import { BrandingWatermark } from 'material-ui-icons'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
+import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setWatermark } from '../../store'
 
@@ -12,20 +13,14 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
-export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        setWatermark: (value: boolean) => void,
-    },
-} = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        setWatermark: (value: boolean) => dispatch(setWatermark(value)),
-    },
-})
+export const mapDispatchToProps = {
+    setWatermark: setWatermark as (showWatermark: boolean) => Action,
+}
 
 export class ToggleWatermarkComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private toggleWatermark() {
-        this.props.actions.setWatermark(!this.props.showWatermark)
+        this.props.setWatermark(!this.props.showWatermark)
     }
 
     public render() {
@@ -41,11 +36,3 @@ export class ToggleWatermarkComponent extends React.Component<componentType<type
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ToggleWatermarkComponent)
 
 export {connectedComponent as ToggleWatermarkWidget}
-
-// export const toggleWatermarkWidget: DocumentWidget = {
-//     shouldCheckAvailable: (oldState, newState) => true,
-//     isAvailable: async (state) => {
-//         return state.sensenetDocumentViewer.documentState.canHideWatermark
-//     },
-//     component: connectedComponent,
-// }

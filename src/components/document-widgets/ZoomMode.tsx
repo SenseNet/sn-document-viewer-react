@@ -1,7 +1,7 @@
 import { Divider, IconButton, Menu, MenuItem, MobileStepper } from 'material-ui'
 import { AspectRatio, Code, Error, ZoomIn, ZoomOut, ZoomOutMap } from 'material-ui-icons'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { Action } from 'redux'
 import { DocumentData } from '../../models'
 import { componentType } from '../../services'
@@ -14,21 +14,14 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
-export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        setZoomMode: (zoomMode: ZoomMode) => Action,
-        setZoomLevel: (zoomLevel: number) => Action,
-    },
-} = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        setZoomMode: (zoomMode: ZoomMode) => dispatch(setZoomMode(zoomMode)),
-        setZoomLevel: (zoomLevel: number) => dispatch(setCustomZoomLevel(zoomLevel)),
-    },
-})
+export const mapDispatchToProps = {
+    setZoomMode,
+    setZoomLevel: setCustomZoomLevel as (level: number) => Action,
+}
 
 export class ZoomWidgetComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { zoomMenuAnchor?: HTMLElement }> {
 
-    public state = { zoomMenuAnchor: undefined}
+    public state = { zoomMenuAnchor: undefined }
 
     private openZoomMenu(event: React.MouseEvent<any>) {
         this.setState({ zoomMenuAnchor: event.currentTarget })
@@ -36,7 +29,7 @@ export class ZoomWidgetComponent extends React.Component<componentType<typeof ma
 
     private closeZoomMenu(newZoomMode?: ZoomMode) {
         if (newZoomMode) {
-            this.props.actions.setZoomMode(newZoomMode)
+            this.props.setZoomMode(newZoomMode)
         }
         this.setState({ zoomMenuAnchor: undefined })
     }
@@ -44,18 +37,18 @@ export class ZoomWidgetComponent extends React.Component<componentType<typeof ma
     private zoomIn(ev: React.MouseEvent<HTMLElement>) {
         ev.preventDefault()
         ev.stopPropagation()
-        this.props.actions.setZoomLevel(this.props.viewer.customZoomLevel + 1 || 1)
+        this.props.setZoomLevel(this.props.viewer.customZoomLevel + 1 || 1)
     }
 
     private zoomOut(ev: React.MouseEvent<HTMLElement>) {
         ev.preventDefault()
         ev.stopPropagation()
-        this.props.actions.setZoomLevel(this.props.viewer.customZoomLevel - 1 || 0)
+        this.props.setZoomLevel(this.props.viewer.customZoomLevel - 1 || 0)
     }
 
     public render() {
         return (
-            <div style={{display: 'inline-block'}}>
+            <div style={{ display: 'inline-block' }}>
                 <IconButton onClick={(ev) => this.openZoomMenu(ev)} title="Zoom mode">
                     {(() => {
                         switch (this.props.viewer.zoomMode) {
@@ -111,4 +104,4 @@ export class ZoomWidgetComponent extends React.Component<componentType<typeof ma
 }
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ZoomWidgetComponent)
-export {connectedComponent as ZoomModeWidget}
+export { connectedComponent as ZoomModeWidget }

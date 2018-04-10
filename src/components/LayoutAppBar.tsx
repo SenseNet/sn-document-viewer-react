@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography } from 'material-ui'
 import React = require('react')
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { RootReducerType } from '../store'
 
 import { componentType } from '../services'
@@ -11,10 +11,8 @@ const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-    },
-})
+const mapDispatchToProps = {
+}
 
 class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, {}>> {
 
