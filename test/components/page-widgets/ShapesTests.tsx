@@ -116,15 +116,80 @@ export const shapesWidgetTests = describe('ShapesWidget component', () => {
             expect(annotation.instance.state.focused).to.be.eq(true)
 
             // focus on child
-            annotation.instance.state.onBlur({currentTarget: {contains: () => true, innerText: ' a ' }, nativeEvent: {}})
+            annotation.instance.state.onBlur({ currentTarget: { contains: () => true, innerText: ' a ' }, nativeEvent: {} })
             expect(annotation.instance.state.focused).to.be.eq(true)
 
             // blur
-            annotation.instance.state.onBlur({currentTarget: {contains: () => false, innerText: ' a '}, nativeEvent: {}})
+            annotation.instance.state.onBlur({ currentTarget: { contains: () => false, innerText: ' a ' }, nativeEvent: {} })
             expect(annotation.instance.state.focused).to.be.eq(false)
 
             // annotation text should be updated and trimmed
             expect(annotation.instance.props.shape.text).to.be.eq('a')
+        })
+    })
+
+    it('Resized should update the shape data', () => {
+        useTestContext((ctx) => {
+            ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
+            ctx.store.dispatch(documentPermissionsReceived(true, true, true))
+            ctx.store.dispatch(availabelImagesReceivedAction([{
+                Attributes: {
+                    degree: 0,
+                },
+                Index: 1,
+                Height: 100,
+                Width: 100,
+            }]))
+            const page = ctx.store.getState().sensenetDocumentViewer.previewImages.AvailableImages[0]
+            c = renderer.create(
+                <Provider store={ctx.store}>
+                    <ShapesWidget page={page} viewPort={{ width: 1024, height: 768 }} zoomRatio={1}>
+                    </ShapesWidget>
+                </Provider>)
+
+            const annotation = c.root.findByType(ShapeAnnotation).children[0] as any
+            expect(annotation.instance.state.focused).to.be.eq(false)
+
+            // resize
+            annotation.instance.state.onResized({ currentTarget: { getBoundingClientRect: () => ({ widt: 10, height: 10 }) } }, 'annotations', annotation.instance.props.shape)
+        })
+    })
+
+    it('onDragStart should add shape data to dataTransfer', () => {
+        useTestContext((ctx) => {
+            ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
+            ctx.store.dispatch(documentPermissionsReceived(true, true, true))
+            ctx.store.dispatch(availabelImagesReceivedAction([{
+                Attributes: {
+                    degree: 0,
+                },
+                Index: 1,
+                Height: 100,
+                Width: 100,
+            }]))
+            const page = ctx.store.getState().sensenetDocumentViewer.previewImages.AvailableImages[0]
+            c = renderer.create(
+                <Provider store={ctx.store}>
+                    <ShapesWidget page={page} viewPort={{ width: 1024, height: 768 }} zoomRatio={1}>
+                    </ShapesWidget>
+                </Provider>)
+
+            const annotation = c.root.findByType(ShapeAnnotation).children[0] as any
+            expect(annotation.instance.state.focused).to.be.eq(false)
+
+            // onDragStart
+            annotation.instance.state.onDragStart({
+                dataTransfer: {
+                    setData: (key: string, value: string) => {
+                        expect(key).to.be.eq('shape')
+                        expect(typeof value).to.be.eq('string')
+                        /** */
+                    },
+                },
+                currentTarget: {
+                    getBoundingClientRect: () => ({top: 5, left: 5, width: 100, height: 100}),
+                },
+            }, 'annotations', annotation.instance.props.shape)
         })
     })
 })

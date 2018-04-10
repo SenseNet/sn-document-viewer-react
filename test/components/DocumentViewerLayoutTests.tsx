@@ -27,24 +27,34 @@ export const documentViewerLayoutTests = describe('Document Viewer Layout compon
         })
     })
 
-    it('Should render without crashing on small screens', () => {
+    it('Should render and scroll on small screens', () => {
         (global as any).innerWidth = 600
 
         useTestContext((ctx) => {
+            ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
+            ctx.store.dispatch(availabelImagesReceivedAction([{
+                Attributes: {
+                    degree: 0,
+                },
+                Index: 1,
+                Height: 100,
+                Width: 100,
+            }]))
             c = renderer.create(
                 <Provider store={ctx.store}>
                     <DocumentViewerLayout>
                         <span>test</span>
                     </DocumentViewerLayout>
                 </Provider>)
+            const page = c.root.findAllByType(Page)[0]
+            page.props.onClick()
+            page.props.onClick()
         });
         (global as any).innerWidth = 1024
     })
 
     it('Click on a page should scroll to the selected page', () => {
-
         useTestContext((ctx) => {
-
             ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
             ctx.store.dispatch(availabelImagesReceivedAction([{
                 Attributes: {
@@ -58,7 +68,6 @@ export const documentViewerLayoutTests = describe('Document Viewer Layout compon
             c = renderer.create(
                 <Provider store={ctx.store}>
                     <DocumentViewerLayout>
-                        <span>test</span>
                     </DocumentViewerLayout>
                 </Provider>)
 
