@@ -11,6 +11,7 @@ export const mapStateToProps = (state: RootReducerType) => {
         canHideRedaction: state.sensenetDocumentViewer.documentState.canHideRedaction,
         showShapes: state.sensenetDocumentViewer.viewer.showShapes,
         showRedaction: state.sensenetDocumentViewer.viewer.showRedaction,
+        toggleRedaction: state.sensenetDocumentViewer.localization.toggleRedaction,
     }
 }
 
@@ -27,7 +28,7 @@ export class ToggleRedactionComponent extends React.Component<componentType<type
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton title="Toggle redaction" style={{ opacity: this.props.showRedaction ? 1 : 0.5 }}>
+                <IconButton title={this.props.toggleRedaction} style={{ opacity: this.props.showRedaction ? 1 : 0.5 }}>
                     <PictureInPicture onClick={() => this.toggleRedaction()} />
                 </IconButton>
             </div>)

@@ -10,6 +10,7 @@ export const mapStateToProps = (state: RootReducerType) => {
     return {
         canHideWatermark: state.sensenetDocumentViewer.documentState.canHideWatermark,
         showWatermark: state.sensenetDocumentViewer.viewer.showWatermark,
+        toggleWatermark: state.sensenetDocumentViewer.localization.toggleWatermark,
     }
 }
 
@@ -26,7 +27,7 @@ export class ToggleWatermarkComponent extends React.Component<componentType<type
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton title="Toggle watermark" style={{ opacity: this.props.showWatermark ? 1 : 0.5 }}>
+                <IconButton title={this.props.toggleWatermark} style={{ opacity: this.props.showWatermark ? 1 : 0.5 }}>
                     <BrandingWatermark onClick={() => this.toggleWatermark()} />
                 </IconButton>
             </div>)

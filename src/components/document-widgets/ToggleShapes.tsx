@@ -9,6 +9,7 @@ import { RootReducerType, setShapes } from '../../store'
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         showShapes: state.sensenetDocumentViewer.viewer.showShapes,
+        toggleShapes: state.sensenetDocumentViewer.localization.toggleShapes,
     }
 }
 
@@ -25,7 +26,7 @@ export class ToggleShapesComponent extends React.Component<componentType<typeof 
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton title="Toggle redaction" style={{ opacity: this.props.showShapes ? 1 : 0.5 }}>
+                <IconButton title={this.props.toggleShapes} style={{ opacity: this.props.showShapes ? 1 : 0.5 }}>
                     <Dashboard onClick={() => this.toggleRedaction()}  />
                 </IconButton>
             </div>)

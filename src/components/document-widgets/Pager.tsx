@@ -10,7 +10,12 @@ import { RootReducerType, setActivePages } from '../../store'
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
-        lastPage: state.sensenetDocumentViewer.documentState.document.pageCount,
+        pageCount: state.sensenetDocumentViewer.documentState.document.pageCount,
+        fistPage: state.sensenetDocumentViewer.localization.firstPage,
+        previousPage: state.sensenetDocumentViewer.localization.previousPage,
+        gotoPage: state.sensenetDocumentViewer.localization.gotoPage,
+        nextPage: state.sensenetDocumentViewer.localization.nextPage,
+        lastPage: state.sensenetDocumentViewer.localization.lastPage,
     }
 }
 
@@ -25,7 +30,7 @@ export interface PagerState {
 
 export class PagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, PagerState> {
 
-    public state = { currentPage: this.props.activePages[0], lastPage: this.props.lastPage }
+    public state = { currentPage: this.props.activePages[0], lastPage: this.props.pageCount }
 
     public setPage = _.debounce(() => {
         this.props.setActivePages([this.state.currentPage])
@@ -35,7 +40,7 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
         let pageInt = typeof page === 'string' ? parseInt(page, 10) : page
         if (!isNaN(pageInt)) {
             pageInt = Math.max(pageInt, 1)
-            pageInt = Math.min(pageInt, this.props.lastPage)
+            pageInt = Math.min(pageInt, this.props.pageCount)
             this.setState({
                 currentPage: pageInt,
             })
@@ -46,15 +51,16 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton disabled={this.state.currentPage <= 1}>
+                <IconButton disabled={this.state.currentPage <= 1} title={this.props.fistPage}>
                     <FirstPage onClick={(ev) => this.gotoPage(1)} />
                 </IconButton>
 
-                <IconButton disabled={this.state.currentPage <= 1}>
+                <IconButton disabled={this.state.currentPage <= 1} title={this.props.previousPage}>
                     <NavigateBefore onClick={(ev) => this.gotoPage(this.props.activePages[0] - 1)} />
                 </IconButton>
 
                 <TextField
+                    title={this.props.gotoPage}
                     value={this.state.currentPage}
                     onChange={(ev) => this.gotoPage(ev.currentTarget.value)}
                     type="number"
@@ -66,11 +72,11 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
                     margin="dense"
                 />
 
-                <IconButton disabled={this.state.currentPage >= this.state.lastPage}>
+                <IconButton disabled={this.state.currentPage >= this.state.lastPage} title={this.props.nextPage}>
                     <NavigateNext onClick={(ev) => this.gotoPage(this.props.activePages[0] + 1)} />
                 </IconButton>
 
-                <IconButton disabled={this.state.currentPage >= this.state.lastPage}>
+                <IconButton disabled={this.state.currentPage >= this.state.lastPage} title={this.props.lastPage}>
                     <LastPage onClick={(ev) => this.gotoPage(this.props.lastPage)} />
                 </IconButton>
             </div>)

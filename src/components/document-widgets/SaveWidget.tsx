@@ -8,6 +8,7 @@ import { RootReducerType, saveChanges } from '../../store'
 
 export const mapStateToProps = (state: RootReducerType) => {
     return {
+        saveChanges: state.sensenetDocumentViewer.localization.saveChanges,
         document: state.sensenetDocumentViewer.documentState.document as DocumentData,
         pages: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
         activePages: state.sensenetDocumentViewer.viewer.activePages,
@@ -28,7 +29,7 @@ export class SaveDocumentComponent extends React.Component<componentType<typeof 
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton disabled={!this.props.hasChanges} title="Save changes">
+                <IconButton disabled={!this.props.hasChanges} title={this.props.saveChanges}>
                     <Save onClick={() => this.save()} />
                 </IconButton>
             </div>)
