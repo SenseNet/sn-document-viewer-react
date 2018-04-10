@@ -3,12 +3,11 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { Action } from 'redux'
-import { Dispatch } from 'redux'
 import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
 import { PageList } from './'
 
-const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootReducerType) => {
     return {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
@@ -16,16 +15,8 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
-const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => { actions: { setActivePages: (pages: number[]) => Action } }
-    = (dispatch: Dispatch<RootReducerType>) => ({
-        actions: {
-            setActivePages: (pages: number[]) => dispatch(setActivePages(pages)),
-        },
-    })
-
-// tslint:disable-next-line:no-empty-interface
-export interface OwnProps {
-    /** */
+const mapDispatchToProps = {
+    setActivePages: setActivePages as (activePages: number[]) => Action,
 }
 
 export interface DocumentLayoutState {
@@ -33,7 +24,7 @@ export interface DocumentLayoutState {
     activePage?: number
 }
 
-class DocumentViewerLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, DocumentLayoutState> {
+class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
     public state = { showThumbnails: true, activePage: 1 }
     public viewPort: HTMLDivElement | null = null
 
@@ -56,7 +47,7 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
             }
 
             if (this.props.activePages[0] !== index) {
-                this.props.actions.setActivePages([index])
+                this.props.setActivePages([index])
             }
 
         })
@@ -148,6 +139,6 @@ class DocumentViewerLayout extends React.Component<componentType<typeof mapState
     }
 }
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewerLayout)
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewerLayoutComponent)
 
 export { connectedComponent as DocumentViewerLayout }

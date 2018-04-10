@@ -1,7 +1,8 @@
 import { IconButton } from 'material-ui'
 import { PictureInPicture } from 'material-ui-icons'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
+import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setRedaction } from '../../store'
 
@@ -13,27 +14,21 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
-export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        setRedaction: (value: boolean) => void,
-    },
-} = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        setRedaction: (value: boolean) => dispatch(setRedaction(value)),
-    },
-})
+export const mapDispatchToProps = {
+    setRedaction: setRedaction as (showRedaction: boolean) => Action,
+}
 
 export class ToggleRedactionComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private toggleRedaction() {
-        this.props.actions.setRedaction(!this.props.showRedaction)
+        this.props.setRedaction(!this.props.showRedaction)
     }
 
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton onClick={() => this.toggleRedaction()} title="Toggle redaction" style={{ opacity: this.props.showRedaction ? 1 : 0.5 }}>
-                    <PictureInPicture />
+                <IconButton title="Toggle redaction" style={{ opacity: this.props.showRedaction ? 1 : 0.5 }}>
+                    <PictureInPicture onClick={() => this.toggleRedaction()} />
                 </IconButton>
             </div>)
     }

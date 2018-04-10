@@ -1,13 +1,14 @@
 import { Paper } from 'material-ui'
 import { CircularProgress } from 'material-ui/Progress'
 import React = require('react')
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { Element } from 'react-scroll'
-import { Action } from 'redux'
-import { DocumentData, PreviewImageData } from '../models'
+import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../models'
 import { componentType, Dimensions, ImageUtil } from '../services'
 import { previewAvailable, RootReducerType, ZoomMode } from '../store'
 
+import { ActionCreator } from 'redux'
+import { ThunkAction } from 'redux-thunk'
 import { RotatePageWidget, ShapesWidget } from './page-widgets'
 
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
@@ -22,11 +23,9 @@ const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number 
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        previewAvailable: (docData: DocumentData, version: string, page: number) => dispatch<any>(previewAvailable(docData, version, page)),
-    },
-})
+const mapDispatchToProps = {
+    previewAvailable: previewAvailable as ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>>,
+}
 
 export interface OwnProps {
     showWidgets: boolean,
@@ -37,9 +36,6 @@ export interface OwnProps {
     zoomMode: ZoomMode,
     zoomLevel: number,
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
-    actions: {
-        previewAvailable: (docData: DocumentData, version: string, page: number) => Action,
-    }
     image: 'preview' | 'thumbnail'
 }
 
@@ -99,7 +95,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         if (!imgSrc) {
             this.stopPolling()
             this.pollPreview = setInterval(() => {
-                this.props.actions.previewAvailable(this.props.documentData, this.props.version, this.props.imageIndex)
+                this.props.previewAvailable(this.props.documentData, this.props.version, this.props.imageIndex)
             }, this.props.pollInterval) as any as number
         } else {
             this.stopPolling()

@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import { Grid } from 'material-ui'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { PreviewImageData } from '../models'
 import { componentType, ImageUtil } from '../services'
 import { RootReducerType, ZoomMode } from '../store'
@@ -13,9 +13,8 @@ const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {},
-})
+const mapDispatchToProps = {
+}
 
 export interface PageListProps {
     tolerance: number
@@ -70,7 +69,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
     public componentDidMount() {
         this.setupViewPort()
         this.onScroll = _.debounce(() => this.setupVisiblePages(this.props), 10).bind(this)
-        this.viewPort.addEventListener('scroll', this.onScroll)
+        this.viewPort && this.viewPort.addEventListener('scroll', this.onScroll)
         this.onScroll()
     }
 

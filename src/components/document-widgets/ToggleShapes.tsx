@@ -1,7 +1,8 @@
 import { IconButton } from 'material-ui'
 import { Dashboard } from 'material-ui-icons'
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
+import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setShapes } from '../../store'
 
@@ -11,27 +12,21 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
-export const mapDispatchToProps: (dispatch: Dispatch<RootReducerType>) => {
-    actions: {
-        setShapes: (value: boolean) => void,
-    },
-} = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        setShapes: (value: boolean) => dispatch(setShapes(value)),
-    },
-})
+export const mapDispatchToProps = {
+    setShapes: setShapes as (showShapes: boolean) => Action,
+}
 
 export class ToggleShapesComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private toggleRedaction() {
-        this.props.actions.setShapes(!this.props.showShapes)
+        this.props.setShapes(!this.props.showShapes)
     }
 
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton onClick={() => this.toggleRedaction()} title="Toggle redaction" style={{ opacity: this.props.showShapes ? 1 : 0.5 }}>
-                    <Dashboard />
+                <IconButton title="Toggle redaction" style={{ opacity: this.props.showShapes ? 1 : 0.5 }}>
+                    <Dashboard onClick={() => this.toggleRedaction()}  />
                 </IconButton>
             </div>)
     }
@@ -40,9 +35,3 @@ export class ToggleShapesComponent extends React.Component<componentType<typeof 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ToggleShapesComponent)
 
 export {connectedComponent as ToggleShapesWidget}
-
-// export const toggleShapesWidget: DocumentWidget = {
-//     shouldCheckAvailable: (oldState, newState) => false,
-//     isAvailable: async (state) => true,
-//     component: connectedComponent,
-// }

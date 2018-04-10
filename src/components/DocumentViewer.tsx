@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { ActionCreator, Dispatch } from 'redux'
 import { DocumentViewerSettings } from '../models'
 import { componentType } from '../services'
-import { pollDocumentData, RootReducerType } from '../store'
-import { DocumentViewerError, DocumentViewerLayout, DocumentViewerLoading } from './'
+import { DocumentStateType, pollDocumentData, RootReducerType } from '../store'
+import { DocumentViewerError } from './DocumentViewerError'
+import { DocumentViewerLayout } from './DocumentViewerLayout'
+import { DocumentViewerLoading } from './DocumentViewerLoading'
 
 /**
  * Properties for main
@@ -18,15 +20,13 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         isLoading: state.sensenetDocumentViewer.documentState.isLoading,
         idOrPath: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.idOrPath,
-        error: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.error,
+        error: state.sensenetDocumentViewer.documentState.error,
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<RootReducerType>) => ({
-    actions: {
-        pollDocumentData: (idOrPath: number | string) => dispatch<any>(pollDocumentData(idOrPath)) as void,
-    },
-})
+const mapDispatchToProps = {
+    pollDocumentData: pollDocumentData as ActionCreator<(dispatch: Dispatch<DocumentStateType>, getState: () => DocumentStateType, extraArgument: DocumentViewerSettings) => Promise<void>>,
+}
 
 type docViewerComponentType = componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>
 
@@ -38,14 +38,14 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
     constructor(props: docViewerComponentType) {
         super(props)
         if (this.props.documentIdOrPath) {
-            this.props.actions.pollDocumentData(this.props.documentIdOrPath)
+            this.props.pollDocumentData(this.props.documentIdOrPath)
         }
 
     }
 
     public componentWillReceiveProps(newProps: this['props']) {
         if (this.props.documentIdOrPath !== newProps.documentIdOrPath) {
-            this.props.actions.pollDocumentData(newProps.documentIdOrPath)
+            this.props.pollDocumentData(newProps.documentIdOrPath)
         }
     }
 
@@ -60,10 +60,12 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
             return <DocumentViewerLoading />
 
         }
-        return <DocumentViewerLayout children={this.props.children} />
+        return (<DocumentViewerLayout>
+            {this.props.children}
+        </DocumentViewerLayout>)
     }
 }
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewer)
 
-export {connectedComponent as DocumentViewer}
+export { connectedComponent as DocumentViewer }
