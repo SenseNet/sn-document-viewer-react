@@ -14,7 +14,6 @@ import { DocumentViewerLoading } from './DocumentViewerLoading'
  * Properties for main
  */
 export interface OwnProps {
-    settings: DocumentViewerSettings
     hostName: string
     documentIdOrPath: string | number
     version?: string
