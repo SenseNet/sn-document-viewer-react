@@ -130,8 +130,8 @@ const localStorageKey = 'sn-docviewer-example'
 class ExampleAppLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, {}>, ExampleAppState> {
     public state: ExampleAppState =
         JSON.parse(localStorage.getItem(localStorageKey) as any) || {
-            hostName: 'http://snbppc109.sn.hu',
-            documentIdOrPath: `/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('Pro ASP.NET MVC 4- 4th Edition.pdf')`,
+            hostName: '',
+            documentIdOrPath: ``,
             isViewerOpened: false,
             settings: defaultSettings,
             isHelpOpened: false,
