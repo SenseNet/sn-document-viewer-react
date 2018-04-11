@@ -19,13 +19,13 @@ export interface DocumentStateType {
     hasChanges: boolean
 }
 
-export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings>> = (idOrPath: string, version: string) => {
+export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings>> = (hostName: string, idOrPath: string, version: string) => {
     return async (dispatch, getState, api) => {
         dispatch(setDocumentAction(idOrPath, version))
         let docData: DocumentData | undefined
         while (!docData || docData.pageCount === PreviewState.Loading) {
             try {
-                docData = await api.getDocumentData(idOrPath)
+                docData = await api.getDocumentData({ idOrPath, hostName })
                 if (!docData || docData.pageCount === PreviewState.Loading) {
                     await new Promise<void>((resolve, reject) => setTimeout(() => { resolve() }, getState().pollInterval))
                 }
@@ -36,9 +36,9 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
         }
         try {
             const [canEdit, canHideRedaction, canHideWatermark] = await Promise.all([
-                await api.canEditDocument(docData.idOrPath),
-                await api.canHideRedaction(docData.idOrPath),
-                await api.canHideWatermark(docData.idOrPath),
+                await api.canEditDocument(docData),
+                await api.canHideRedaction(docData),
+                await api.canHideWatermark(docData),
             ])
             dispatch(documentPermissionsReceived(canEdit, canHideRedaction, canHideWatermark))
         } catch (error) {
@@ -145,6 +145,7 @@ export const applyShapeRotations = <T extends Shape>(shapes: T[], degree: number
 export const documentStateReducer: Reducer<DocumentStateType>
     = (state = {
         document: {
+            hostName: '',
             shapes: {
                 annotations: [],
                 highlights: [],
