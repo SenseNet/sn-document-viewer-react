@@ -23,7 +23,7 @@ const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
 
 const settings: DocumentViewerSettings = {
     canEditDocument: async (idOrPath) => {
-        const response = await fetch(`${SITE_URL}/odata.svc/${idOrPath}/HasPermission?permissions=Save`, { method: 'GET' })
+        const response = await fetch(`${encodeURI(SITE_URL)}/odata.svc/${encodeURI(idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET' })
         if (response.ok) {
             return await response.text() === 'true'
         }
@@ -111,7 +111,7 @@ const settings: DocumentViewerSettings = {
 
 const storeConfig = getStoreConfig(settings)
 
-const myReducer = combineReducers({
+const rootReducer = combineReducers({
     sensenetDocumentViewer: sensenetDocumentViewerReducer,
     myStuff: (state = {}, action) => {
         if (action.type === 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS') {
@@ -122,7 +122,7 @@ const myReducer = combineReducers({
     },
 })
 
-const store = createStore(myReducer, storeConfig.preloadedState, storeConfig.enhancer)
+const store = createStore(rootReducer, storeConfig.preloadedState, storeConfig.enhancer)
 
 ReactDOM.render(
     <Provider store={store} >
