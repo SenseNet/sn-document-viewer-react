@@ -12,6 +12,7 @@ export const mapStateToProps = (state: RootReducerType) => {
         document: state.sensenetDocumentViewer.documentState.document as DocumentData,
         pages: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
         activePages: state.sensenetDocumentViewer.viewer.activePages,
+        canEdit: state.sensenetDocumentViewer.documentState.canEdit,
         hasChanges: state.sensenetDocumentViewer.documentState.hasChanges || state.sensenetDocumentViewer.previewImages.hasChanges,
     }
 }
@@ -23,13 +24,13 @@ export const mapDispatchToProps = {
 export class SaveDocumentComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private save() {
-        this.props.save(this.props.document, this.props.pages)
+        this.props.canEdit && this.props.save(this.props.document, this.props.pages)
     }
 
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                <IconButton disabled={!this.props.hasChanges} title={this.props.saveChanges}>
+                <IconButton disabled={!this.props.hasChanges || !this.props.canEdit} title={this.props.saveChanges}>
                     <Save onClick={() => this.save()} />
                 </IconButton>
             </div>)

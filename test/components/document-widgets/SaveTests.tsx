@@ -1,11 +1,11 @@
+import { Save } from 'material-ui-icons'
 import * as React from 'react'
 import { Provider } from 'react-redux'
-
-import { Save } from 'material-ui-icons'
 import * as renderer from 'react-test-renderer'
 import { SaveWidget } from '../../../src/components/document-widgets/SaveWidget'
-import { documentReceivedAction } from '../../../src/store/Document'
-import { exampleDocumentData, useTestContext, useTestContextWithSettings } from '../../viewercontext'
+import { documentPermissionsReceived, documentReceivedAction } from '../../../src/store/Document'
+import { asyncDelay } from '../../asyncdelayer'
+import { exampleDocumentData, useTestContext, useTestContextWithSettings, useTestContextWithSettingsAsync } from '../../viewercontext'
 
 export const saveWidgetTests = describe('SaveWidget component', () => {
 
@@ -18,7 +18,6 @@ export const saveWidgetTests = describe('SaveWidget component', () => {
     it('Should render without crashing', () => {
         useTestContext((ctx) => {
             ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
-
             c = renderer.create(
                 <Provider store={ctx.store}>
                     <SaveWidget>
@@ -34,6 +33,8 @@ export const saveWidgetTests = describe('SaveWidget component', () => {
             },
         }, (ctx) => {
             ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
+            ctx.store.dispatch(documentPermissionsReceived(true, true, true))
+
             c = renderer.create(
                 <Provider store={ctx.store}>
                     <SaveWidget>
@@ -41,6 +42,26 @@ export const saveWidgetTests = describe('SaveWidget component', () => {
                 </Provider>)
             const button = c.root.findByType(Save)
             button.props.onClick()
+        })
+    })
+
+    it('Click on save should not trigger a save request when the user has no edit permission', async () => {
+        await useTestContextWithSettingsAsync({
+            saveChanges: async () => {
+                throw Error('Save is permitted')
+            },
+        }, async (ctx) => {
+            ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
+            ctx.store.dispatch(documentPermissionsReceived(false, false, false))
+
+            c = renderer.create(
+                <Provider store={ctx.store}>
+                    <SaveWidget>
+                    </SaveWidget>
+                </Provider>)
+            const button = c.root.findByType(Save)
+            button.props.onClick()
+            await asyncDelay(100)
         })
     })
 })
