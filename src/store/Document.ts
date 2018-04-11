@@ -21,7 +21,6 @@ export interface DocumentStateType {
 
 export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings>> = (hostName: string, idOrPath: string, version: string) => {
     return async (dispatch, getState, api) => {
-        dispatch(setDocumentAction(idOrPath, version))
         let docData: DocumentData | undefined
         while (!docData || docData.pageCount === PreviewState.Loading) {
             try {
@@ -48,12 +47,6 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
         dispatch<any>(getAvailableImages(docData))
     }
 }
-
-export const setDocumentAction: (idOrPath: number | string, version: string) => Action = (idOrPath, version) => ({
-    type: 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT',
-    idOrPath,
-    version,
-})
 
 export const documentReceivedAction: (document: DocumentData) => Action = (document: DocumentData) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED',
@@ -173,15 +166,7 @@ export const documentStateReducer: Reducer<DocumentStateType>
             case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
                 return { ...state, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath, version: actionCasted.version }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
-                return { ...state,
-                        document: {
-                            ...state.document,
-                            ...actionCasted.document,
-                            shapes: {
-                                ...state.document.shapes,
-                                ...actionCasted.document.shapes,
-                            },
-                        }, error: undefined, isLoading: false, hasChanges: false }
+                return { ...state, document: {...state.document, ...actionCasted.document}, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
                 return { ...state, error: actionCasted.error, isLoading: false }
             case 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE':
