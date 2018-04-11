@@ -9,7 +9,7 @@ module.exports = {
     output: {
         filename: "bundle.js",
         publicPath: "/assets/",
-        path: path.resolve(__dirname + "/bundle/dist")
+        path: path.resolve(__dirname + "/bundle/assets")
     },
     optimization: {
         splitChunks: {
