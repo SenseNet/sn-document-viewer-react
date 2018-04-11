@@ -119,7 +119,11 @@ export const defaultSettings: DocumentViewerSettings = {
                 redactions: (JSON.parse(body.d.Shapes)[0].redactions as Redaction[]).map((a) => addGuidToShape(a)) || [],
                 annotations: (JSON.parse(body.d.Shapes)[2].annotations as Annotation[]).map((a) => addGuidToShape(a)) || [],
                 highlights: (JSON.parse(body.d.Shapes)[1].highlights as Highlight[]).map((a) => addGuidToShape(a)) || [],
-            },
+            } || {
+                    redactions: [],
+                    annotations: [],
+                    highlights: [],
+                },
             pageAttributes: body.d.PageAttributes && JSON.parse(body.d.PageAttributes) || [],
         }
     },
@@ -237,7 +241,7 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                                         control={
                                             <Checkbox
                                                 checked={this.state.save}
-                                                onChange={(ev) => this.setState({...this.state, save: !this.state.save})}
+                                                onChange={(ev) => this.setState({ ...this.state, save: !this.state.save })}
                                                 value="checkedA"
                                             />
                                         }
