@@ -173,7 +173,7 @@ export const documentStateReducer: Reducer<DocumentStateType>
             case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
                 return { ...state, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath, version: actionCasted.version }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
-                return { ...state, document: actionCasted.document, error: undefined, isLoading: false, hasChanges: false }
+                return { ...state, document: {...state.document, ...actionCasted.document}, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
                 return { ...state, error: actionCasted.error, isLoading: false }
             case 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE':
