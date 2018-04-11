@@ -14,7 +14,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
         useTestContext((ctx) => {
             const c = renderer.create(
                 <Provider store={ctx.store} >
-                    <DocumentViewer settings={ctx.settings} documentIdOrPath="" />
+                    <DocumentViewer documentIdOrPath="" hostName=""/>
                 </Provider>)
             c.unmount()
         })
@@ -27,7 +27,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
         })
         const exampleIdOrPath = 'Example/Id/Or/Path'
         useTestContextWithSettings({
-            getDocumentData: async (idOrPath) => {
+            getDocumentData: async ({idOrPath}) => {
                 expect(idOrPath).to.be.eq(exampleIdOrPath)
                 done()
                 return exampleDocumentData
@@ -35,7 +35,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
         }, (ctx) => {
             c = renderer.create(
                 <Provider store={ctx.store}>
-                    <DocumentViewer settings={ctx.settings} documentIdOrPath={exampleIdOrPath} />
+                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
                 </Provider>)
         })
     })
@@ -58,7 +58,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
         }, (ctx) => {
             c = renderer.create(
                 <Provider store={ctx.store} >
-                    <DocumentViewer settings={ctx.settings} documentIdOrPath={exampleIdOrPath} />
+                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
                 </Provider>)
             setTimeout(() => {
                 const component = c.root.findByType(DocumentViewer).children[0] as renderer.ReactTestInstance
@@ -80,7 +80,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
         }, (ctx) => {
             c = renderer.create(
                 <Provider store={ctx.store} >
-                    <DocumentViewer settings={ctx.settings} documentIdOrPath={exampleIdOrPath} />
+                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
                 </Provider>)
             setTimeout(() => {
                 const error = c.root.findByType(DocumentViewerError).instance

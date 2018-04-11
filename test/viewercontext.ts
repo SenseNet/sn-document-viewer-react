@@ -5,6 +5,7 @@ import { configureStore, RootReducerType } from '../src/store'
 
 export const exampleDocumentData: DocumentData = {
     documentName: 'example doc',
+    hostName: 'https://example-host',
     documentType: 'word',
     idOrPath: 'example/id/or/path',
     shapes: {
