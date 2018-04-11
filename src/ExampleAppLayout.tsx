@@ -11,8 +11,8 @@ import { PreviewImageData } from './models/PreviewImageData'
 import { Annotation, Highlight, Redaction, Shape } from './models/Shapes'
 import { componentType } from './services'
 
-import { Button, Paper, TextField, Typography } from 'material-ui'
-import { FolderOpen } from 'material-ui-icons'
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Paper, TextField, Typography } from 'material-ui'
+import { FolderOpen, Help, Send } from 'material-ui-icons'
 
 const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
     shape.guid = v1()
@@ -29,6 +29,8 @@ export interface ExampleAppState {
     documentIdOrPath: number | string
     isViewerOpened: boolean
     settings: DocumentViewerSettings
+    isHelpOpened: boolean
+    save: boolean
 }
 
 const mapDispatchToProps = {
@@ -132,11 +134,16 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
             documentIdOrPath: `/Root/Sites/Default_Site/workspaces/Project/budapestprojectworkspace/Document_Library/('Pro ASP.NET MVC 4- 4th Edition.pdf')`,
             isViewerOpened: false,
             settings: defaultSettings,
+            isHelpOpened: false,
         }
 
     public setState(newState: this['state']) {
         super.setState(newState)
-        localStorage.setItem(localStorageKey, JSON.stringify(newState))
+        if (newState.save) {
+            localStorage.setItem(localStorageKey, JSON.stringify(newState))
+        } else {
+            localStorage.removeItem(localStorageKey)
+        }
     }
 
     private openViewer() {
@@ -159,9 +166,7 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                 this.state.isViewerOpened ?
                     <DocumentViewer
                         hostName={this.state.hostName}
-                        documentIdOrPath={this.state.documentIdOrPath}
-                        settings={this.state.settings}
-                    >
+                        documentIdOrPath={this.state.documentIdOrPath}>
                         <LayoutAppBar>
                             <div>
                                 <RotateDocumentWidget />
@@ -185,11 +190,12 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                         <Paper elevation={4} style={{
                             padding: '1.2rem',
                             flexGrow: 1,
-                            maxWidth: '75%',
+                            maxWidth: '65%',
                         }}>
                             <Typography variant="title">Document Viewer Demo</Typography>
-                            <Typography variant="subheading">Select a sensenet site and document to open</Typography>
-                            <Typography variant="body1">asd</Typography>
+                            <Typography>
+                                Select a sensenet site and document to open.
+                            </Typography>
                             <form
                                 autoComplete="off"
                                 autoCorrect="off"
@@ -218,10 +224,44 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                                     placeholder="The Id or full path of the document, e.g.: /Root/Sites/MySite/MyDocLib/('Example.docx')"
                                     label="Document id / full path"
                                 />
-                                <div>
-                                    <Button type="submit" variant="raised" color="primary"> Open </Button>
+                                <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'row-reverse',
+                                    marginTop: '1em',
+                                }}>
+                                    <Button type="submit" variant="raised" color="primary"> <Send fontSize="20px" /> &nbsp; Open </Button>
+                                    &nbsp;
+                                    <Button onClick={(ev) => this.setState({ ...this.state, isHelpOpened: true })} variant="raised" color="primary"> <Help fontSize="20px" /> &nbsp; Help </Button>
+                                    &nbsp;
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={this.state.save}
+                                                onChange={(ev) => this.setState({...this.state, save: !this.state.save})}
+                                                value="checkedA"
+                                            />
+                                        }
+                                        label="Remember"
+                                    />
                                 </div>
                             </form>
+                            <Dialog open={this.state.isHelpOpened || false}>
+                                <DialogTitle>Help</DialogTitle>
+                                <DialogContent>
+                                    <Typography component="div">
+                                        If you have trouble opening a file be sure that
+                                        <ul>
+                                            <li>you are using sensenet <a href="https://community.sensenet.com/docs/install-sn-from-nuget/" target="_blank" >7.0+</a></li>
+                                            <li><a href="https://community.sensenet.com/docs/cors/" target="_blank">CORS</a> is allowed for the current host</li>
+                                            <li>Visitor user has Open rights to the document</li>
+                                            <li>The preview images has been generated or Task Management is configured</li>
+                                        </ul>
+                                    </Typography>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={(ev) => this.setState({ ...this.state, isHelpOpened: false })} variant="raised" color="primary"> Close </Button>
+                                </DialogActions>
+                            </Dialog>
                         </Paper>
                     </div>
             }
