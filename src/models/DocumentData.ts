@@ -5,6 +5,7 @@ import { PageAttribute, Shapes } from '.'
  */
 
 export interface DocumentData {
+    hostName: string
     idOrPath: number | string
     documentName: string
     documentType: string

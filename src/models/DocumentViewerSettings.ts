@@ -8,7 +8,7 @@ export interface DocumentViewerSettings {
     /**
      * Callback that will retrieve if the current user has permission for document editing
      */
-    canEditDocument: (idOrPath: string | number ) => Promise<boolean>
+    canEditDocument: (document: DocumentData) => Promise<boolean>
 
     /**
      * Callback for saving changes to the document
@@ -18,18 +18,18 @@ export interface DocumentViewerSettings {
     /**
      * Callback for checking if the current user can hide the watermark
      */
-    canHideWatermark: (idOrPath: string | number ) => Promise<boolean>
+    canHideWatermark: (document: DocumentData) => Promise<boolean>
 
     /**
      * Callback for checking if the current user can hide the redaction
      */
-    canHideRedaction: (idOrPath: string | number ) => Promise<boolean>
+    canHideRedaction: (document: DocumentData) => Promise<boolean>
 
     /**
      * Callback that will return with the retrieved DocumentData (if available)
      */
 
-    getDocumentData: (idOrPath: string | number) => Promise<DocumentData | undefined>
+    getDocumentData: (document: {idOrPath: number | string, hostName: string}) => Promise<DocumentData | undefined>
 
     /**
      * Callback that will return with the retrieved PreviewImageData array

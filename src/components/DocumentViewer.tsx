@@ -15,7 +15,9 @@ import { DocumentViewerLoading } from './DocumentViewerLoading'
  */
 export interface OwnProps {
     settings: DocumentViewerSettings
+    hostName: string
     documentIdOrPath: string | number
+    version?: string
     localization?: Partial<LocalizationStateType>
 }
 
@@ -43,7 +45,7 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
         super(props)
 
         if (this.props.documentIdOrPath) {
-            this.props.pollDocumentData(this.props.documentIdOrPath)
+            this.props.pollDocumentData(this.props.hostName, this.props.documentIdOrPath, this.props.version)
         }
         if (this.props.localization) {
             this.props.setLocalization(this.props.localization)
@@ -51,8 +53,12 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
     }
 
     public componentWillReceiveProps(newProps: this['props']) {
-        if (this.props.documentIdOrPath !== newProps.documentIdOrPath) {
-            this.props.pollDocumentData(newProps.documentIdOrPath)
+        if (
+            this.props.hostName !== newProps.hostName
+            || this.props.documentIdOrPath !== newProps.documentIdOrPath
+            || this.props.version !== newProps.version
+        ) {
+            this.props.pollDocumentData(this.props.hostName, this.props.documentIdOrPath, this.props.version)
         }
         if (this.props.localization) {
             this.props.setLocalization(this.props.localization)
