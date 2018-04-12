@@ -154,7 +154,8 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
         }
     }
 
-    private openViewer() {
+    private openViewer(ev: React.FormEvent<any>) {
+        ev.preventDefault()
         this.setState({
             ...this.state,
             isViewerOpened: true,
@@ -207,7 +208,7 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                             <form
                                 autoComplete="off"
                                 autoCorrect="off"
-                                onSubmit={(ev) => this.openViewer()}
+                                onSubmit={(ev) => this.openViewer(ev)}
                                 style={{
                                     margin: '.5em',
                                     display: 'flex',
@@ -261,7 +262,8 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                                         <ul>
                                             <li>you are using sensenet <a href="https://community.sensenet.com/docs/install-sn-from-nuget/" target="_blank" >7.0+</a></li>
                                             <li><a href="https://community.sensenet.com/docs/cors/" target="_blank">CORS</a> is allowed for the current host</li>
-                                            <li>Visitor user has Open rights to the document</li>
+                                            <li>You are logged in</li>
+                                            <li>You have Open rights to the document</li>
                                             <li>The preview images has been generated or Task Management is configured</li>
                                         </ul>
                                     </Typography>
