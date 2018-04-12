@@ -24,7 +24,8 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         isLoading: state.sensenetDocumentViewer.documentState.isLoading,
         idOrPath: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.idOrPath,
-        error: state.sensenetDocumentViewer.documentState.error,
+        docViewerError: state.sensenetDocumentViewer.documentState.error,
+        previewImagesError: state.sensenetDocumentViewer.previewImages.error,
     }
 }
 
@@ -69,8 +70,8 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
      * renders the component
      */
     public render() {
-        if (this.props.error) {
-            return <DocumentViewerError error={this.props.error} />
+        if (this.props.docViewerError || this.props.previewImagesError) {
+            return <DocumentViewerError error={this.props.docViewerError || this.props.previewImagesError} />
         }
         if (this.props.isLoading) {
             return <DocumentViewerLoading />

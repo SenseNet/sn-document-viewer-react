@@ -9,7 +9,7 @@ export interface PreviewImagesStateType {
     pollInterval: number
     AvailableImages: PreviewImageData[]
     hasChanges: boolean
-    Error: string | null
+    error: string | null
 }
 
 export const getAvailabelImagesAction: (documentData: DocumentData) => Action = (documentData) => ({
@@ -93,15 +93,15 @@ export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, RootRedu
     }
 }
 
-export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], Error: null, hasChanges: false, pollInterval: 2000 }, action) => {
+export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], error: null, hasChanges: false, pollInterval: 2000 }, action) => {
     const actionCasted = action as Action & PreviewImagesStateType
     switch (actionCasted.type) {
         case 'SN_DOCVIEWER_PREVIEWS_GET_IMAGES':
-            return { ...state, AvailableImages: [], Error: null }
+            return { ...state, AvailableImages: [], error: null }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVED':
             return { ...state, hasChanges: false, AvailableImages: action.imageData }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVE_ERROR':
-            return { ...state, AvailableImages: [], error: action.Error }
+            return { ...state, AvailableImages: [], error: action.error }
         case 'SN_DOCVIEWER_PREVIEWS_IMAGES_ROTATE':
             return {
                 ...state,
