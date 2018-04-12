@@ -38,7 +38,7 @@ const mapDispatchToProps = {
 
 export const defaultSettings: DocumentViewerSettings = {
     canEditDocument: async (documentData) => {
-        const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET' })
+        const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET', credentials: 'include' })
         if (response.ok) {
             return await response.text() === 'true'
         }
@@ -56,24 +56,25 @@ export const defaultSettings: DocumentViewerSettings = {
         await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}`, {
             method: 'PATCH',
             body: JSON.stringify(reqBody),
+            credentials: 'include',
         })
     },
     canHideWatermark: async (documentData) => {
-        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutWatermark`)
+        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutWatermark`, {credentials: 'include'})
         if (response.ok) {
             return await response.text() === 'true'
         }
         return false
     },
     canHideRedaction: async (documentData) => {
-        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutRedaction`)
+        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutRedaction`, {credentials: 'include'})
         if (response.ok) {
             return await response.text() === 'true'
         }
         return false
     },
     getExistingPreviewImages: async (documentData, version) => {
-        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/GetExistingPreviewImages?version=${version}`, { method: 'POST' })
+        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/GetExistingPreviewImages?version=${version}`, { method: 'POST', credentials: 'include' })
         const availablePreviews = (await response.json() as Array<PreviewImageData & { PreviewAvailable?: string }>).map((a) => {
             if (a.PreviewAvailable) {
                 a.PreviewImageUrl = `${documentData.hostName}${a.PreviewAvailable}`
@@ -94,6 +95,7 @@ export const defaultSettings: DocumentViewerSettings = {
         const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/PreviewAvailable?version=${version}`, {
             method: 'POST',
             body: JSON.stringify({ page }),
+            credentials: 'include',
         })
         if (response.ok) {
             const responseBody = await response.json()
@@ -106,7 +108,9 @@ export const defaultSettings: DocumentViewerSettings = {
         return
     },
     getDocumentData: async (documentData) => {
-        const docData = await fetch(`${documentData.hostName}/odata.svc/` + documentData.idOrPath)
+        const docData = await fetch(`${documentData.hostName}/odata.svc/` + documentData.idOrPath, {
+            credentials: 'include',
+        })
         const body = await docData.json()
         return {
             idOrPath: documentData.idOrPath,
