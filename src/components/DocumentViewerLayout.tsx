@@ -2,7 +2,6 @@ import { Drawer } from 'material-ui'
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
-import { Action } from 'redux'
 import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
 import { PageList } from './'
@@ -16,7 +15,7 @@ const mapStateToProps = (state: RootReducerType) => {
 }
 
 const mapDispatchToProps = {
-    setActivePages: setActivePages as (activePages: number[]) => Action,
+    setActivePages,
 }
 
 export interface DocumentLayoutState {

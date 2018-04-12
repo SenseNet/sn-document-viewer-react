@@ -1,4 +1,4 @@
-import { Action, Reducer } from 'redux'
+import { Reducer } from 'redux'
 
 export interface LocalizationStateType {
     rotateDocumentLeft: string
@@ -55,7 +55,7 @@ export const defaultLocalization: LocalizationStateType = {
 export const setLocalization = (localization: Partial<LocalizationStateType>) => ({
     type: 'SN_DOCVIEWER_SET_LOCALIZATION',
     localization,
-} as Action)
+})
 
 export const localizationReducer: Reducer<LocalizationStateType> = (state: LocalizationStateType = defaultLocalization, action ) => {
     switch (action.type) {

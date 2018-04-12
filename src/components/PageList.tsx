@@ -9,7 +9,7 @@ import { Page } from './'
 
 const mapStateToProps = (state: RootReducerType) => {
     return {
-        pages: state.sensenetDocumentViewer.previewImages.AvailableImages || [] as PreviewImageData[],
+        pages: state.sensenetDocumentViewer.previewImages.AvailableImages || [],
     }
 }
 

@@ -1,4 +1,4 @@
-import { Action, Reducer } from 'redux'
+import { Reducer } from 'redux'
 
 export type ZoomMode = 'originalSize' | 'fit' | 'fitHeight' | 'fitWidth' | 'custom'
 
@@ -11,51 +11,50 @@ export interface ViewerStateType {
     showShapes: boolean
 }
 
-export const setActivePages: (activePages: number[]) => Action = (activePages) => ({
+export const setActivePages = (activePages: number[]) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_PAGE',
     activePages,
 })
 
-export const setZoomMode: (zoomMode: ZoomMode) => Action = (zoomMode) => ({
+export const setZoomMode = (zoomMode: ZoomMode) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_ZOOM_MODE',
     zoomMode,
 })
 
-export const setCustomZoomLevel: (level: number) => Action = (customZoomLevel) => ({
+export const setCustomZoomLevel = (customZoomLevel: number) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_CUSTOM_ZOOM_LEVEL',
     customZoomLevel,
 })
 
-export const setWatermark: (showWatermark: boolean) => Action = (showWatermark) => ({
+export const setWatermark = (showWatermark: boolean) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_WATERMARK',
     showWatermark,
 })
 
-export const setRedaction: (showRedaction: boolean) => Action = (showRedaction) => ({
+export const setRedaction = (showRedaction: boolean) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_REDACTION',
     showRedaction,
 })
 
-export const setShapes: (showShapes: boolean) => Action = (showShapes) => ({
+export const setShapes = (showShapes: boolean) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_SHAPES',
     showShapes,
 })
 
 export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePages: [1], zoomMode: 'fit', customZoomLevel: 3, showWatermark: false, showRedaction: true, showShapes: true }, action) => {
-    const actionCasted = action as Action & ViewerStateType
-    switch (actionCasted.type) {
+    switch (action.type) {
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_PAGE':
-            return {...state, activePages: [...actionCasted.activePages] }
+            return {...state, activePages: [...action.activePages] }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_ZOOM_MODE':
-            return {...state, zoomMode: actionCasted.zoomMode, customZoomLevel: 0 }
+            return {...state, zoomMode: action.zoomMode, customZoomLevel: 0 }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_CUSTOM_ZOOM_LEVEL':
-            return {...state, zoomMode: 'custom', customZoomLevel: actionCasted.customZoomLevel }
+            return {...state, zoomMode: 'custom', customZoomLevel: action.customZoomLevel }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_WATERMARK':
-            return {...state, showWatermark: actionCasted.showWatermark }
+            return {...state, showWatermark: action.showWatermark }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_REDACTION':
-            return {...state, showRedaction: actionCasted.showRedaction }
+            return {...state, showRedaction: action.showRedaction }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_SHAPES':
-            return {...state, showShapes: actionCasted.showShapes }
+            return {...state, showShapes: action.showShapes }
         default:
             return state
     }

@@ -2,7 +2,6 @@ import { IconButton } from 'material-ui'
 import { Delete } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { Annotation, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { removeShape, RootReducerType, updateShapeData } from '../../store'
@@ -25,7 +24,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
 }
 
 const mapDispatchToProps = {
-    updateShapeData: updateShapeData as <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
+    updateShapeData,
     removeShape,
 }
 

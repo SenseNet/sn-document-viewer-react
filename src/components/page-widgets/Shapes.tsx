@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { Annotation, Highlight, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { RootReducerType, updateShapeData } from '../../store'
@@ -25,7 +24,7 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
 }
 
 export const mapDispatchToProps = ({
-    updateShapeData: updateShapeData as <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
+    updateShapeData,
 })
 
 export class ShapesComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {

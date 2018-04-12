@@ -2,7 +2,6 @@ import { IconButton } from 'material-ui'
 import { BrandingWatermark } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setWatermark } from '../../store'
 
@@ -15,7 +14,7 @@ export const mapStateToProps = (state: RootReducerType) => {
 }
 
 export const mapDispatchToProps = {
-    setWatermark: setWatermark as (showWatermark: boolean) => Action,
+    setWatermark,
 }
 
 export class ToggleWatermarkComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {

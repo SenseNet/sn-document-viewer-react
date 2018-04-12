@@ -1,4 +1,4 @@
-import { Action, ActionCreator, Reducer } from 'redux'
+import { ActionCreator, Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { PreviewState } from '../Enums'
 import { DocumentData, DocumentViewerSettings, PreviewImageData, Shape, Shapes } from '../models'
@@ -48,36 +48,35 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
     }
 }
 
-export const documentReceivedAction: (document: DocumentData) => Action = (document: DocumentData) => ({
+export const documentReceivedAction = (document: DocumentData) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED',
     document,
 })
 
-export const documentReceiveErrorAction: (error: string) => Action = (error: string) => ({
+export const documentReceiveErrorAction = (error: string) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR',
     error,
 })
 
-export const updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action = (shapeType, shapeGuid, shapeData) => ({
+export const updateShapeData = <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE',
     shapeType,
     shapeGuid,
     shapeData,
 })
 
-export const removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => Action = (shapeType, shapeGuid) => ({
+export const removeShape = <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_REMOVE_SHAPE',
     shapeType,
     shapeGuid,
 })
 
-export const setPollInterval: (pollInterval: number) => Action = (pollInterval) => ({
+export const setPollInterval = (pollInterval: number) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_SET_POLL_INTERVAL',
     pollInterval,
 })
 
-export const documentPermissionsReceived: (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => Action =
-    (canEdit, canHideRedaction, canHideWatermark) => ({
+export const documentPermissionsReceived = (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => ({
         type: 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED',
         canEdit,
         canHideRedaction,
@@ -91,17 +90,17 @@ export const saveChangesRequest = () => ({
 export const saveChangesError = (error: any) => ({
     type: 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_ERROR',
     error,
-} as Action)
+})
 
 export const saveChangesSuccess = () => ({
     type: 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS',
-} as Action)
+})
 
 export const rotateShapesForPages = (pages: Array<{ index: number, size: Dimensions }>, degree: number) => ({
     type: 'SN_DOCVEWER_DOCUMENT_ROTATE_SHAPES_FOR_PAGES',
     pages,
     degree,
-} as Action)
+})
 
 export const saveChanges: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = () => {
     return async (dispatch, getState, api) => {
@@ -161,14 +160,13 @@ export const documentStateReducer: Reducer<DocumentStateType>
         canHideWatermark: false,
         pollInterval: 2000,
     }, action) => {
-        const actionCasted = action as Action & DocumentStateType
-        switch (actionCasted.type) {
+        switch (action.type) {
             case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
-                return { ...state, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath, version: actionCasted.version }
+                return { ...state, error: undefined, isLoading: true, idOrPath: action.idOrPath, version: action.version }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
-                return { ...state, document: {...state.document, ...actionCasted.document}, error: undefined, isLoading: false, hasChanges: false }
+                return { ...state, document: {...state.document, ...action.document}, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
-                return { ...state, error: actionCasted.error, isLoading: false }
+                return { ...state, error: action.error, isLoading: false }
             case 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE':
                 return {
                     ...state,
@@ -217,9 +215,9 @@ export const documentStateReducer: Reducer<DocumentStateType>
             case 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED':
                 return {
                     ...state,
-                    canEdit: actionCasted.canEdit,
-                    canHideRedaction: actionCasted.canHideRedaction,
-                    canHideWatermark: actionCasted.canHideWatermark,
+                    canEdit: action.canEdit,
+                    canHideRedaction: action.canHideRedaction,
+                    canHideWatermark: action.canHideWatermark,
                 }
             case 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS':
                 return {

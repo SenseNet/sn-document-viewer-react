@@ -15,7 +15,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number 
     return {
         store: state,
         documentData: state.sensenetDocumentViewer.documentState.document as DocumentData,
-        version: state.sensenetDocumentViewer.documentState.version as string,
+        version: state.sensenetDocumentViewer.documentState.version,
         page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {} as PreviewImageData,
         activePages: state.sensenetDocumentViewer.viewer.activePages,
         showWatermark: state.sensenetDocumentViewer.viewer.showWatermark,

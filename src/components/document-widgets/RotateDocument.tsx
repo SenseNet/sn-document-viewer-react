@@ -2,7 +2,6 @@ import { IconButton } from 'material-ui'
 import { RotateLeft, RotateRight } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { PreviewImageData } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, rotateImages } from '../../store'
@@ -17,7 +16,7 @@ export const mapStateToProps = (state: RootReducerType) => {
 }
 
 export const mapDispatchToProps = {
-    rotateImages: rotateImages as (imageIndexes: number[], amount: number) => Action,
+    rotateImages,
 }
 
 export class RotateDocumentComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {

@@ -24,6 +24,9 @@ const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     }
 }
 
+/**
+ * State model for the ExampleApp component
+ */
 export interface ExampleAppState {
     hostName: string
     documentIdOrPath: number | string
@@ -33,10 +36,13 @@ export interface ExampleAppState {
     save: boolean
 }
 
+/**
+ * mapDispatchToProps for the example app layout component
+ */
 const mapDispatchToProps = {
 }
 
-export const defaultSettings: DocumentViewerSettings = {
+export const exampleSettings: DocumentViewerSettings = {
     canEditDocument: async (documentData) => {
         const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET', credentials: 'include' })
         if (response.ok) {
@@ -141,7 +147,7 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
             hostName: '',
             documentIdOrPath: ``,
             isViewerOpened: false,
-            settings: defaultSettings,
+            settings: exampleSettings,
             isHelpOpened: false,
         }
 

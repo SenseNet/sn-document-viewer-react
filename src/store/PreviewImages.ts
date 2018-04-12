@@ -12,22 +12,22 @@ export interface PreviewImagesStateType {
     error: string | null
 }
 
-export const getAvailabelImagesAction: (documentData: DocumentData) => Action = (documentData) => ({
+export const getAvailabelImagesAction = (documentData: DocumentData) => ({
     type: 'SN_DOCVIEWER_PREVIEWS_GET_IMAGES',
     documentData,
 })
 
-export const availabelImagesReceivedAction: (imageData: PreviewImageData[]) => Action = (imageData) => ({
+export const availabelImagesReceivedAction = (imageData: PreviewImageData[]) => ({
     type: 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVED',
     imageData,
 })
 
-export const availabelImagesReceiveErrorAction: (error: string) => Action = (error) => ({
+export const availabelImagesReceiveErrorAction = (error: string) => ({
     type: 'SN_DOCVIEWER_PREVIEWS_IMAGES_RECEIVE_ERROR',
     error,
 })
 
-export const rotateImages: (imageIndexes: number[], amount: number) => Action = (imageIndexes, amount) => ({
+export const rotateImages = (imageIndexes: number[], amount: number) => ({
     type: 'SN_DOCVIEWER_PREVIEWS_IMAGES_ROTATE',
     imageIndexes,
     amount,
@@ -47,12 +47,12 @@ export const getAvailableImages: ActionCreator<ThunkAction<Promise<void>, RootRe
         dispatch(availabelImagesReceivedAction(docData))
     }
 }
-export const previewAvailableAction: (documentData: DocumentData, version: string, page: number) => Action = (documentData, version, page) => ({
+export const previewAvailableAction = (documentData: DocumentData, version: string, page: number) => ({
     type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_AVAILABLE',
     documentData,
 })
 
-export const previewAvailableReceivedAction: (documentData: DocumentData, version: string, page: number, imageData: PreviewImageData) => Action = (documentData, version, page, imageData) => ({
+export const previewAvailableReceivedAction = (documentData: DocumentData, version: string, page: number, imageData: PreviewImageData) => ({
     type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_AVAILABLE_RECEIVED',
     documentData,
     version,
@@ -60,16 +60,16 @@ export const previewAvailableReceivedAction: (documentData: DocumentData, versio
     imageData,
 })
 
-export const previewNotAvailableReceivedAction: () => Action = () => ({
+export const previewNotAvailableReceivedAction = () => ({
     type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_NOT_AVAILABLE_RECEIVED',
 })
 
-export const previewAvailableErrorAction: (error: string) => Action = (error) => ({
+export const previewAvailableErrorAction = (error: string) => ({
     type: 'SN_DOCVIEWER_PREVIEWS_PREVIEW_AVAILABLE_ERROR',
     error,
 })
 
-export const setPagePollInterval: (pollInterval: number) => Action = (pollInterval) => ({
+export const setPagePollInterval = (pollInterval: number) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_PAGE_SET_POLL_INTERVAL',
     pollInterval,
 })

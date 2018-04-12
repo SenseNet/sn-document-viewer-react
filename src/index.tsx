@@ -4,11 +4,11 @@ import { Provider } from 'react-redux'
 
 import { createStore } from 'redux'
 import { combineReducers } from 'redux'
-import { defaultSettings, ExampleAppLayout } from './ExampleAppLayout'
+import { ExampleAppLayout, exampleSettings } from './ExampleAppLayout'
 import { getStoreConfig, sensenetDocumentViewerReducer } from './store'
 import './style'
 
-const storeConfig = getStoreConfig(defaultSettings)
+const storeConfig = getStoreConfig(exampleSettings)
 
 const rootReducer = combineReducers({
     sensenetDocumentViewer: sensenetDocumentViewerReducer,

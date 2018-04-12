@@ -2,7 +2,6 @@ import { Divider, IconButton, Menu, MenuItem, MobileStepper } from 'material-ui'
 import { AspectRatio, Code, Error, ZoomIn, ZoomOut, ZoomOutMap } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setCustomZoomLevel, setZoomMode, ZoomMode } from '../../store'
 
@@ -23,7 +22,7 @@ export const mapStateToProps = (state: RootReducerType) => {
 
 export const mapDispatchToProps = {
     setZoomMode,
-    setZoomLevel: setCustomZoomLevel as (level: number) => Action,
+    setZoomLevel: setCustomZoomLevel,
 }
 
 export class ZoomWidgetComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { zoomMenuAnchor?: HTMLElement }> {

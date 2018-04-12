@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { ActionCreator, Dispatch } from 'redux'
-import { Action } from 'redux'
 import { DocumentViewerSettings } from '../models'
 import { componentType } from '../services'
 import { DocumentStateType, pollDocumentData, RootReducerType } from '../store'
@@ -31,7 +30,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
 
 const mapDispatchToProps = {
     pollDocumentData: pollDocumentData as ActionCreator<(dispatch: Dispatch<DocumentStateType>, getState: () => DocumentStateType, extraArgument: DocumentViewerSettings) => Promise<void>>,
-    setLocalization: setLocalization as (localization: Partial<LocalizationStateType>) => Action,
+    setLocalization,
 }
 
 type docViewerComponentType = componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>

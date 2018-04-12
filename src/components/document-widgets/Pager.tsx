@@ -3,7 +3,6 @@ import { IconButton, TextField } from 'material-ui'
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
 
@@ -20,7 +19,7 @@ export const mapStateToProps = (state: RootReducerType) => {
 }
 
 export const mapDispatchToProps = {
-    setActivePages: setActivePages as (activePages: number[]) => Action,
+    setActivePages,
 }
 
 export interface PagerState {
