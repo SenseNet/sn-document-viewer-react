@@ -4,6 +4,9 @@ import * as renderer from 'react-test-renderer'
 import { DocumentViewerError } from '../../src/components/DocumentViewerError'
 import { useTestContext } from '../viewercontext'
 
+/**
+ * DocumentViewerError Component tests
+ */
 export const documentViewerErrorTests = describe('Document Viewer Error component', () => {
     it('Should render without crashing', () => {
         useTestContext((ctx) => {

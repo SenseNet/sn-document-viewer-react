@@ -11,6 +11,9 @@ import { setActivePages } from '../../../src/store/Viewer'
 import {asyncDelay} from '../../asyncdelayer'
 import { exampleDocumentData, useTestContext, useTestContextAsync } from '../../viewercontext'
 
+/**
+ * Pager widget tests
+ */
 export const pagerWidgetTests = describe('PagerWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

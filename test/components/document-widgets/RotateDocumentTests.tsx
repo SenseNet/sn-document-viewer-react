@@ -9,6 +9,9 @@ import { documentReceivedAction } from '../../../src/store/Document'
 import { availabelImagesReceivedAction } from '../../../src/store/PreviewImages'
 import { exampleDocumentData, useTestContext } from '../../viewercontext'
 
+/**
+ * Rotate Document widget tests
+ */
 export const rotateDocumentWidgetTests = describe('RotateDocumentWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

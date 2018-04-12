@@ -7,6 +7,9 @@ import { ZoomModeWidget } from '../../../src/components/document-widgets/ZoomMod
 import { documentReceivedAction } from '../../../src/store/Document'
 import { exampleDocumentData, useTestContext } from '../../viewercontext'
 
+/**
+ * Zoom Mode widget tests
+ */
 export const zoomModeWidgetTests = describe('ZoomModeWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

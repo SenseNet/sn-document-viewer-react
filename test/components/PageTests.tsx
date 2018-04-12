@@ -6,6 +6,9 @@ import { Page } from '../../src/components/Page'
 import { documentReceivedAction } from '../../src/store/Document'
 import { exampleDocumentData, useTestContext } from '../viewercontext'
 
+/**
+ * Page Component tests
+ */
 export const pageTests = describe('Page component', () => {
 
     let c!: renderer.ReactTestRenderer

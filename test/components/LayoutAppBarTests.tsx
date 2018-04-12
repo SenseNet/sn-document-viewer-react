@@ -6,6 +6,9 @@ import { LayoutAppBar } from '../../src/components/LayoutAppBar'
 import { documentReceivedAction } from '../../src/store/Document'
 import { exampleDocumentData, useTestContext } from '../viewercontext'
 
+/**
+ * LayoutAppBar Component tests
+ */
 export const layoutAppBarTests = describe('Layout AppBar component', () => {
 
     let c!: renderer.ReactTestRenderer

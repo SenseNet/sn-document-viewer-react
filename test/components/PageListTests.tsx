@@ -6,6 +6,9 @@ import { PageList } from '../../src/components/PageList'
 import { documentReceivedAction } from '../../src/store/Document'
 import { exampleDocumentData, useTestContext } from '../viewercontext'
 
+/**
+ * PageList Component tests
+ */
 export const pageListTests = describe('PageList component', () => {
 
     let c!: renderer.ReactTestRenderer
