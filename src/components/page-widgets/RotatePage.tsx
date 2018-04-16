@@ -6,14 +6,24 @@ import { PreviewImageData } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { RootReducerType, rotateImages, rotateShapesForPages } from '../../store'
 
+/**
+ * The amount of rotation in degrees
+ */
 const ROTATION_AMOUNT = 90
 
+/**
+ * Defined the component's own properties
+ */
 export interface OwnProps {
     page: PreviewImageData,
     viewPort: Dimensions,
     zoomRatio: number,
 }
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         rotateLeft: state.sensenetDocumentViewer.localization.rotatePageLeft,
@@ -21,6 +31,10 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = {
         rotateImages,
         rotateShapesForPages,
@@ -38,6 +52,9 @@ export class RotatePageComponent extends React.Component<componentType<typeof ma
         this.props.rotateShapesForPages([{ index: this.props.page.Index, size: { width: this.props.page.Width, height: this.props.page.Height } }], ROTATION_AMOUNT)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{ position: 'absolute', zIndex: 1, top: 0, right: 0, filter: 'drop-shadow(0 0 3px white) drop-shadow(0 0 5px white) drop-shadow(0 0 9px white)' }}>

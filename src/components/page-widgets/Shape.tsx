@@ -8,6 +8,9 @@ import { removeShape, RootReducerType, updateShapeData } from '../../store'
 
 // tslint:disable:max-classes-per-file
 
+/**
+ * Defined the component's own properties
+ */
 export interface OwnProps<T extends Shape> {
     shape: T
     shapeType: keyof Shapes
@@ -16,6 +19,10 @@ export interface OwnProps<T extends Shape> {
     additionalOffset?: Dimensions
 }
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
     return {
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
@@ -23,13 +30,21 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
     updateShapeData,
     removeShape,
 }
 
+/**
+ * Class for displaying Shapes on a document page
+ */
 abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>> {
 
+    /** the component state */
     public state = {
         focused: false,
         onResized: this.onResized.bind(this),
@@ -99,6 +114,9 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
         <div

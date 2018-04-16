@@ -5,12 +5,19 @@ import { componentType, Dimensions } from '../../services'
 import { RootReducerType, updateShapeData } from '../../store'
 import { ShapeAnnotation, ShapeHighlight, ShapeRedaction } from './Shape'
 
+/**
+ * Defined the component's own properties
+ */
 export interface OwnProps {
     viewPort: Dimensions,
     page: PreviewImageData,
     zoomRatio: number
 }
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         showShapes: state.sensenetDocumentViewer.viewer.showShapes,
@@ -23,6 +30,10 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = ({
     updateShapeData,
 })
@@ -44,6 +55,9 @@ export class ShapesComponent extends React.Component<componentType<typeof mapSta
         }
     }
 
+    /**
+     * renders the component
+     */
     public render() {
 
         return (

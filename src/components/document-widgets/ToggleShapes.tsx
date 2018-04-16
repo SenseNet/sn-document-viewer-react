@@ -5,6 +5,10 @@ import { connect } from 'react-redux'
 import { componentType } from '../../services'
 import { RootReducerType, setShapes } from '../../store'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         showShapes: state.sensenetDocumentViewer.viewer.showShapes,
@@ -12,21 +16,31 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = {
     setShapes,
 }
 
+/**
+ * Document widget component that toggles the displaying of the shapes
+ */
 export class ToggleShapesComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
-    private toggleRedaction() {
+    private toggleShapes() {
         this.props.setShapes(!this.props.showShapes)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
                 <IconButton title={this.props.toggleShapes} style={{ opacity: this.props.showShapes ? 1 : 0.5 }}>
-                    <Dashboard onClick={() => this.toggleRedaction()}  />
+                    <Dashboard onClick={() => this.toggleShapes()}  />
                 </IconButton>
             </div>)
     }

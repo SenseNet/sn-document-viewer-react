@@ -93,6 +93,11 @@ export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, RootRedu
     }
 }
 
+/**
+ * Reducer for the preview images
+ * @param state the current state
+ * @param action the dispatched action
+ */
 export const previewImagesReducer: Reducer<PreviewImagesStateType> = (state = { AvailableImages: [], error: null, hasChanges: false, pollInterval: 2000 }, action) => {
     const actionCasted = action as Action & PreviewImagesStateType
     switch (actionCasted.type) {

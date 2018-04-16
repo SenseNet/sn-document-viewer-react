@@ -6,6 +6,10 @@ import { connect } from 'react-redux'
 import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
@@ -18,23 +22,35 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = {
     setActivePages,
 }
 
+/**
+ * Defines the own props for the PagerState component
+ */
 export interface PagerState {
     currentPage: number
     lastPage: number
 }
 
+/**
+ * Document widget component for paging
+ */
 export class PagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, PagerState> {
 
+    /** the component state */
     public state = { currentPage: this.props.activePages[0], lastPage: this.props.pageCount }
 
-    public setPage = _.debounce(() => {
+    private setPage = _.debounce(() => {
         this.props.setActivePages([this.state.currentPage])
     }, 200).bind(this)
 
+    /** triggered when the component will receive props */
     public componentWillReceiveProps(nextProps: this['props']) {
         this.setState({ currentPage: nextProps.activePages[0], lastPage: nextProps.pageCount })
     }
@@ -51,6 +67,9 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
         }
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>

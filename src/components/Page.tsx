@@ -11,6 +11,10 @@ import { ActionCreator } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { RotatePageWidget, ShapesWidget } from './page-widgets'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
         store: state,
@@ -23,10 +27,17 @@ const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number 
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
     previewAvailable: previewAvailable as ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>>,
 }
 
+/**
+ * Defined the component's own properties
+ */
 export interface OwnProps {
     showWidgets: boolean,
     imageIndex: number,
@@ -54,6 +65,7 @@ export interface PageState {
 class Page extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, PageState> {
 
     private pollPreview?: number
+    /** the component state */
     public state = this.getStateFromProps(this.props)
 
     private stopPolling() {
@@ -114,6 +126,8 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         }
     }
 
+    /** triggered when the component will receive props */
+
     public componentWillReceiveProps(nextProps: this['props']) {
         const newState = this.getStateFromProps(nextProps)
         this.setState({ ...newState })
@@ -126,6 +140,9 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         return style
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>

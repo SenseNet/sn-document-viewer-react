@@ -6,6 +6,10 @@ import { DocumentData, PreviewImageData } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, saveChanges } from '../../store'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         saveChanges: state.sensenetDocumentViewer.localization.saveChanges,
@@ -17,6 +21,10 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = {
     save: saveChanges as (document: DocumentData, pages: PreviewImageData[]) => void,
 }
@@ -27,6 +35,9 @@ export class SaveDocumentComponent extends React.Component<componentType<typeof 
         this.props.canEdit && this.props.save(this.props.document, this.props.pages)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>

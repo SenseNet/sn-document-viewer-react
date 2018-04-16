@@ -10,7 +10,7 @@ import { DocumentViewerLayout } from './DocumentViewerLayout'
 import { DocumentViewerLoading } from './DocumentViewerLoading'
 
 /**
- * Properties for main
+ * Defined the component's own properties
  */
 export interface OwnProps {
     hostName: string
@@ -18,6 +18,11 @@ export interface OwnProps {
     version?: string
     localization?: Partial<LocalizationStateType>
 }
+
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
@@ -28,6 +33,10 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
     pollDocumentData: pollDocumentData as ActionCreator<(dispatch: Dispatch<DocumentStateType>, getState: () => DocumentStateType, extraArgument: DocumentViewerSettings) => Promise<void>>,
     setLocalization,
@@ -51,6 +60,7 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
         }
     }
 
+    /** triggered when the component will receive props */
     public componentWillReceiveProps(newProps: this['props']) {
         if (
             this.props.hostName !== newProps.hostName

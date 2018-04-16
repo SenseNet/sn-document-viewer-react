@@ -6,6 +6,10 @@ import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
 import { PageList } from './'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType) => {
     return {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
@@ -14,19 +18,32 @@ const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
     setActivePages,
 }
 
+/** State type definition for the DocumentViewerLayout component */
 export interface DocumentLayoutState {
     showThumbnails: boolean
     activePage?: number
 }
 
+/**
+ * Component for the main DocumentViewer layout
+ */
 class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
+
+    /** the component state */
     public state = { showThumbnails: true, activePage: 1 }
+
+    /** The viewPort HTML element */
     public viewPort: HTMLDivElement | null = null
 
+    /** scrolls the viewer to focus to the page with the provided index */
     public scrollTo(index: number) {
         this.setState({ ...this.state, activePage: index }, () => {
             scroller.scrollTo(`Page-${index}`, {
@@ -53,6 +70,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
 
     }
 
+    /** triggered when the component will receive props */
     public componentWillReceiveProps(newProps: this['props']) {
         if (this.props.activePages[0] !== newProps.activePages[0]) {
             this.scrollTo(newProps.activePages[0])
@@ -84,6 +102,9 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
         removeEventListener('resize', this.resizeWatcher)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{

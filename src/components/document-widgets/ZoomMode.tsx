@@ -5,6 +5,10 @@ import { connect } from 'react-redux'
 import { componentType } from '../../services'
 import { RootReducerType, setCustomZoomLevel, setZoomMode, ZoomMode } from '../../store'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
@@ -20,13 +24,21 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = {
     setZoomMode,
     setZoomLevel: setCustomZoomLevel,
 }
 
+/**
+ * Document widget component for modifying the zoom mode / level
+ */
 export class ZoomWidgetComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { zoomMenuAnchor?: HTMLElement }> {
 
+    /** the component state */
     public state = { zoomMenuAnchor: undefined }
 
     private openZoomMenu(event: React.MouseEvent<any>) {
@@ -52,6 +64,9 @@ export class ZoomWidgetComponent extends React.Component<componentType<typeof ma
         this.props.setZoomLevel(this.props.customZoomLevel - 1 || 0)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         const localization = this.props.localization
         return (
