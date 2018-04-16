@@ -1,5 +1,8 @@
 import { Reducer } from 'redux'
 
+/**
+ * Model definition for the localization store
+ */
 export interface LocalizationStateType {
     rotateDocumentLeft: string
     rotateDocumentRight: string
@@ -26,6 +29,9 @@ export interface LocalizationStateType {
     reloadPage: string
 }
 
+/**
+ * Default localization string value
+ */
 export const defaultLocalization: LocalizationStateType = {
     rotateDocumentLeft: 'Rotate document left',
     rotateDocumentRight: 'Rotate document right',
@@ -52,11 +58,20 @@ export const defaultLocalization: LocalizationStateType = {
     reloadPage: 'Reload page',
 }
 
+/**
+ * Action that updates the store with new localized values
+ * @param localization The new localization values
+ */
 export const setLocalization = (localization: Partial<LocalizationStateType>) => ({
     type: 'SN_DOCVIEWER_SET_LOCALIZATION',
     localization,
 })
 
+/**
+ * Reducer for localization
+ * @param state the current state
+ * @param action the action to dispatch
+ */
 export const localizationReducer: Reducer<LocalizationStateType> = (state: LocalizationStateType = defaultLocalization, action ) => {
     switch (action.type) {
         case 'SN_DOCVIEWER_SET_LOCALIZATION': {

@@ -69,8 +69,8 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         visiblePages: this.props.pages.slice(0, 3),
     }
 
-    public canUpdate: boolean = false
-    public viewPort: any
+    private canUpdate: boolean = false
+    private viewPort: any
     private onResize!: () => void
     private onScroll!: () => void
 
