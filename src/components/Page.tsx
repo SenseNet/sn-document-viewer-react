@@ -4,7 +4,7 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { Element } from 'react-scroll'
 import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../models'
-import { componentType, Dimensions, ImageUtil } from '../services'
+import { componentType, ImageUtil } from '../services'
 import { previewAvailable, RootReducerType, ZoomMode } from '../store'
 
 import { ActionCreator } from 'redux'
@@ -55,7 +55,6 @@ export interface OwnProps {
  */
 export interface PageState {
     imgSrc: string
-    pageStyle: React.CSSProperties
     pageWidth: number
     pageHeight: number
     isActive: boolean
@@ -100,7 +99,6 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                 height: props.page.Height,
                 rotation: props.page.Attributes && props.page.Attributes.degree || 0,
             }, props.zoomMode, props.zoomLevel)
-        const pageStyle = this.getPageStyle(props, relativePageSize)
         const boundingBox = ImageUtil.getRotatedBoundingBoxSize({
             width: props.page.Width,
             height: props.page.Height,
@@ -124,7 +122,6 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
             pageWidth: relativePageSize.width,
             pageHeight: relativePageSize.height,
             zoomRatio: relativePageSize.height / props.page.Height,
-            pageStyle,
             imageWidth: `${100 * boundingBox.zoomRatio}%`,
             imageHeight: `${100 * boundingBox.zoomRatio}%`,
             imageTransform: `translateY(${diffHeight}px) rotate(${imageRotation}deg)`,
@@ -139,24 +136,19 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
     }
 
     /**
-     * @param props the current props
-     * @param relativeSize
-     */
-    public getPageStyle(props: this['props'], relativeSize: Dimensions) {
-        const style: React.CSSProperties = {}
-        style.width = relativeSize.width || '100%'
-        style.height = relativeSize.height || '100%'
-        return style
-    }
-
-    /**
      * renders the component
      */
     public render() {
         return (
             <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
                 <Paper elevation={this.state.isActive ? 8 : 2}>
-                    <div style={{ ...this.state.pageStyle, padding: 0, overflow: 'hidden', position: 'relative' }} onClick={(ev) => this.props.onClick(ev)}>
+                    <div style={{
+                        padding: 0,
+                        overflow: 'hidden',
+                        width: this.state.pageWidth,
+                        height: this.state.pageHeight,
+                        position: 'relative',
+                    }} onClick={(ev) => this.props.onClick(ev)}>
                         {this.props.showWidgets ?
                             <div>
                                 <ShapesWidget zoomRatio={this.state.zoomRatio} page={this.props.page} viewPort={{ height: this.state.pageHeight, width: this.state.pageWidth }} />

@@ -40,9 +40,6 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
     /** the component state */
     public state = { showThumbnails: true, activePage: 1 }
 
-    /** The viewPort HTML element */
-    public viewPort: HTMLDivElement | null = null
-
     /** scrolls the viewer to focus to the page with the provided index */
     public scrollTo(index: number) {
         this.setState({ ...this.state, activePage: index }, () => {
