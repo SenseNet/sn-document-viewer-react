@@ -50,6 +50,9 @@ export interface OwnProps {
     image: 'preview' | 'thumbnail'
 }
 
+/**
+ * State model for the Page component
+ */
 export interface PageState {
     imgSrc: string
     pageStyle: React.CSSProperties
@@ -75,10 +78,12 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         }
     }
 
+    /** event after the component did mount */
     public componentDidMount() {
         this.componentWillReceiveProps(this.props)
     }
 
+    /** event before the component did unmount */
     public componentWillUnmount() {
         this.stopPolling()
     }
@@ -133,6 +138,10 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         this.setState({ ...newState })
     }
 
+    /**
+     * @param props the current props
+     * @param relativeSize
+     */
     public getPageStyle(props: this['props'], relativeSize: Dimensions) {
         const style: React.CSSProperties = {}
         style.width = relativeSize.width || '100%'

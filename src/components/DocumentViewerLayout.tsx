@@ -89,15 +89,18 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
 
     private resizeWatcher = this.onResize.bind(this)
 
+    /** Event before the component will mount */
     public componentWillMount() {
         addEventListener('resize', this.resizeWatcher)
     }
 
+    /** Event after the component did mount */
     public componentDidMount() {
         this.onResize()
 
     }
 
+    /** Event before the component will unmount */
     public componentWillUnmount() {
         removeEventListener('resize', this.resizeWatcher)
     }
