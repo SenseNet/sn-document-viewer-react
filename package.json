@@ -21,7 +21,7 @@
     "check-coverage": "istanbul check-coverage ",
     "report-coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/codecov",
     "semantic-release": "semantic-release pre && semantic-release post",
-    "lint": "tslint --project tsconfig.json",
+    "tslint": "tslint --project tsconfig.json",
     "prebuild": "npm run tslint",
     "build": "rimraf dist && rimraf bundle && tsc -p tsconfig.json && webpack",
     "publish:development": "npm run build && npm t && npm run typedoc && npm publish --tag development",
