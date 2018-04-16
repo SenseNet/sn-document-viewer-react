@@ -74,6 +74,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
     private onResize!: () => void
     private onScroll!: () => void
 
+    /** event that will be triggered before mounting the component */
     public componentWillMount() {
         this.onResize = _.debounce(() => this.setupViewPort(), 50).bind(this)
         addEventListener('resize', this.onResize)
@@ -81,6 +82,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         this.canUpdate = true
     }
 
+    /** event that will be triggered after mounting the component */
     public componentDidMount() {
         this.setupViewPort()
         this.onScroll = _.debounce(() => this.setupVisiblePages(this.props), 10).bind(this)
@@ -88,6 +90,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         this.onScroll()
     }
 
+    /** event that will be triggered before unmounting the component */
     public componentWillUnmount() {
         removeEventListener('resize', this.onResize)
         this.viewPort.removeEventListener('scroll', this.onScroll)

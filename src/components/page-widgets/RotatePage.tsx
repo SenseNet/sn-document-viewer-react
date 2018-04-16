@@ -40,6 +40,9 @@ export const mapDispatchToProps = {
         rotateShapesForPages,
 }
 
+/**
+ * Page widget component for rotating a specified page
+ */
 export class RotatePageComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
 
     private rotatePageLeft() {

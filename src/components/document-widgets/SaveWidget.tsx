@@ -29,6 +29,9 @@ export const mapDispatchToProps = {
     save: saveChanges as (document: DocumentData, pages: PreviewImageData[]) => void,
 }
 
+/**
+ * Document widget component for saving document state
+ */
 export class SaveDocumentComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private save() {

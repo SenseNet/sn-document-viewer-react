@@ -38,6 +38,9 @@ export const mapDispatchToProps = ({
     updateShapeData,
 })
 
+/**
+ * Page widget component for displaying shapes on a page
+ */
 export class ShapesComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
 
     private onDrop(ev: React.DragEvent<HTMLElement>, page: PreviewImageData) {
