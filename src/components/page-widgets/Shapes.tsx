@@ -1,17 +1,23 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { Annotation, Highlight, PreviewImageData, Redaction, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { RootReducerType, updateShapeData } from '../../store'
 import { ShapeAnnotation, ShapeHighlight, ShapeRedaction } from './Shape'
 
+/**
+ * Defined the component's own properties
+ */
 export interface OwnProps {
     viewPort: Dimensions,
     page: PreviewImageData,
     zoomRatio: number
 }
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         showShapes: state.sensenetDocumentViewer.viewer.showShapes,
@@ -24,10 +30,17 @@ export const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = ({
-    updateShapeData: updateShapeData as <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
+    updateShapeData,
 })
 
+/**
+ * Page widget component for displaying shapes on a page
+ */
 export class ShapesComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
 
     private onDrop(ev: React.DragEvent<HTMLElement>, page: PreviewImageData) {
@@ -45,6 +58,9 @@ export class ShapesComponent extends React.Component<componentType<typeof mapSta
         }
     }
 
+    /**
+     * renders the component
+     */
     public render() {
 
         return (

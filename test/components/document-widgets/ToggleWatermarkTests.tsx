@@ -8,6 +8,9 @@ import { ToggleWatermarkWidget } from '../../../src/components/document-widgets/
 import { documentReceivedAction } from '../../../src/store/Document'
 import { exampleDocumentData, useTestContext } from '../../viewercontext'
 
+/**
+ * Toggle Watermark widget tests
+ */
 export const toggleWatermarkWidgetTests = describe('ToggleWatermarkWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

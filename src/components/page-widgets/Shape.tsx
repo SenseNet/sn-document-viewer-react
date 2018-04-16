@@ -2,13 +2,15 @@ import { IconButton } from 'material-ui'
 import { Delete } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { Annotation, Shape, Shapes } from '../../models'
 import { componentType, Dimensions } from '../../services'
 import { removeShape, RootReducerType, updateShapeData } from '../../store'
 
 // tslint:disable:max-classes-per-file
 
+/**
+ * Defined the component's own properties
+ */
 export interface OwnProps<T extends Shape> {
     shape: T
     shapeType: keyof Shapes
@@ -17,6 +19,10 @@ export interface OwnProps<T extends Shape> {
     additionalOffset?: Dimensions
 }
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
     return {
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
@@ -24,13 +30,21 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps<Shape>) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
-    updateShapeData: updateShapeData as <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action,
+    updateShapeData,
     removeShape,
 }
 
+/**
+ * Class for displaying Shapes on a document page
+ */
 abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps<T>>> {
 
+    /** the component state */
     public state = {
         focused: false,
         onResized: this.onResized.bind(this),
@@ -39,7 +53,16 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         handleKeyPress: this.handleKeyPress.bind(this),
         onFocus: this.onFocus.bind(this),
     }
-    public abstract shapeType: keyof Shapes
+
+    /** The type of the shape instance */
+    protected abstract shapeType: keyof Shapes
+
+    /**
+     * Method that returns the shape dimensions as CSS properties
+     * @param shape the shape instance
+     * @param offsetX optional X offset
+     * @param offsetY optional Y offset
+     */
     protected getShapeDimensions(shape: Shape, offsetX: number = 0, offsetY: number = 0): React.CSSProperties {
         return {
             top: shape.y * this.props.zoomRatio + offsetY * this.props.zoomRatio,
@@ -49,6 +72,7 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }
     }
 
+    /** event that will be triggered on resize */
     protected onResized(ev: React.MouseEvent<HTMLElement>) {
         const boundingBox = ev.currentTarget.getBoundingClientRect()
         const [shape, shapeType, zoomRatio] = [this.props.shape, this.props.shapeType, this.props.zoomRatio]
@@ -64,6 +88,7 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }
     }
 
+    /** onDragStart event handler for the Shape instance */
     protected onDragStart(ev: React.DragEvent<HTMLElement>) {
         const additionalOffset = this.props.additionalOffset || { width: 0, height: 0 }
         ev.dataTransfer.setData('shape', JSON.stringify({
@@ -77,8 +102,10 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }))
     }
 
+    /** abstract method for shape rendering */
     public abstract renderShape(): JSX.Element
 
+    /** onKeyPress event handler for deleting shapes */
     protected handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>) {
         switch (ev.key) {
             case 'Backspace':
@@ -88,18 +115,23 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
         }
     }
 
+    /** onFocus event handler that updates the 'focused' property */
     public onFocus(ev: React.FocusEvent<HTMLDivElement>) {
         if (!this.state.focused) {
             this.setState({ ...this.state, focused: true })
         }
     }
 
+    /** onBlur event handler that updates the 'focused' property */
     public onBlur(ev: React.FocusEvent<HTMLDivElement>) {
         if (!ev.currentTarget.contains(ev.nativeEvent.relatedTarget as any)) {
             this.setState({ ...this.state, focused: false })
         }
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
         <div
@@ -115,8 +147,10 @@ abstract class ShapeComponent<T extends Shape = Shape> extends React.Component<c
 
 class ShapeRedaction extends ShapeComponent {
 
+    /** type of the Shape */
     public readonly shapeType = 'redactions'
 
+    /** renders the Shape component */
     public renderShape() {
         {
             return (<div
@@ -141,12 +175,15 @@ const shapeRedaction = connect(mapStateToProps, mapDispatchToProps)(ShapeRedacti
 
 class ShapeAnnotation extends ShapeComponent<Annotation> {
 
+    /** type of the Shape */
     public readonly shapeType = 'annotations'
 
+    /** keypress handler for to stop event bubbling and shape deletion */
     protected handleKeyPress(ev: React.KeyboardEvent<HTMLDivElement>) {
         /** */
     }
 
+    /** onBlur handler for updating inner text */
     public onBlur(ev: React.FocusEvent<HTMLDivElement>) {
         super.onBlur(ev)
         this.props.updateShapeData(this.shapeType, this.props.shape.guid, {
@@ -155,6 +192,7 @@ class ShapeAnnotation extends ShapeComponent<Annotation> {
         })
     }
 
+    /** renders the Shape component */
     public renderShape() {
         {
             return (
@@ -202,8 +240,10 @@ const shapeAnnotation = connect(mapStateToProps, mapDispatchToProps)(ShapeAnnota
 
 class ShapeHighlight extends ShapeComponent {
 
+    /** type of the Shape */
     public readonly shapeType = 'highlights'
 
+    /** renders the Highlight shape component */
     public renderShape() {
         {
             return (<div

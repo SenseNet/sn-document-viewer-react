@@ -2,11 +2,14 @@ import { Drawer } from 'material-ui'
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
-import { Action } from 'redux'
 import { componentType } from '../services'
 import { RootReducerType, setActivePages } from '../store'
 import { PageList } from './'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType) => {
     return {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
@@ -15,19 +18,29 @@ const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
-    setActivePages: setActivePages as (activePages: number[]) => Action,
+    setActivePages,
 }
 
+/** State type definition for the DocumentViewerLayout component */
 export interface DocumentLayoutState {
     showThumbnails: boolean
     activePage?: number
 }
 
+/**
+ * Component for the main DocumentViewer layout
+ */
 class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
-    public state = { showThumbnails: true, activePage: 1 }
-    public viewPort: HTMLDivElement | null = null
 
+    /** the component state */
+    public state = { showThumbnails: true, activePage: 1 }
+
+    /** scrolls the viewer to focus to the page with the provided index */
     public scrollTo(index: number) {
         this.setState({ ...this.state, activePage: index }, () => {
             scroller.scrollTo(`Page-${index}`, {
@@ -54,6 +67,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
 
     }
 
+    /** triggered when the component will receive props */
     public componentWillReceiveProps(newProps: this['props']) {
         if (this.props.activePages[0] !== newProps.activePages[0]) {
             this.scrollTo(newProps.activePages[0])
@@ -72,19 +86,25 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
 
     private resizeWatcher = this.onResize.bind(this)
 
+    /** Event before the component will mount */
     public componentWillMount() {
         addEventListener('resize', this.resizeWatcher)
     }
 
+    /** Event after the component did mount */
     public componentDidMount() {
         this.onResize()
 
     }
 
+    /** Event before the component will unmount */
     public componentWillUnmount() {
         removeEventListener('resize', this.resizeWatcher)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{

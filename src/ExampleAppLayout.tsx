@@ -14,16 +14,26 @@ import { componentType } from './services'
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Paper, TextField, Typography } from 'material-ui'
 import { FolderOpen, Help, Send } from 'material-ui-icons'
 
+/**
+ * Adds a globally unique ID to the shape
+ */
 const addGuidToShape: <T extends Shape>(shape: T) => T = (shape) => {
     shape.guid = v1()
     return shape
 }
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
     }
 }
 
+/**
+ * State model for the ExampleApp component
+ */
 export interface ExampleAppState {
     hostName: string
     documentIdOrPath: number | string
@@ -33,10 +43,16 @@ export interface ExampleAppState {
     save: boolean
 }
 
+/**
+ * mapDispatchToProps for the example app layout component
+ */
 const mapDispatchToProps = {
 }
 
-export const defaultSettings: DocumentViewerSettings = {
+/**
+ * Settings object for the Document Viewer Example component
+ */
+export const exampleSettings: DocumentViewerSettings = {
     canEditDocument: async (documentData) => {
         const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET', credentials: 'include' })
         if (response.ok) {
@@ -136,15 +152,20 @@ export const defaultSettings: DocumentViewerSettings = {
 const localStorageKey = 'sn-docviewer-example'
 
 class ExampleAppLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, {}>, ExampleAppState> {
+    /** the component state */
     public state: ExampleAppState =
         JSON.parse(localStorage.getItem(localStorageKey) as any) || {
             hostName: '',
             documentIdOrPath: ``,
             isViewerOpened: false,
-            settings: defaultSettings,
+            settings: exampleSettings,
             isHelpOpened: false,
         }
 
+    /**
+     * Overridden setState() method that also persists the state in the local storage
+     * @param newState The new State instance
+     */
     public setState(newState: this['state']) {
         super.setState(newState)
         if (newState.save) {
@@ -169,6 +190,9 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
         })
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (<div style={{ height: '100%' }}>
             {

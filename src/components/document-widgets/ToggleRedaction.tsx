@@ -2,10 +2,13 @@ import { IconButton } from 'material-ui'
 import { PictureInPicture } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { componentType } from '../../services'
 import { RootReducerType, setRedaction } from '../../store'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         canHideRedaction: state.sensenetDocumentViewer.documentState.canHideRedaction,
@@ -15,16 +18,26 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = {
-    setRedaction: setRedaction as (showRedaction: boolean) => Action,
+    setRedaction,
 }
 
+/**
+ * Document widget component to toggleing redaction
+ */
 export class ToggleRedactionComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private toggleRedaction() {
         this.props.setRedaction(!this.props.showRedaction)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>

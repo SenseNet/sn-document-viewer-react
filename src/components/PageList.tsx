@@ -7,15 +7,26 @@ import { componentType, ImageUtil } from '../services'
 import { RootReducerType, ZoomMode } from '../store'
 import { Page } from './'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType) => {
     return {
-        pages: state.sensenetDocumentViewer.previewImages.AvailableImages || [] as PreviewImageData[],
+        pages: state.sensenetDocumentViewer.previewImages.AvailableImages || [],
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
 }
 
+/**
+ * Defines the own properties for the PageList component
+ */
 export interface PageListProps {
     tolerance: number
     padding: number
@@ -30,6 +41,9 @@ export interface PageListProps {
     showWidgets: boolean
 }
 
+/**
+ * Type definition for the PageList component's State
+ */
 export interface PageListState {
     marginTop: number
     marginBottom: number
@@ -43,6 +57,7 @@ export interface PageListState {
 
 class PageList extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, PageListProps>, PageListState> {
 
+    /** the component state */
     public state: PageListState = {
         marginTop: 0,
         marginBottom: 0,
@@ -54,11 +69,12 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         visiblePages: this.props.pages.slice(0, 3),
     }
 
-    public canUpdate: boolean = false
-    public viewPort: any
+    private canUpdate: boolean = false
+    private viewPort: any
     private onResize!: () => void
     private onScroll!: () => void
 
+    /** event that will be triggered before mounting the component */
     public componentWillMount() {
         this.onResize = _.debounce(() => this.setupViewPort(), 50).bind(this)
         addEventListener('resize', this.onResize)
@@ -66,6 +82,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         this.canUpdate = true
     }
 
+    /** event that will be triggered after mounting the component */
     public componentDidMount() {
         this.setupViewPort()
         this.onScroll = _.debounce(() => this.setupVisiblePages(this.props), 10).bind(this)
@@ -73,12 +90,14 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         this.onScroll()
     }
 
+    /** event that will be triggered before unmounting the component */
     public componentWillUnmount() {
         removeEventListener('resize', this.onResize)
         this.viewPort.removeEventListener('scroll', this.onScroll)
         this.canUpdate = false
     }
 
+    /** triggered when the component will receive props */
     public componentWillReceiveProps(newProps: this['props']) {
         this.setupVisiblePages(newProps, newProps.activePage !== this.props.activePage ? newProps.activePage : undefined)
     }
@@ -174,6 +193,9 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         }
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <Grid item style={{ ...this.props.style, flexGrow: 1, flexShrink: 1, overflow: 'auto', height: '100%' }} id={this.props.id}>

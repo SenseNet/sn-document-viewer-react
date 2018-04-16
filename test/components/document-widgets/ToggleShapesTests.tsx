@@ -8,6 +8,9 @@ import { ToggleShapesWidget } from '../../../src/components/document-widgets/Tog
 import { documentReceivedAction } from '../../../src/store/Document'
 import { exampleDocumentData, useTestContext } from '../../viewercontext'
 
+/**
+ * Toggle Shapes widget tests
+ */
 export const toggleShapesWidgetTests = describe('ToggleShapesWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

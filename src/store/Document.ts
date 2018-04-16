@@ -1,4 +1,4 @@
-import { Action, ActionCreator, Reducer } from 'redux'
+import { ActionCreator, Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { PreviewState } from '../Enums'
 import { DocumentData, DocumentViewerSettings, PreviewImageData, Shape, Shapes } from '../models'
@@ -6,6 +6,9 @@ import { Dimensions, ImageUtil } from '../services'
 import { getAvailableImages } from './PreviewImages'
 import { RootReducerType } from './RootReducer'
 
+/**
+ * Model for the document state
+ */
 export interface DocumentStateType {
     pollInterval: number
     idOrPath?: number | string
@@ -19,6 +22,12 @@ export interface DocumentStateType {
     hasChanges: boolean
 }
 
+/**
+ * Thunk action that polls document data from the specified API
+ * @param hostName the host name, e.g. 'https://my-sensenet-site.com'
+ * @param idOrPath Id or full path for the document, e.g.: 'Root/Sites/MySite/MyDocLib/('doc.docx')
+ * @param version The document version
+ */
 export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings>> = (hostName: string, idOrPath: string, version: string) => {
     return async (dispatch, getState, api) => {
         let docData: DocumentData | undefined
@@ -48,61 +57,107 @@ export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, Document
     }
 }
 
-export const documentReceivedAction: (document: DocumentData) => Action = (document: DocumentData) => ({
+/**
+ * Action that updates the store with the received document data
+ * @param document The received document data
+ */
+export const documentReceivedAction = (document: DocumentData) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED',
     document,
 })
 
-export const documentReceiveErrorAction: (error: string) => Action = (error: string) => ({
+/**
+ * Action that updates the store with a document receive error
+ * @param error The error message
+ */
+export const documentReceiveErrorAction = (error: string) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR',
     error,
 })
 
-export const updateShapeData: <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => Action = (shapeType, shapeGuid, shapeData) => ({
+/**
+ * Action that updates a provided shape data
+ * @param shapeType the type of the shape
+ * @param shapeGuid the unique identifyer for the shape
+ * @param shapeData the new shape data
+ */
+export const updateShapeData = <K extends keyof Shapes>(shapeType: K, shapeGuid: string, shapeData: Shapes[K][0]) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE',
     shapeType,
     shapeGuid,
     shapeData,
 })
 
-export const removeShape: <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => Action = (shapeType, shapeGuid) => ({
+/**
+ * Action that removes a specified shape
+ * @param shapeType The type of the shape
+ * @param shapeGuid The unique identifier for the shape
+ */
+export const removeShape = <K extends keyof Shapes>(shapeType: K, shapeGuid: string) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_REMOVE_SHAPE',
     shapeType,
     shapeGuid,
 })
 
-export const setPollInterval: (pollInterval: number) => Action = (pollInterval) => ({
+/**
+ * Action that updates the polling interval
+ * @param pollInterval The interval in millisecs
+ */
+export const setPollInterval = (pollInterval: number) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_SET_POLL_INTERVAL',
     pollInterval,
 })
 
-export const documentPermissionsReceived: (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => Action =
-    (canEdit, canHideRedaction, canHideWatermark) => ({
+/**
+ * Action that updates the store with the given permission values
+ * @param canEdit 'Can edit' permission value
+ * @param canHideRedaction 'Can hide redaction' permission value
+ * @param canHideWatermark 'Can hide watermark' permission value
+ */
+export const documentPermissionsReceived = (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => ({
         type: 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED',
         canEdit,
         canHideRedaction,
         canHideWatermark,
     })
 
+/**
+ * Action that will be fired when a save request has been sent
+ */
 export const saveChangesRequest = () => ({
     type: 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_REQUEST',
 })
 
+/**
+ * Action that will be fired on save error
+ * @param error The error value
+ */
 export const saveChangesError = (error: any) => ({
     type: 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_ERROR',
     error,
-} as Action)
+})
 
+/**
+ * Action that will be fired when saving succeeded
+ */
 export const saveChangesSuccess = () => ({
     type: 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS',
-} as Action)
+})
 
+/**
+ * Action that rotates the specified shapes for the given page(s)
+ * @param pages The pages to rotate
+ * @param degree The rotation angle in degrees
+ */
 export const rotateShapesForPages = (pages: Array<{ index: number, size: Dimensions }>, degree: number) => ({
     type: 'SN_DOCVEWER_DOCUMENT_ROTATE_SHAPES_FOR_PAGES',
     pages,
     degree,
-} as Action)
+})
 
+/**
+ * Thunk action to call the Save endpoint with the current document state to save changes
+ */
 export const saveChanges: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = () => {
     return async (dispatch, getState, api) => {
         dispatch(saveChangesRequest())
@@ -115,6 +170,12 @@ export const saveChanges: ActionCreator<ThunkAction<Promise<void>, RootReducerTy
     }
 }
 
+/**
+ * helper method to apply shape rotations
+ * @param shapes the shape(s) to rotate
+ * @param degree the rotation angle in degrees
+ * @param pages the page info
+ */
 export const applyShapeRotations = <T extends Shape>(shapes: T[], degree: number, pages: Array<{ index: number, size: Dimensions }>) => ([
     ...shapes.map((s) => {
         const page = pages.find((p) => p.index === s.imageIndex)
@@ -135,6 +196,11 @@ export const applyShapeRotations = <T extends Shape>(shapes: T[], degree: number
     }),
 ])
 
+/**
+ * Reducer method for the document state
+ * @param state the current state
+ * @param action the action to dispatch
+ */
 export const documentStateReducer: Reducer<DocumentStateType>
     = (state = {
         document: {
@@ -161,14 +227,13 @@ export const documentStateReducer: Reducer<DocumentStateType>
         canHideWatermark: false,
         pollInterval: 2000,
     }, action) => {
-        const actionCasted = action as Action & DocumentStateType
-        switch (actionCasted.type) {
+        switch (action.type) {
             case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
-                return { ...state, error: undefined, isLoading: true, idOrPath: actionCasted.idOrPath, version: actionCasted.version }
+                return { ...state, error: undefined, isLoading: true, idOrPath: action.idOrPath, version: action.version }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
-                return { ...state, document: {...state.document, ...actionCasted.document}, error: undefined, isLoading: false, hasChanges: false }
+                return { ...state, document: {...state.document, ...action.document}, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
-                return { ...state, error: actionCasted.error, isLoading: false }
+                return { ...state, error: action.error, isLoading: false }
             case 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE':
                 return {
                     ...state,
@@ -217,9 +282,9 @@ export const documentStateReducer: Reducer<DocumentStateType>
             case 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED':
                 return {
                     ...state,
-                    canEdit: actionCasted.canEdit,
-                    canHideRedaction: actionCasted.canHideRedaction,
-                    canHideWatermark: actionCasted.canHideWatermark,
+                    canEdit: action.canEdit,
+                    canHideRedaction: action.canHideRedaction,
+                    canHideWatermark: action.canHideWatermark,
                 }
             case 'SN_DOCVEWER_DOCUMENT_SAVE_CHANGES_SUCCESS':
                 return {

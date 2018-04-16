@@ -5,10 +5,17 @@ import { connect } from 'react-redux'
 import { componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store'
 
+/**
+ * Defined the component's own properties
+ */
 export interface OwnProps {
     error: any
 }
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         errorLoadingDocument: state.sensenetDocumentViewer.localization.errorLoadingDocument,
@@ -17,10 +24,17 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
 }
 
 class DocumentViewerErrorComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>> {
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{

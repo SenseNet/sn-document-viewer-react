@@ -8,6 +8,9 @@ import { ToggleRedactionWidget } from '../../../src/components/document-widgets/
 import { documentReceivedAction } from '../../../src/store/Document'
 import { exampleDocumentData, useTestContext } from '../../viewercontext'
 
+/**
+ * Toggle Redaction widget tests
+ */
 export const toggleRedactionTests = describe('ToggleRedactionWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

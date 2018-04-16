@@ -2,11 +2,14 @@ import { IconButton } from 'material-ui'
 import { RotateLeft, RotateRight } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Action } from 'redux'
 import { PreviewImageData } from '../../models'
 import { componentType } from '../../services'
 import { RootReducerType, rotateImages } from '../../store'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
         pages: state.sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[],
@@ -16,10 +19,17 @@ export const mapStateToProps = (state: RootReducerType) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 export const mapDispatchToProps = {
-    rotateImages: rotateImages as (imageIndexes: number[], amount: number) => Action,
+    rotateImages,
 }
 
+/**
+ * Component that allows document rotation
+ */
 export class RotateDocumentComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>> {
 
     private rotateDocumentLeft() {
@@ -30,6 +40,9 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
         this.props.rotateImages(this.props.pages.map((p) => p.Index), 90)
     }
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{display: 'inline-block'}}>

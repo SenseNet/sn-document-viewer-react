@@ -5,17 +5,28 @@ import { RootReducerType } from '../store'
 
 import { componentType } from '../services'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType, ownProps: {}) => {
     return {
         documentName: state.sensenetDocumentViewer.documentState.document.documentName,
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
 }
 
 class LayoutAppBar extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, {}>> {
 
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <AppBar position="sticky" style={{ position: 'relative', zIndex: 1 }}>

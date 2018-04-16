@@ -4,16 +4,27 @@ import { connect } from 'react-redux'
 import { componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store'
 
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 const mapStateToProps = (state: RootReducerType, ownProps: undefined) => {
     return {
         loadingDocument: state.sensenetDocumentViewer.localization.loadingDocument,
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
 }
 
 class DocumentViewerLoadingComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>> {
+    /**
+     * renders the component
+     */
     public render() {
         return (
             <div style={{

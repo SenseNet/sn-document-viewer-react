@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { ActionCreator, Dispatch } from 'redux'
-import { Action } from 'redux'
 import { DocumentViewerSettings } from '../models'
 import { componentType } from '../services'
 import { DocumentStateType, pollDocumentData, RootReducerType } from '../store'
@@ -11,7 +10,7 @@ import { DocumentViewerLayout } from './DocumentViewerLayout'
 import { DocumentViewerLoading } from './DocumentViewerLoading'
 
 /**
- * Properties for main
+ * Defined the component's own properties
  */
 export interface OwnProps {
     hostName: string
@@ -19,6 +18,11 @@ export interface OwnProps {
     version?: string
     localization?: Partial<LocalizationStateType>
 }
+
+/**
+ * maps state fields from the store to component props
+ * @param state the redux state
+ */
 
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
@@ -29,9 +33,13 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     }
 }
 
+/**
+ * maps state actions from the store to component props
+ * @param state the redux state
+ */
 const mapDispatchToProps = {
     pollDocumentData: pollDocumentData as ActionCreator<(dispatch: Dispatch<DocumentStateType>, getState: () => DocumentStateType, extraArgument: DocumentViewerSettings) => Promise<void>>,
-    setLocalization: setLocalization as (localization: Partial<LocalizationStateType>) => Action,
+    setLocalization,
 }
 
 type docViewerComponentType = componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>
@@ -52,6 +60,7 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
         }
     }
 
+    /** triggered when the component will receive props */
     public componentWillReceiveProps(newProps: this['props']) {
         if (
             this.props.hostName !== newProps.hostName

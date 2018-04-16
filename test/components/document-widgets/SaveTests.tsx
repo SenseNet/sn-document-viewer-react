@@ -7,6 +7,9 @@ import { documentPermissionsReceived, documentReceivedAction } from '../../../sr
 import { asyncDelay } from '../../asyncdelayer'
 import { exampleDocumentData, useTestContext, useTestContextWithSettings, useTestContextWithSettingsAsync } from '../../viewercontext'
 
+/**
+ * Save widget tests
+ */
 export const saveWidgetTests = describe('SaveWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

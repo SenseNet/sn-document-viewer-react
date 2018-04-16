@@ -9,6 +9,9 @@ import { documentPermissionsReceived, documentReceivedAction } from '../../../sr
 import { availabelImagesReceivedAction } from '../../../src/store/PreviewImages'
 import { exampleDocumentData, useTestContext } from '../../viewercontext'
 
+/**
+ * Shapes widget tests
+ */
 export const shapesWidgetTests = describe('ShapesWidget component', () => {
 
     let c!: renderer.ReactTestRenderer

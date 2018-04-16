@@ -1,9 +1,18 @@
 import { ZoomMode } from '../store'
 
+/** Dimensions model that defines a specified width and height */
 export interface Dimensions { width: number, height: number }
 
+/**
+ * Helper class for image manipulation
+ */
 export class ImageUtil {
 
+    /**
+     * Helper method that normalizes the given angle and returns a value between 0-349 in degrees
+     * @param degrees the degrees
+     * @returns the normalized value in degrees
+     */
     public static normalizeDegrees(degrees: number): number {
         let normalizedDegrees = (degrees || 0) % 360
         if (normalizedDegrees < 0) {
@@ -12,6 +21,14 @@ export class ImageUtil {
         return normalizedDegrees
     }
 
+    /**
+     * Helper method that calculates a resized image size
+     * @param viewPort The viewport dimensions
+     * @param image The image dimensions and the rotation amount
+     * @param zoomMode The specified zoom mode
+     * @param relativeZoomLevel The relative zoom level if provided
+     * @returns The relative image size
+     */
     public static getImageSize(viewPort: Dimensions, image: Dimensions & { rotation: number }, zoomMode: ZoomMode, relativeZoomLevel: number = 1): Dimensions {
 
         if (zoomMode === 'custom') {
@@ -48,6 +65,12 @@ export class ImageUtil {
         }
     }
 
+    /**
+     * Helper method that calculates a bounding box for a rotated image
+     * @param image The image dimensions
+     * @param degrees The rotation in degrees
+     * @returns the calculated dimensions and the zoom ratio
+     */
     public static getRotatedBoundingBoxSize(image: Dimensions, degrees: number): Dimensions & { zoomRatio: number } {
 
         if (ImageUtil.normalizeDegrees(degrees) === 0) {
