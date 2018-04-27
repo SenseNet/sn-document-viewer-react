@@ -258,7 +258,7 @@ class ShapeHighlight extends ShapeComponent {
                     overflow: 'auto',
                     backgroundColor: 'yellow',
                     opacity: .5,
-                    userFocus: 'all',
+                    // userFocus: 'all',
                 }}>
             </div>)
         }
