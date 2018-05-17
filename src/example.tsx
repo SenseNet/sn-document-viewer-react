@@ -1,13 +1,12 @@
-import 'babel-polyfill'
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
+import 'babel-polyfill';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
+import { ExampleAppLayout, exampleSettings } from './ExampleAppLayout';
+import { getStoreConfig, sensenetDocumentViewerReducer } from './store';
+import './style';
 
-import { createStore } from 'redux'
-import { combineReducers } from 'redux'
-import { ExampleAppLayout, exampleSettings } from './ExampleAppLayout'
-import { getStoreConfig, sensenetDocumentViewerReducer } from './store'
-import './style'
 
 const storeConfig = getStoreConfig(exampleSettings)
 
