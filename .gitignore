@@ -60,3 +60,6 @@ typings/
 dist
 temp
 bundle
+
+
+.cache
