@@ -1,5 +1,5 @@
-import { IconButton } from 'material-ui'
-import { RotateLeft, RotateRight } from 'material-ui-icons'
+import { IconButton } from '@material-ui/Core'
+import { RotateLeft, RotateRight } from '@material-ui/icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { PreviewImageData } from '../../models'
@@ -45,12 +45,12 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
      */
     public render() {
         return (
-            <div style={{display: 'inline-block'}}>
+            <div style={{ display: 'inline-block' }}>
                 <IconButton title={this.props.rotateDocumentLeft}>
-                    <RotateLeft onClick={() => this.rotateDocumentLeft()} style={{border: '2px solid', borderRadius: '5px'}} />
+                    <RotateLeft onClick={() => this.rotateDocumentLeft()} style={{ border: '2px solid', borderRadius: '5px' }} />
                 </IconButton>
                 <IconButton title={this.props.rotateDocumentRight}>
-                    <RotateRight onClick={() => this.rotateDocumentRight()} style={{border: '2px solid', borderRadius: '5px'}}/>
+                    <RotateRight onClick={() => this.rotateDocumentRight()} style={{ border: '2px solid', borderRadius: '5px' }} />
                 </IconButton>
             </div>)
     }
@@ -58,4 +58,4 @@ export class RotateDocumentComponent extends React.Component<componentType<typeo
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(RotateDocumentComponent)
 
-export {connectedComponent as RotateDocumentWidget}
+export { connectedComponent as RotateDocumentWidget }

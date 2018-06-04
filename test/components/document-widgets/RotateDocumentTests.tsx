@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 
+import { RotateLeft, RotateRight } from '@material-ui/icons'
 import { expect } from 'chai'
-import { RotateLeft, RotateRight } from 'material-ui-icons'
 import * as renderer from 'react-test-renderer'
 import { RotateDocumentWidget } from '../../../src/components/document-widgets/RotateDocument'
 import { documentReceivedAction } from '../../../src/store/Document'

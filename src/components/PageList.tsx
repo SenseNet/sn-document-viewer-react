@@ -1,5 +1,5 @@
+import { Grid } from '@material-ui/Core'
 import * as _ from 'lodash'
-import { Grid } from 'material-ui'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { PreviewImageData } from '../models'

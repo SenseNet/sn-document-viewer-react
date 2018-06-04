@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography } from 'material-ui'
+import { AppBar, Toolbar, Typography } from '@material-ui/Core'
 import React = require('react')
 import { connect } from 'react-redux'
 import { RootReducerType } from '../store'

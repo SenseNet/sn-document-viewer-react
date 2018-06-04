@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 
-import { IconButton, Menu } from 'material-ui'
+import { IconButton, Menu } from '@material-ui/Core'
 import * as renderer from 'react-test-renderer'
 import { ZoomModeWidget } from '../../../src/components/document-widgets/ZoomMode'
 import { documentReceivedAction } from '../../../src/store/Document'
@@ -40,7 +40,7 @@ export const zoomModeWidgetTests = describe('ZoomModeWidget component', () => {
                     </ZoomModeWidget>
                 </Provider>)
             const zoomMenuButton = c.root.findByType(IconButton)
-            zoomMenuButton.props.onClick({currentTarget: undefined})
+            zoomMenuButton.props.onClick({ currentTarget: undefined })
             const zoomMenu = c.root.findByType(Menu)
             zoomMenu.props.onClose()
         })

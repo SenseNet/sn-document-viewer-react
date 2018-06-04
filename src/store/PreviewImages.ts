@@ -74,7 +74,7 @@ export const rotateImages = (imageIndexes: number[], amount: number) => ({
  * @param documentData
  * @param version
  */
-export const getAvailableImages: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A') => {
+export const getAvailableImages: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings, Action>> = (documentData: DocumentData, version: string = 'V1.0A') => {
     return async (dispatch, getState, api) => {
         dispatch(getAvailabelImagesAction(documentData))
         let docData: PreviewImageData[] | undefined
@@ -146,7 +146,7 @@ export const setPagePollInterval = (pollInterval: number) => ({
  * @param version
  * @param page
  */
-export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = (documentData: DocumentData, version: string = 'V1.0A', page: number = 1) => {
+export const previewAvailable: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings, Action>> = (documentData: DocumentData, version: string = 'V1.0A', page: number = 1) => {
     return async (dispatch, getState, api) => {
         dispatch(previewAvailableAction(documentData, version, page))
         let docData: PreviewImageData | undefined

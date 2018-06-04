@@ -1,4 +1,4 @@
-import { ActionCreator, Reducer } from 'redux'
+import { Action, ActionCreator, Reducer } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { PreviewState } from '../Enums'
 import { DocumentData, DocumentViewerSettings, PreviewImageData, Shape, Shapes } from '../models'
@@ -28,7 +28,7 @@ export interface DocumentStateType {
  * @param idOrPath Id or full path for the document, e.g.: 'Root/Sites/MySite/MyDocLib/('doc.docx')
  * @param version The document version
  */
-export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings>> = (hostName: string, idOrPath: string, version: string) => {
+export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings, Action>> = (hostName: string, idOrPath: string, version: string) => {
     return async (dispatch, getState, api) => {
         let docData: DocumentData | undefined
         while (!docData || docData.pageCount === PreviewState.Loading) {
@@ -115,11 +115,11 @@ export const setPollInterval = (pollInterval: number) => ({
  * @param canHideWatermark 'Can hide watermark' permission value
  */
 export const documentPermissionsReceived = (canEdit: boolean, canHideRedaction: boolean, canHideWatermark: boolean) => ({
-        type: 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED',
-        canEdit,
-        canHideRedaction,
-        canHideWatermark,
-    })
+    type: 'SN_DOCVEWER_DOCUMENT_PERMISSIONS_RECEIVED',
+    canEdit,
+    canHideRedaction,
+    canHideWatermark,
+})
 
 /**
  * Action that will be fired when a save request has been sent
@@ -158,7 +158,7 @@ export const rotateShapesForPages = (pages: Array<{ index: number, size: Dimensi
 /**
  * Thunk action to call the Save endpoint with the current document state to save changes
  */
-export const saveChanges: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>> = () => {
+export const saveChanges: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings, Action>> = () => {
     return async (dispatch, getState, api) => {
         dispatch(saveChangesRequest())
         try {
@@ -231,7 +231,7 @@ export const documentStateReducer: Reducer<DocumentStateType>
             case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
                 return { ...state, error: undefined, isLoading: true, idOrPath: action.idOrPath, version: action.version }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
-                return { ...state, document: {...state.document, ...action.document}, error: undefined, isLoading: false, hasChanges: false }
+                return { ...state, document: { ...state.document, ...action.document }, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
                 return { ...state, error: action.error, isLoading: false }
             case 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE':

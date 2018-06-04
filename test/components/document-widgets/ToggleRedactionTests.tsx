@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 
+import { PictureInPicture } from '@material-ui/icons'
 import { expect } from 'chai'
-import { PictureInPicture } from 'material-ui-icons'
 import * as renderer from 'react-test-renderer'
 import { ToggleRedactionWidget } from '../../../src/components/document-widgets/ToggleRedaction'
 import { documentReceivedAction } from '../../../src/store/Document'

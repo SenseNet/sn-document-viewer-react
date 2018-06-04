@@ -1,4 +1,4 @@
-import { CircularProgress } from 'material-ui'
+import { CircularProgress } from '@material-ui/Core'
 import React = require('react')
 import { connect } from 'react-redux'
 import { componentType } from '../services/TypeHelpers'
@@ -40,7 +40,7 @@ class DocumentViewerLoadingComponent extends React.Component<componentType<typeo
                     alignItems: 'center',
                 }}>
                     <CircularProgress size={64} />
-                    <div style={{ marginLeft: '2rem' }}> { this.props.loadingDocument } </div>
+                    <div style={{ marginLeft: '2rem' }}> {this.props.loadingDocument} </div>
                 </div>
             </div>
         )
@@ -49,4 +49,4 @@ class DocumentViewerLoadingComponent extends React.Component<componentType<typeo
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(DocumentViewerLoadingComponent)
 
-export {connectedComponent as DocumentViewerLoading}
+export { connectedComponent as DocumentViewerLoading }

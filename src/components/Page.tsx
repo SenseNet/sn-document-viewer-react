@@ -1,5 +1,5 @@
-import { Paper } from 'material-ui'
-import { CircularProgress } from 'material-ui/Progress'
+import { Paper } from '@material-ui/Core'
+import { CircularProgress } from '@material-ui/Core'
 import React = require('react')
 import { connect } from 'react-redux'
 import { Element } from 'react-scroll'
@@ -7,7 +7,7 @@ import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../model
 import { componentType, ImageUtil } from '../services'
 import { previewAvailable, RootReducerType, ZoomMode } from '../store'
 
-import { ActionCreator } from 'redux'
+import { Action, ActionCreator } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { RotatePageWidget, ShapesWidget } from './page-widgets'
 
@@ -32,7 +32,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number 
  * @param state the redux state
  */
 const mapDispatchToProps = {
-    previewAvailable: previewAvailable as ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings>>,
+    previewAvailable: previewAvailable as ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings, Action>>,
 }
 
 /**

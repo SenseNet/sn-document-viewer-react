@@ -1,5 +1,5 @@
-import { Button, Paper, Typography } from 'material-ui'
-import { Refresh } from 'material-ui-icons'
+import { Button, Paper, Typography } from '@material-ui/Core'
+import { Refresh } from '@material-ui/icons'
 import React = require('react')
 import { connect } from 'react-redux'
 import { componentType } from '../services/TypeHelpers'
@@ -49,7 +49,7 @@ class DocumentViewerErrorComponent extends React.Component<componentType<typeof 
                     justifyContent: 'space-between',
                     alignItems: 'center',
                 }}>
-                    <Paper elevation={4} style={{padding: '1.2rem'}}>
+                    <Paper elevation={4} style={{ padding: '1.2rem' }}>
                         <Typography variant="headline" component="h3">
                             {this.props.errorLoadingDocument}
                         </Typography>
@@ -61,9 +61,9 @@ class DocumentViewerErrorComponent extends React.Component<componentType<typeof 
                                 {this.props.error.message}
                             </strong>
                         </Typography>
-                        <div style={{textAlign: 'center', marginTop: '1em'}}>
-                            <Button title={this.props.reloadPage} size="small"  onClick={() => window.location.reload()}>
-                                <Refresh/>
+                        <div style={{ textAlign: 'center', marginTop: '1em' }}>
+                            <Button title={this.props.reloadPage} size="small" onClick={() => window.location.reload()}>
+                                <Refresh />
                                 {this.props.reloadPage}
                             </Button >
                         </div>

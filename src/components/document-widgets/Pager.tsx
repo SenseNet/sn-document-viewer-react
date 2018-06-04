@@ -1,6 +1,6 @@
+import { IconButton, TextField } from '@material-ui/Core'
+import { FirstPage, LastPage, NavigateBefore, NavigateNext } from '@material-ui/icons'
 import _ = require('lodash')
-import { IconButton, TextField } from 'material-ui'
-import { FirstPage, LastPage, NavigateBefore, NavigateNext } from 'material-ui-icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { componentType } from '../../services'
@@ -107,4 +107,4 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(PagerComponent)
 
-export {connectedComponent as PagerWidget}
+export { connectedComponent as PagerWidget }
