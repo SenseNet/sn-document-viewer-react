@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 
-import { IconButton, Menu } from '@material-ui/Core'
+import { IconButton, Menu } from '@material-ui/core'
 import * as renderer from 'react-test-renderer'
 import { ZoomModeWidget } from '../../../src/components/document-widgets/ZoomMode'
 import { documentReceivedAction } from '../../../src/store/Document'

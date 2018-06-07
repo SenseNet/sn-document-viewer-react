@@ -1,4 +1,4 @@
-import { CircularProgress } from '@material-ui/Core'
+import { CircularProgress } from '@material-ui/core'
 import React = require('react')
 import { connect } from 'react-redux'
 import { componentType } from '../services/TypeHelpers'

@@ -1,4 +1,4 @@
-import { Divider, IconButton, Menu, MenuItem, MobileStepper } from '@material-ui/Core'
+import { Divider, IconButton, Menu, MenuItem, MobileStepper } from '@material-ui/core'
 import { AspectRatio, Code, Error, ZoomIn, ZoomOut, ZoomOutMap } from '@material-ui/icons'
 import * as React from 'react'
 import { connect } from 'react-redux'

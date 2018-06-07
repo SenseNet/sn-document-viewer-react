@@ -1,4 +1,4 @@
-import { Drawer } from '@material-ui/Core'
+import { Drawer } from '@material-ui/core'
 import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'

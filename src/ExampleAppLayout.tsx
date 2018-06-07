@@ -11,8 +11,8 @@ import { PreviewImageData } from './models/PreviewImageData'
 import { Annotation, Highlight, Redaction, Shape } from './models/Shapes'
 import { componentType } from './services'
 
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Paper, TextField, Typography } from 'material-ui'
-import { FolderOpen, Help, Send } from 'material-ui-icons'
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Paper, TextField, Typography } from '@material-ui/core'
+import { FolderOpen, Help, Send } from '@material-ui/icons'
 
 /**
  * Adds a globally unique ID to the shape
@@ -76,14 +76,14 @@ export const exampleSettings: DocumentViewerSettings = {
         })
     },
     canHideWatermark: async (documentData) => {
-        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutWatermark`, {credentials: 'include'})
+        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutWatermark`, { credentials: 'include' })
         if (response.ok) {
             return await response.text() === 'true'
         }
         return false
     },
     canHideRedaction: async (documentData) => {
-        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutRedaction`, {credentials: 'include'})
+        const response = await fetch(`${documentData.hostName}/odata.svc/${documentData.idOrPath}/HasPermission?permissions=PreviewWithoutRedaction`, { credentials: 'include' })
         if (response.ok) {
             return await response.text() === 'true'
         }

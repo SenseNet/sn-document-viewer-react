@@ -1,4 +1,4 @@
-import { Button, Paper, Typography } from '@material-ui/Core'
+import { Button, Paper, Typography } from '@material-ui/core'
 import { Refresh } from '@material-ui/icons'
 import React = require('react')
 import { connect } from 'react-redux'

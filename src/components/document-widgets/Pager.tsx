@@ -1,4 +1,4 @@
-import { IconButton, TextField } from '@material-ui/Core'
+import { IconButton, TextField } from '@material-ui/core'
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from '@material-ui/icons'
 import _ = require('lodash')
 import * as React from 'react'

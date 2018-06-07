@@ -1,4 +1,4 @@
-import { IconButton } from '@material-ui/Core'
+import { IconButton } from '@material-ui/core'
 import { BrandingWatermark } from '@material-ui/icons'
 import * as React from 'react'
 import { connect } from 'react-redux'

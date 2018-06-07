@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 
-import { TextField } from '@material-ui/Core'
+import { TextField } from '@material-ui/core'
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from '@material-ui/icons'
 import { expect } from 'chai'
 import * as renderer from 'react-test-renderer'

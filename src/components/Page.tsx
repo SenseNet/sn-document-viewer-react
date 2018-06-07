@@ -1,5 +1,5 @@
-import { Paper } from '@material-ui/Core'
-import { CircularProgress } from '@material-ui/Core'
+import { Paper } from '@material-ui/core'
+import { CircularProgress } from '@material-ui/core'
 import React = require('react')
 import { connect } from 'react-redux'
 import { Element } from 'react-scroll'
