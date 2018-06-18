@@ -9,7 +9,7 @@ import { previewAvailable, RootReducerType, ZoomMode } from '../store'
 
 import { Action, ActionCreator } from 'redux'
 import { ThunkAction } from 'redux-thunk'
-import { RotatePageWidget, ShapesWidget } from './page-widgets'
+import { ShapesWidget } from './page-widgets'
 
 /**
  * maps state fields from the store to component props
@@ -152,7 +152,6 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                         {this.props.showWidgets ?
                             <div>
                                 <ShapesWidget zoomRatio={this.state.zoomRatio} page={this.props.page} viewPort={{ height: this.state.pageHeight, width: this.state.pageWidth }} />
-                                <RotatePageWidget zoomRatio={this.state.zoomRatio} page={this.props.page} viewPort={{ height: this.state.pageHeight, width: this.state.pageWidth }} />
                             </div>
                             : null}
                         <span style={{ display: 'flex', justifyContent: 'center' }}>

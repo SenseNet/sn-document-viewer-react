@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RootReducerType } from './store'
 
 import { v1 } from 'uuid'
-import { PagerWidget, RotateDocumentWidget, SaveWidget, ToggleRedactionWidget, ToggleShapesWidget, ToggleWatermarkWidget, ZoomModeWidget } from './components/document-widgets'
+import { DocumentTitlePager, RotateActivePages, SearchBar } from './components/document-widgets'
 import { DocumentViewer } from './components/DocumentViewer'
 import { LayoutAppBar } from './components/LayoutAppBar'
 import { DocumentViewerSettings } from './models/DocumentViewerSettings'
@@ -13,6 +13,7 @@ import { componentType } from './services'
 
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Paper, TextField, Typography } from '@material-ui/core'
 import { FolderOpen, Help, Send } from '@material-ui/icons'
+import { Share } from './components/document-widgets/ShareWidget'
 
 /**
  * Adds a globally unique ID to the shape
@@ -101,7 +102,7 @@ export const exampleSettings: DocumentViewerSettings = {
 
         const allPreviews: PreviewImageData[] = []
         for (let i = 0; i < documentData.pageCount; i++) {
-            allPreviews[i] = availablePreviews[i] || { Index: i + 1 }
+            allPreviews[i] = availablePreviews[i] || { Index: i + 1 } as any
             const pageAttributes = documentData.pageAttributes.find((p) => p.pageNum === allPreviews[i].Index)
             allPreviews[i].Attributes = pageAttributes && pageAttributes.options
         }
@@ -202,13 +203,21 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                         documentIdOrPath={this.state.documentIdOrPath}>
                         <LayoutAppBar>
                             <div>
-                                <RotateDocumentWidget />
-                                <ZoomModeWidget />
-                                <ToggleRedactionWidget />
-                                <ToggleWatermarkWidget />
-                                <ToggleShapesWidget />
-                                <PagerWidget />
-                                <SaveWidget />
+                                {/* Toggle thumbnails */}
+                                {/* Download */}
+                                {/* Print*/}
+                                <Share share={(doc) => {
+                                    // tslint:disable-next-line:no-console
+                                    console.log('Share triggered', doc)
+                                }} />
+                                {/* Zoom In / out */}
+                                <RotateActivePages />
+                            </div>
+                            <div>
+                                <DocumentTitlePager />
+                            </div>
+                            <div>
+                                <SearchBar />
                             </div>
                         </LayoutAppBar>
                     </DocumentViewer>

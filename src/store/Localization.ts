@@ -27,6 +27,8 @@ export interface LocalizationStateType {
     errorLoadingDocument: string
     errorLoadingDetails: string
     reloadPage: string
+    search: string
+    share: string
 }
 
 /**
@@ -56,6 +58,8 @@ export const defaultLocalization: LocalizationStateType = {
     errorLoadingDocument: 'Error loading document',
     errorLoadingDetails: 'The following error occured during opening a document: ',
     reloadPage: 'Reload page',
+    search: 'Search',
+    share: 'Share',
 }
 
 /**
@@ -72,7 +76,7 @@ export const setLocalization = (localization: Partial<LocalizationStateType>) =>
  * @param state the current state
  * @param action the action to dispatch
  */
-export const localizationReducer: Reducer<LocalizationStateType> = (state: LocalizationStateType = defaultLocalization, action ) => {
+export const localizationReducer: Reducer<LocalizationStateType> = (state: LocalizationStateType = defaultLocalization, action) => {
     switch (action.type) {
         case 'SN_DOCVIEWER_SET_LOCALIZATION': {
             return {
