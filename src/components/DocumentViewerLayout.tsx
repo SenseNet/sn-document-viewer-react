@@ -3,7 +3,7 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { scroller } from 'react-scroll'
 import { componentType } from '../services'
-import { RootReducerType, setActivePages } from '../store'
+import { RootReducerType, setActivePages, setThumbnails } from '../store'
 import { PageList } from './'
 
 /**
@@ -15,6 +15,7 @@ const mapStateToProps = (state: RootReducerType) => {
         activePages: state.sensenetDocumentViewer.viewer.activePages,
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
         customZoomLevel: state.sensenetDocumentViewer.viewer.customZoomLevel,
+        showThumbnails: state.sensenetDocumentViewer.viewer.showThumbnails,
     }
 }
 
@@ -24,12 +25,13 @@ const mapStateToProps = (state: RootReducerType) => {
  */
 const mapDispatchToProps = {
     setActivePages,
+    setThumbnails,
 }
 
 /** State type definition for the DocumentViewerLayout component */
 export interface DocumentLayoutState {
-    showThumbnails: boolean
     activePage?: number
+
 }
 
 /**
@@ -38,7 +40,7 @@ export interface DocumentLayoutState {
 class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
 
     /** the component state */
-    public state = { showThumbnails: true, activePage: 1 }
+    public state = { activePage: 1 }
 
     /** scrolls the viewer to focus to the page with the provided index */
     public scrollTo(index: number) {
@@ -50,7 +52,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                 offset: -8,
             })
 
-            if (this.state.showThumbnails) {
+            if (this.props.showThumbnails) {
                 scroller.scrollTo(`Thumbnail-${index}`, {
                     containerId: 'sn-document-viewer-thumbnails',
                     smooth: 'easeInOutQuint',
@@ -64,7 +66,6 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
             }
 
         })
-
     }
 
     /** triggered when the component will receive props */
@@ -72,34 +73,6 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
         if (this.props.activePages[0] !== newProps.activePages[0]) {
             this.scrollTo(newProps.activePages[0])
         }
-    }
-
-    private onResize() {
-        const showThumbnails = innerWidth > 800
-        if (this.state.showThumbnails !== showThumbnails) {
-            this.setState({
-                ...this.state,
-                showThumbnails,
-            })
-        }
-    }
-
-    private resizeWatcher = this.onResize.bind(this)
-
-    /** Event before the component will mount */
-    public componentWillMount() {
-        addEventListener('resize', this.resizeWatcher)
-    }
-
-    /** Event after the component did mount */
-    public componentDidMount() {
-        this.onResize()
-
-    }
-
-    /** Event before the component will unmount */
-    public componentWillUnmount() {
-        removeEventListener('resize', this.resizeWatcher)
     }
 
     /**
@@ -122,24 +95,24 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                     zIndex: 0,
                     position: 'relative',
                 }}>
-                    {this.state.showThumbnails ?
-                        <Drawer variant={'persistent'} open anchor="left" PaperProps={{ style: { position: 'relative', width: '200px', height: '100%' } }}>
-                            <PageList
-                                showWidgets={false}
-                                style={{ minWidth: 160 }}
-                                id="sn-document-viewer-thumbnails"
-                                zoomMode="fit"
-                                zoomLevel={1}
-                                onPageClick={(ev, index) => this.scrollTo(index)}
-                                elementNamePrefix="Thumbnail-"
-                                images="thumbnail"
-                                tolerance={0}
-                                padding={8}
-                                activePage={this.state.activePage}
-                            />
-                        </Drawer>
-                        : null
-                    }
+                    <Drawer
+                        variant={'persistent'}
+                        open={this.props.showThumbnails}
+                        anchor="left" PaperProps={{ style: { position: 'relative', width: '200px', height: '100%' } }}>
+                        <PageList
+                            showWidgets={false}
+                            style={{ minWidth: 160 }}
+                            id="sn-document-viewer-thumbnails"
+                            zoomMode="fit"
+                            zoomLevel={1}
+                            onPageClick={(ev, index) => this.scrollTo(index)}
+                            elementNamePrefix="Thumbnail-"
+                            images="thumbnail"
+                            tolerance={0}
+                            padding={8}
+                            activePage={this.state.activePage}
+                        />
+                    </Drawer>
                     <PageList
                         showWidgets={true}
                         id="sn-document-viewer-pages"

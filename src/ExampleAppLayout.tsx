@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RootReducerType } from './store'
 
 import { v1 } from 'uuid'
-import { DocumentTitlePager, RotateActivePages, SearchBar } from './components/document-widgets'
+import { DocumentTitlePager, RotateActivePages, SearchBar, ToggleThumbnailsWidget } from './components/document-widgets'
 import { DocumentViewer } from './components/DocumentViewer'
 import { LayoutAppBar } from './components/LayoutAppBar'
 import { DocumentViewerSettings } from './models/DocumentViewerSettings'
@@ -203,7 +203,7 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                         documentIdOrPath={this.state.documentIdOrPath}>
                         <LayoutAppBar>
                             <div>
-                                {/* Toggle thumbnails */}
+                                <ToggleThumbnailsWidget />
                                 {/* Download */}
                                 {/* Print*/}
                                 <Share share={(doc) => {

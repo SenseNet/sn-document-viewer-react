@@ -17,6 +17,7 @@ export interface LocalizationStateType {
     toggleRedaction: string
     toggleWatermark: string
     toggleShapes: string
+    toggleThumbnails: string
     firstPage: string
     previousPage: string
     gotoPage: string
@@ -48,6 +49,7 @@ export const defaultLocalization: LocalizationStateType = {
     toggleRedaction: 'Toggle redaction',
     toggleWatermark: 'Toggle watermark',
     toggleShapes: 'Toggle shapes',
+    toggleThumbnails: 'Toggle thumbnails',
     firstPage: 'First page',
     previousPage: 'Previous page',
     gotoPage: 'Goto page',

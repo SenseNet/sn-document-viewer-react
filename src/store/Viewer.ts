@@ -33,6 +33,11 @@ export interface ViewerStateType {
      * Shapes are on / off
      */
     showShapes: boolean
+
+    /**
+     * Thumbnails on / off
+     */
+    showThumbnails: boolean
 }
 
 /**
@@ -90,11 +95,20 @@ export const setShapes = (showShapes: boolean) => ({
 })
 
 /**
+ * Action to set the visibility of the shapes
+ * @param showThumbnails
+ */
+export const setThumbnails = (showThumbnails: boolean) => ({
+    type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_THUMBNAILS',
+    showThumbnails,
+})
+
+/**
  * Reducer for the Viewer state
  * @param state the current state
  * @param action the dispatched action
  */
-export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePages: [1], zoomMode: 'fit', customZoomLevel: 3, showWatermark: false, showRedaction: true, showShapes: true }, action) => {
+export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePages: [1], zoomMode: 'fit', customZoomLevel: 3, showWatermark: false, showRedaction: true, showShapes: true, showThumbnails: false }, action) => {
     switch (action.type) {
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_PAGE':
             return {...state, activePages: [...action.activePages] }
@@ -108,6 +122,8 @@ export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePag
             return {...state, showRedaction: action.showRedaction }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_SHAPES':
             return {...state, showShapes: action.showShapes }
+        case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_THUMBNAILS':
+            return {...state, showThumbnails: action.showThumbnails}
         default:
             return state
     }
