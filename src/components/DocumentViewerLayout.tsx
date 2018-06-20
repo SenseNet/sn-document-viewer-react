@@ -122,21 +122,8 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                     zIndex: 0,
                     position: 'relative',
                 }}>
-                    <PageList
-                        showWidgets={true}
-                        id="sn-document-viewer-pages"
-                        zoomMode={this.props.zoomMode}
-                        zoomLevel={this.props.customZoomLevel}
-                        onPageClick={(ev, index) => this.scrollTo(index)}
-                        elementNamePrefix="Page-"
-                        images="preview"
-                        tolerance={0}
-                        padding={8}
-                        activePage={this.state.activePage}
-                    />
-
                     {this.state.showThumbnails ?
-                        <Drawer variant={'persistent'} open anchor="right" PaperProps={{ style: { position: 'relative', width: '200px', height: '100%' } }}>
+                        <Drawer variant={'persistent'} open anchor="left" PaperProps={{ style: { position: 'relative', width: '200px', height: '100%' } }}>
                             <PageList
                                 showWidgets={false}
                                 style={{ minWidth: 160 }}
@@ -153,6 +140,18 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                         </Drawer>
                         : null
                     }
+                    <PageList
+                        showWidgets={true}
+                        id="sn-document-viewer-pages"
+                        zoomMode={this.props.zoomMode}
+                        zoomLevel={this.props.customZoomLevel}
+                        onPageClick={(ev, index) => this.scrollTo(index)}
+                        elementNamePrefix="Page-"
+                        images="preview"
+                        tolerance={0}
+                        padding={8}
+                        activePage={this.state.activePage}
+                    />
                 </div>
             </div >
         )
