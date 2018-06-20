@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core'
+import { ClickAwayListener, TextField, Typography } from '@material-ui/core'
 import _ = require('lodash')
 import * as React from 'react'
 import { connect } from 'react-redux'
@@ -32,6 +32,7 @@ export const mapDispatchToProps = {
 export interface PagerState {
     currentPage: number
     lastPage: number
+    focused: boolean
 }
 
 /**
@@ -40,7 +41,7 @@ export interface PagerState {
 export class DocumentTitlePagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, PagerState> {
 
     /** the component state */
-    public state = { currentPage: this.props.activePages[0], lastPage: this.props.pageCount }
+    public state = { currentPage: this.props.activePages[0], lastPage: this.props.pageCount, focused: false }
 
     private setPage = _.debounce(() => {
         this.props.setActivePages([this.state.currentPage])
@@ -67,16 +68,51 @@ export class DocumentTitlePagerComponent extends React.Component<componentType<t
         }
     }
 
+    private handleFocused() {
+        this.setState({
+            ...this.state,
+            focused: true,
+        })
+    }
+
+    private handleBlur() {
+        this.setState({
+            ...this.state,
+            focused: false,
+        })
+    }
+
     /**
      * renders the component
      */
     public render() {
         return (
-            <Typography variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {this.props.documentName}
-                &nbsp;
-                {this.props.activePages[0]} / {this.props.pageCount}
-            </Typography>
+            <ClickAwayListener onClickAway={() => this.handleBlur()}>
+                <div onClick={() => this.handleFocused()}>
+
+                    <Typography variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {this.props.documentName}
+                        &nbsp;
+                            {this.state.focused ?
+                            <TextField
+                                title={this.props.gotoPage}
+                                value={this.state.currentPage}
+                                onChange={(ev) => this.gotoPage(ev.currentTarget.value)}
+                                type="number"
+                                required={true}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                inputProps={{ min: 1, max: this.state.lastPage, style: { textAlign: 'center', color: 'white'},
+                            }}
+                                margin="dense"
+                            />
+                            :
+                            <span>{this.props.activePages[0]} / {this.props.pageCount}</span>
+                        }
+                    </Typography>
+                </div>
+            </ClickAwayListener>
         )
     }
 }
