@@ -1,7 +1,6 @@
 import { Drawer } from '@material-ui/core'
 import React = require('react')
 import { connect } from 'react-redux'
-import { scroller } from 'react-scroll'
 import { componentType } from '../services'
 import { RootReducerType, setActivePages, setThumbnails } from '../store'
 import { PageList } from './'
@@ -31,7 +30,7 @@ const mapDispatchToProps = {
 /** State type definition for the DocumentViewerLayout component */
 export interface DocumentLayoutState {
     activePage?: number
-
+    thumbnaislVisibility: boolean
 }
 
 /**
@@ -40,31 +39,34 @@ export interface DocumentLayoutState {
 class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
 
     /** the component state */
-    public state = { activePage: 1 }
+    public state = { activePage: 1, thumbnaislVisibility: false }
 
     /** scrolls the viewer to focus to the page with the provided index */
     public scrollTo(index: number) {
         this.setState({ ...this.state, activePage: index }, () => {
-            scroller.scrollTo(`Page-${index}`, {
-                containerId: 'sn-document-viewer-pages',
-                smooth: 'easeInOutQuint',
-                duration: 600,
-                offset: -8,
-            })
+            const pagesContainer = document.getElementById('sn-document-viewer-pages')
+            const activePage = document.getElementById(`Page-${index}`)
 
-            if (this.props.showThumbnails) {
-                scroller.scrollTo(`Thumbnail-${index}`, {
-                    containerId: 'sn-document-viewer-thumbnails',
-                    smooth: 'easeInOutQuint',
-                    duration: 600,
-                    offset: -8,
+            if (pagesContainer && activePage) {
+                pagesContainer.scrollTo({
+                    top: activePage.offsetTop - 8,
+                    behavior: 'smooth',
+                })
+            }
+
+            const thumbnailsContainer = document.getElementById('sn-document-viewer-thumbnails')
+            const activeThumbnail = document.getElementById(`Thumbnail-${index}`)
+
+            if (thumbnailsContainer && activeThumbnail) {
+                thumbnailsContainer.scrollTo({
+                    top: activeThumbnail.offsetTop - 16,
+                    behavior: 'smooth',
                 })
             }
 
             if (this.props.activePages[0] !== index) {
                 this.props.setActivePages([index])
             }
-
         })
     }
 
@@ -73,6 +75,23 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
         if (this.props.activePages[0] !== newProps.activePages[0]) {
             this.scrollTo(newProps.activePages[0])
         }
+        if (this.props.showThumbnails !== newProps.showThumbnails) {
+            if (newProps.showThumbnails) {
+                this.setState({
+                    ...this.state,
+                    thumbnaislVisibility: true,
+                })
+            } else {
+                setTimeout(() => {
+                this.setState({
+                    ...this.state,
+                    thumbnaislVisibility: false,
+                })
+            }, 200)
+            }
+
+        }
+
     }
 
     /**
@@ -98,10 +117,10 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                     <Drawer
                         variant={'persistent'}
                         open={this.props.showThumbnails}
-                        anchor="left" PaperProps={{ style: { position: 'relative', width: '200px', height: '100%' } }}>
+                        anchor="left" PaperProps={{ style: { position: 'relative', width: this.state.thumbnaislVisibility ? '200px' : 0, height: '100%', overflow: 'hidden' } }}>
                         <PageList
                             showWidgets={false}
-                            style={{ minWidth: 160 }}
+                            style={{ minWidth: 200, backgroundColor: '#EAEAEB', marginRight: '-16px', paddingRight: 0, boxShadow: '-17px 0 0 0 #D7D7D7 inset' }}
                             id="sn-document-viewer-thumbnails"
                             zoomMode="fit"
                             zoomLevel={1}
@@ -109,7 +128,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                             elementNamePrefix="Thumbnail-"
                             images="thumbnail"
                             tolerance={0}
-                            padding={8}
+                            padding={16}
                             activePage={this.state.activePage}
                         />
                     </Drawer>

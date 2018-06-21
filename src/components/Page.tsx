@@ -2,7 +2,6 @@ import { Paper } from '@material-ui/core'
 import { CircularProgress } from '@material-ui/core'
 import React = require('react')
 import { connect } from 'react-redux'
-import { Element } from 'react-scroll'
 import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../models'
 import { componentType, ImageUtil } from '../services'
 import { previewAvailable, RootReducerType, ZoomMode } from '../store'
@@ -47,6 +46,7 @@ export interface OwnProps {
     zoomMode: ZoomMode,
     zoomLevel: number,
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
+    margin: number,
     image: 'preview' | 'thumbnail'
 }
 
@@ -139,32 +139,31 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
      * renders the component
      */
     public render() {
+        const elementName = `${this.props.elementNamePrefix}${this.props.page.Index}`
         return (
-            <Element name={`${this.props.elementNamePrefix}${this.props.page.Index}`} style={{ margin: '8px' }}>
-                <Paper elevation={this.state.isActive ? 8 : 2}>
-                    <div style={{
-                        padding: 0,
-                        overflow: 'hidden',
-                        width: this.state.pageWidth,
-                        height: this.state.pageHeight,
-                        position: 'relative',
-                    }} onClick={(ev) => this.props.onClick(ev)}>
-                        {this.props.showWidgets ?
-                            <div>
-                                <ShapesWidget zoomRatio={this.state.zoomRatio} page={this.props.page} viewPort={{ height: this.state.pageHeight, width: this.state.pageWidth }} />
-                            </div>
-                            : null}
-                        <span style={{ display: 'flex', justifyContent: 'center' }}>
-                            {this.state.imgSrc ?
-                                <img src={`${this.state.imgSrc}${this.props.showWatermark ? '?watermark=true' : ''}`}
-                                    style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
-                                /> :
-                                <CircularProgress />
-                            }
-                        </span>
-                    </div>
-                </Paper>
-            </Element >
+            <Paper elevation={this.state.isActive ? 8 : 2} id={elementName} style={{ margin: this.props.margin }}>
+                <div style={{
+                    padding: 0,
+                    overflow: 'hidden',
+                    width: this.state.pageWidth - 2 * this.props.margin,
+                    height: this.state.pageHeight - 2 * this.props.margin,
+                    position: 'relative',
+                }} onClick={(ev) => this.props.onClick(ev)}>
+                    {this.props.showWidgets ?
+                        <div>
+                            <ShapesWidget zoomRatio={this.state.zoomRatio} page={this.props.page} viewPort={{ height: this.state.pageHeight, width: this.state.pageWidth }} />
+                        </div>
+                        : null}
+                    <span style={{ display: 'flex', justifyContent: 'center' }}>
+                        {this.state.imgSrc ?
+                            <img src={`${this.state.imgSrc}${this.props.showWatermark ? '?watermark=true' : ''}`}
+                                style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
+                            /> :
+                            <CircularProgress />
+                        }
+                    </span>
+                </div>
+            </Paper>
         )
     }
 }

@@ -179,8 +179,8 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         }
         if (this.canUpdate && this.viewPort) {
 
-            const newHeight = this.viewPort.clientHeight - 16
-            const newWidth = this.viewPort.clientWidth - 16
+            const newHeight = this.viewPort.clientHeight - this.props.padding * 2
+            const newWidth = this.viewPort.clientWidth - this.props.padding * 2
             if (!this.state || newHeight !== this.state.viewportHeight || newWidth !== this.state.viewportWidth) {
                 this.setState({
                     ...this.state,
@@ -219,6 +219,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
                             zoomLevel={this.props.zoomLevel}
                             elementNamePrefix={this.props.elementNamePrefix}
                             image={this.props.images}
+                            margin={this.props.padding}
                         />
                     ))}
                 </div>
