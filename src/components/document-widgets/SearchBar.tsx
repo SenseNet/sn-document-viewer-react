@@ -1,26 +1,9 @@
-import { createMuiTheme, Grid, MuiThemeProvider, TextField } from '@material-ui/core'
+import { Grid, TextField } from '@material-ui/core'
 import { Search } from '@material-ui/icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { componentType } from '../../services'
 import { RootReducerType } from '../../store'
-
-/**
- * Theme overrides for the SearchBar component
- */
-export const searchBarTheme = createMuiTheme({
-    overrides: {
-        MuiInput: {
-            root: {
-                color: 'white',
-            },
-            underline: {
-                borderBottomColor: 'white',
-                color: 'white',
-            },
-        },
-    },
-})
 
 /**
  * maps state fields from the store to component props
@@ -82,16 +65,19 @@ export class SearchBarComponent extends React.Component<componentType<typeof map
      */
     public render() {
         return (
-            <MuiThemeProvider theme={searchBarTheme}>
-                <Grid container spacing={8} alignItems="flex-end">
-                    <Grid item>
-                        <Search />
-                    </Grid>
-                    <Grid item>
-                        <TextField type="text" placeholder={this.props.placeholder} onKeyPress={(ev) => this.handleKeyPress(ev)} onSubmit={() => this.evaluateSearch()} onChange={(ev) => this.updateValue(ev.target.value)} />
-                    </Grid>
+            <Grid container spacing={8} alignItems="flex-end">
+                <Grid item>
+                    <Search />
                 </Grid>
-            </MuiThemeProvider>
+                <Grid item>
+                    <TextField
+                        type="text"
+                        placeholder={this.props.placeholder}
+                        onKeyPress={(ev) => this.handleKeyPress(ev)} onSubmit={() => this.evaluateSearch()}
+                        onChange={(ev) => this.updateValue(ev.target.value)}
+                        inputProps={{ style: { color: 'white' } }} />
+                </Grid>
+            </Grid>
         )
     }
 }

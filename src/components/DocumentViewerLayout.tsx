@@ -83,11 +83,11 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                 })
             } else {
                 setTimeout(() => {
-                this.setState({
-                    ...this.state,
-                    thumbnaislVisibility: false,
-                })
-            }, 200)
+                    this.setState({
+                        ...this.state,
+                        thumbnaislVisibility: false,
+                    })
+                }, 200)
             }
 
         }
@@ -120,7 +120,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                         anchor="left" PaperProps={{ style: { position: 'relative', width: this.state.thumbnaislVisibility ? '200px' : 0, height: '100%', overflow: 'hidden' } }}>
                         <PageList
                             showWidgets={false}
-                            style={{ minWidth: 200, backgroundColor: '#EAEAEB', marginRight: '-16px', paddingRight: 0, boxShadow: '-17px 0 0 0 #D7D7D7 inset' }}
+                            style={{ minWidth: 200, marginRight: '-16px', paddingRight: 0 }}
                             id="sn-document-viewer-thumbnails"
                             zoomMode="fit"
                             zoomLevel={1}

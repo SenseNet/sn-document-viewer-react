@@ -11,7 +11,7 @@ import { PreviewImageData } from './models/PreviewImageData'
 import { Annotation, Highlight, Redaction, Shape } from './models/Shapes'
 import { componentType } from './services'
 
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Paper, TextField, Typography } from '@material-ui/core'
+import { Button, Checkbox, createMuiTheme, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, MuiThemeProvider, Paper, TextField, Typography } from '@material-ui/core'
 import { FolderOpen, Help, Send } from '@material-ui/icons'
 import { Share } from './components/document-widgets/ShareWidget'
 
@@ -55,7 +55,7 @@ const mapDispatchToProps = {
  */
 export const exampleSettings: DocumentViewerSettings = {
     canEditDocument: async (documentData) => {
-        const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { credentials: 'include' })
+        const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET', credentials: 'include' })
         if (response.ok) {
             return await response.text() === 'true'
         }
@@ -152,6 +152,40 @@ export const exampleSettings: DocumentViewerSettings = {
 
 const localStorageKey = 'sn-docviewer-example'
 
+/**
+ * The default example theme
+ */
+export const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#ff9800',
+        },
+        secondary: {
+            main: '#ff9800',
+        },
+        background: {
+            default: '#f5f5f5',
+            paper: '#ffffff',
+        },
+    },
+    overrides: {
+        MuiDrawer: {
+            paper: {
+                backgroundColor: 'transparent',
+            },
+            docked: {
+                backgroundColor: '#eaeaeb',
+            },
+        },
+        MuiToolbar: {
+            root: {
+                backgroundColor: '#2a2a2c',
+                color: '#707070',
+            },
+        },
+    },
+})
+
 class ExampleAppLayout extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, {}>, ExampleAppState> {
     /** the component state */
     public state: ExampleAppState =
@@ -195,137 +229,137 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
      * renders the component
      */
     public render() {
-        return (<div style={{ height: '100%' }}>
-            {
-                this.state.isViewerOpened ?
-                    <DocumentViewer
-                        hostName={this.state.hostName}
-                        documentIdOrPath={this.state.documentIdOrPath}>
-                        <LayoutAppBar>
-                            <div>
-                                <ToggleThumbnailsWidget />
-                                {/* Download */}
-                                {/* Print*/}
-                                <Share share={(doc) => {
-                                    // tslint:disable-next-line:no-console
-                                    console.log('Share triggered', doc)
-                                }} />
-                                {/* Zoom In / out */}
-                                <RotateActivePages />
-                            </div>
-                            <div>
-                                <DocumentTitlePager />
-                            </div>
-                            <div>
-                                <SearchBar />
-                            </div>
-                        </LayoutAppBar>
-                    </DocumentViewer>
-                    :
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-around',
-                        alignContent: 'center',
-                        alignItems: 'center',
-                        height: '100%',
-                    }}>
-                        <Paper elevation={4} style={{
-                            padding: '1.2rem',
-                            flexGrow: 1,
-                            maxWidth: '65%',
-                        }}>
-                            <Typography variant="title">Document Viewer Demo</Typography>
-                            <Typography>
-                                Select a sensenet site and document to open.
-                            </Typography>
-                            <form
-                                autoComplete="off"
-                                autoCorrect="off"
-                                onSubmit={(ev) => this.openViewer(ev)}
-                                style={{
-                                    margin: '.5em',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                }}
-
-                            >
-                                <TextField
-                                    value={this.state.hostName}
-                                    onChange={(ev) => { this.setState({ ...this.state, hostName: ev.currentTarget.value }) }}
-                                    required
-                                    placeholder="The host URL, e.g. 'https://my-sensenet-site.org'"
-                                    type="url"
-                                    label="Host name"
-                                    margin="normal"
-                                />
-                                <TextField
-                                    value={this.state.documentIdOrPath}
-                                    onChange={(ev) => { this.setState({ ...this.state, documentIdOrPath: ev.currentTarget.value }) }}
-                                    required
-                                    margin="normal"
-                                    placeholder="The Id or full path of the document, e.g.: /Root/Sites/MySite/MyDocLib/('Example.docx')"
-                                    label="Document id / full path"
-                                />
-                                <div style={{
-                                    display: 'flex',
-                                    flexDirection: 'row-reverse',
-                                    marginTop: '1em',
+        return (
+            <MuiThemeProvider theme={theme} >
+                <div style={{ height: '100%' }}>
+                    {
+                        this.state.isViewerOpened ?
+                            <DocumentViewer
+                                hostName={this.state.hostName}
+                                documentIdOrPath={this.state.documentIdOrPath}>
+                                <LayoutAppBar>
+                                    <div style={{ flexShrink: 0 }}>
+                                        <ToggleThumbnailsWidget />
+                                        {/* Download */}
+                                        {/* Print*/}
+                                        <Share share={(doc) => {
+                                            // tslint:disable-next-line:no-console
+                                            console.log('Share triggered', doc)
+                                        }} />
+                                        {/* Zoom In / out */}
+                                        <RotateActivePages />
+                                    </div>
+                                    <DocumentTitlePager />
+                                    <div style={{ flexShrink: 0 }}>
+                                        <SearchBar />
+                                    </div>
+                                </LayoutAppBar>
+                            </DocumentViewer>
+                            :
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-around',
+                                alignContent: 'center',
+                                alignItems: 'center',
+                                height: '100%',
+                            }}>
+                                <Paper elevation={4} style={{
+                                    padding: '1.2rem',
+                                    flexGrow: 1,
+                                    maxWidth: '65%',
                                 }}>
-                                    <Button type="submit" variant="raised" color="primary"> <Send fontSize="20px" /> &nbsp; Open </Button>
-                                    &nbsp;
+                                    <Typography variant="title">Document Viewer Demo</Typography>
+                                    <Typography>
+                                        Select a sensenet site and document to open.
+                            </Typography>
+                                    <form
+                                        autoComplete="off"
+                                        autoCorrect="off"
+                                        onSubmit={(ev) => this.openViewer(ev)}
+                                        style={{
+                                            margin: '.5em',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                        }}
+
+                                    >
+                                        <TextField
+                                            value={this.state.hostName}
+                                            onChange={(ev) => { this.setState({ ...this.state, hostName: ev.currentTarget.value }) }}
+                                            required
+                                            placeholder="The host URL, e.g. 'https://my-sensenet-site.org'"
+                                            type="url"
+                                            label="Host name"
+                                            margin="normal"
+                                        />
+                                        <TextField
+                                            value={this.state.documentIdOrPath}
+                                            onChange={(ev) => { this.setState({ ...this.state, documentIdOrPath: ev.currentTarget.value }) }}
+                                            required
+                                            margin="normal"
+                                            placeholder="The Id or full path of the document, e.g.: /Root/Sites/MySite/MyDocLib/('Example.docx')"
+                                            label="Document id / full path"
+                                        />
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'row-reverse',
+                                            marginTop: '1em',
+                                        }}>
+                                            <Button type="submit" variant="raised" color="primary"> <Send fontSize="20px" /> &nbsp; Open </Button>
+                                            &nbsp;
                                     <Button onClick={(ev) => this.setState({ ...this.state, isHelpOpened: true })} variant="raised" color="primary"> <Help fontSize="20px" /> &nbsp; Help </Button>
-                                    &nbsp;
+                                            &nbsp;
                                     <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={this.state.save}
-                                                onChange={(ev) => this.setState({ ...this.state, save: !this.state.save })}
-                                                value="checkedA"
+                                                control={
+                                                    <Checkbox
+                                                        checked={this.state.save}
+                                                        onChange={(ev) => this.setState({ ...this.state, save: !this.state.save })}
+                                                        value="checkedA"
+                                                    />
+                                                }
+                                                label="Remember"
                                             />
-                                        }
-                                        label="Remember"
-                                    />
-                                </div>
-                            </form>
-                            <Dialog open={this.state.isHelpOpened || false}>
-                                <DialogTitle>Help</DialogTitle>
-                                <DialogContent>
-                                    <Typography component="div">
-                                        If you have trouble opening a file be sure that
+                                        </div>
+                                    </form>
+                                    <Dialog open={this.state.isHelpOpened || false}>
+                                        <DialogTitle>Help</DialogTitle>
+                                        <DialogContent>
+                                            <Typography component="div">
+                                                If you have trouble opening a file be sure that
                                         <ul>
-                                            <li>you are using sensenet <a href="https://community.sensenet.com/docs/install-sn-from-nuget/" target="_blank" >7.0+</a></li>
-                                            <li><a href="https://community.sensenet.com/docs/cors/" target="_blank">CORS</a> is allowed for the current host</li>
-                                            <li>You are logged in</li>
-                                            <li>You have Open rights to the document</li>
-                                            <li>The preview images has been generated or Task Management is configured</li>
-                                        </ul>
-                                    </Typography>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={(ev) => this.setState({ ...this.state, isHelpOpened: false })} variant="raised" color="primary"> Close </Button>
-                                </DialogActions>
-                            </Dialog>
-                        </Paper>
-                    </div>
-            }
+                                                    <li>you are using sensenet <a href="https://community.sensenet.com/docs/install-sn-from-nuget/" target="_blank" >7.0+</a></li>
+                                                    <li><a href="https://community.sensenet.com/docs/cors/" target="_blank">CORS</a> is allowed for the current host</li>
+                                                    <li>You are logged in</li>
+                                                    <li>You have Open rights to the document</li>
+                                                    <li>The preview images has been generated or Task Management is configured</li>
+                                                </ul>
+                                            </Typography>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={(ev) => this.setState({ ...this.state, isHelpOpened: false })} variant="raised" color="primary"> Close </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                </Paper>
+                            </div>
+                    }
 
-            {this.state.isViewerOpened ?
-                <Button
-                    style={{
-                        position: 'fixed',
-                        right: '2em',
-                        bottom: '1em',
-                        zIndex: 1,
-                    }}
-                    variant="fab"
-                    color="secondary"
-                    aria-label="select another document"
-                    onClick={(ev) => this.closeViewer()}>
-                    <FolderOpen />
-                </Button>
-                : null}
-
-        </div>)
+                    {this.state.isViewerOpened ?
+                        <Button
+                            style={{
+                                position: 'fixed',
+                                right: '2em',
+                                bottom: '1em',
+                                zIndex: 1,
+                            }}
+                            variant="fab"
+                            color="secondary"
+                            aria-label="select another document"
+                            onClick={(ev) => this.closeViewer()}>
+                            <FolderOpen />
+                        </Button>
+                        : null}
+                </div>
+            </MuiThemeProvider>)
     }
 }
 

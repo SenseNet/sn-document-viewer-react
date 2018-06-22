@@ -5,6 +5,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
+import { styles } from '../styles'
 
 /**
  * maps state fields from the store to component props
@@ -94,7 +95,7 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
                     margin="dense"
                 />
 
-                <IconButton disabled={this.state.currentPage >= this.state.lastPage} title={this.props.nextPage}>
+                <IconButton disabled={this.state.currentPage >= this.state.lastPage} title={this.props.nextPage} color={'primary'}>
                     <NavigateNext onClick={(ev) => this.gotoPage(this.props.activePages[0] + 1)} />
                 </IconButton>
 

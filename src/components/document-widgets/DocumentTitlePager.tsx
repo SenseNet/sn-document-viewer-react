@@ -88,30 +88,28 @@ export class DocumentTitlePagerComponent extends React.Component<componentType<t
     public render() {
         return (
             <ClickAwayListener onClickAway={() => this.handleBlur()}>
-                <div onClick={() => this.handleFocused()}>
-
-                    <Typography variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {this.props.documentName}
-                        &nbsp;
+                <Typography onClick={() => this.handleFocused()} variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={this.props.documentName}>
+                    {this.props.documentName}
+                    &nbsp;
                             {this.state.focused ?
-                            <TextField
-                                title={this.props.gotoPage}
-                                value={this.state.currentPage}
-                                onChange={(ev) => this.gotoPage(ev.currentTarget.value)}
-                                type="number"
-                                required={true}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                inputProps={{ min: 1, max: this.state.lastPage, style: { textAlign: 'center', color: 'white'},
+                        <TextField
+                            title={this.props.gotoPage}
+                            value={this.state.currentPage}
+                            onChange={(ev) => this.gotoPage(ev.currentTarget.value)}
+                            type="number"
+                            required={true}
+                            InputLabelProps={{
+                                shrink: true,
                             }}
-                                margin="dense"
-                            />
-                            :
-                            <span>{this.props.activePages[0]} / {this.props.pageCount}</span>
-                        }
-                    </Typography>
-                </div>
+                            inputProps={{
+                                min: 1, max: this.state.lastPage, style: { textAlign: 'center', color: 'white' },
+                            }}
+                            margin="dense"
+                        />
+                        :
+                        <span>{this.props.activePages[0]} / {this.props.pageCount}</span>
+                    }
+                </Typography>
             </ClickAwayListener>
         )
     }
