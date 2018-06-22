@@ -88,11 +88,11 @@ export class DocumentTitlePagerComponent extends React.Component<componentType<t
     public render() {
         return (
             <ClickAwayListener onClickAway={() => this.handleBlur()}>
-                <Typography onClick={() => this.handleFocused()} variant="title" color="inherit" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={this.props.documentName}>
-                    {this.props.documentName}
-                    &nbsp;
-                            {this.state.focused ?
+                <Typography onClick={() => this.handleFocused()} variant="title" color="inherit" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', overflow: 'hidden', margin: '0 2.5em' }} title={this.props.documentName}>
+                    <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{this.props.documentName}&nbsp;</div>
+                    {this.state.focused ?
                         <TextField
+                            style={{ flexShrink: 0 }}
                             title={this.props.gotoPage}
                             value={this.state.currentPage}
                             onChange={(ev) => this.gotoPage(ev.currentTarget.value)}
@@ -107,7 +107,7 @@ export class DocumentTitlePagerComponent extends React.Component<componentType<t
                             margin="dense"
                         />
                         :
-                        <span>{this.props.activePages[0]} / {this.props.pageCount}</span>
+                        <div style={{ flexShrink: 0 }}>{this.props.activePages[0]} / {this.props.pageCount}</div>
                     }
                 </Typography>
             </ClickAwayListener>
