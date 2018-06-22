@@ -81,12 +81,14 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                     ...this.state,
                     thumbnaislVisibility: true,
                 })
+                window.dispatchEvent(new Event('resize'))
             } else {
                 setTimeout(() => {
                     this.setState({
                         ...this.state,
                         thumbnaislVisibility: false,
                     })
+                    window.dispatchEvent(new Event('resize'))
                 }, 200)
             }
 
