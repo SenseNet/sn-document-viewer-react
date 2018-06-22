@@ -12,7 +12,7 @@ import { exampleDocumentData, useTestContext } from '../../viewercontext'
 /**
  * RotatePage widget tests
  */
-export const rotatePageWidgetTests = describe('RotatePageWidget component', () => {
+export const rotatePageWidgetTests: Mocha.Suite = describe('RotatePageWidget component', () => {
 
     let c!: renderer.ReactTestRenderer
 

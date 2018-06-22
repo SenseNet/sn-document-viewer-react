@@ -55,7 +55,7 @@ const mapDispatchToProps = {
  */
 export const exampleSettings: DocumentViewerSettings = {
     canEditDocument: async (documentData) => {
-        const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET', credentials: 'include' })
+        const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { credentials: 'include' })
         if (response.ok) {
             return await response.text() === 'true'
         }

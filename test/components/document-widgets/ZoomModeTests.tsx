@@ -10,7 +10,7 @@ import { exampleDocumentData, useTestContext } from '../../viewercontext'
 /**
  * Zoom Mode widget tests
  */
-export const zoomModeWidgetTests = describe('ZoomModeWidget component', () => {
+export const zoomModeWidgetTests: Mocha.Suite = describe('ZoomModeWidget component', () => {
 
     let c!: renderer.ReactTestRenderer
 

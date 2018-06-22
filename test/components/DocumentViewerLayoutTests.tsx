@@ -11,7 +11,7 @@ import { exampleDocumentData, useTestContext } from '../viewercontext'
 /**
  * DocumentViewerLayout Component tests
  */
-export const documentViewerLayoutTests = describe('Document Viewer Layout component', () => {
+export const documentViewerLayoutTests: Mocha.Suite = describe('Document Viewer Layout component', () => {
 
     let c!: renderer.ReactTestRenderer
 

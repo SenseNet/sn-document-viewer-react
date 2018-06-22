@@ -9,12 +9,12 @@ import { exampleDocumentData, useTestContext, useTestContextWithSettings } from 
 /**
  * Tests for the Document Viewer main component
  */
-export const documentViewerTests = describe('Document Viewer component', () => {
+export const documentViewerTests: Mocha.Suite = describe('Document Viewer component', () => {
     it('Should render without crashing', () => {
         useTestContext((ctx) => {
             const c = renderer.create(
                 <Provider store={ctx.store} >
-                    <DocumentViewer documentIdOrPath="" hostName=""/>
+                    <DocumentViewer documentIdOrPath="" hostName="" />
                 </Provider>)
             c.unmount()
         })
@@ -27,7 +27,7 @@ export const documentViewerTests = describe('Document Viewer component', () => {
         })
         const exampleIdOrPath = 'Example/Id/Or/Path'
         useTestContextWithSettings({
-            getDocumentData: async ({idOrPath}) => {
+            getDocumentData: async ({ idOrPath }) => {
                 expect(idOrPath).to.be.eq(exampleIdOrPath)
                 done()
                 return exampleDocumentData

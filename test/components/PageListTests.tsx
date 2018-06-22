@@ -9,7 +9,7 @@ import { exampleDocumentData, useTestContext } from '../viewercontext'
 /**
  * PageList Component tests
  */
-export const pageListTests = describe('PageList component', () => {
+export const pageListTests: Mocha.Suite = describe('PageList component', () => {
 
     let c!: renderer.ReactTestRenderer
 

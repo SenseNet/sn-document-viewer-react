@@ -11,7 +11,7 @@ import { exampleDocumentData, useTestContext } from '../../viewercontext'
 /**
  * Toggle Redaction widget tests
  */
-export const toggleRedactionTests = describe('ToggleRedactionWidget component', () => {
+export const toggleRedactionTests: Mocha.Suite = describe('ToggleRedactionWidget component', () => {
 
     let c!: renderer.ReactTestRenderer
 
