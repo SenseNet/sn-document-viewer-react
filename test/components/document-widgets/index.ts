@@ -1,3 +1,4 @@
+export * from './DocumentTitlePagerTests'
 export * from './PagerTests'
 export * from './RotateDocumentTests'
 export * from './SaveTests'

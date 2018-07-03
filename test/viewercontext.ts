@@ -1,4 +1,4 @@
-import { Store } from 'react-redux'
+import { Store } from 'redux'
 import { v1 } from 'uuid'
 import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../src/models'
 import { configureStore, RootReducerType } from '../src/store'

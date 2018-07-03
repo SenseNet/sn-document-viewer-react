@@ -1,11 +1,10 @@
 import { IconButton, TextField } from '@material-ui/core'
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from '@material-ui/icons'
-import _ = require('lodash')
+import * as _ from 'lodash'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
-import { styles } from '../styles'
 
 /**
  * maps state fields from the store to component props

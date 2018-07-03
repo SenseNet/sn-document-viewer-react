@@ -46,24 +46,29 @@ export const documentViewerTests: Mocha.Suite = describe('Document Viewer compon
         after(() => {
             c.unmount()
         })
-        const exampleIdOrPath = 'Example/Id/Or/Path'
-        useTestContextWithSettings({
-            getDocumentData: async (idOrPath) => {
-                pollCount++
-                if (pollCount === 2) {
-                    done()
-                }
-                return exampleDocumentData
-            },
-        }, (ctx) => {
-            c = renderer.create(
-                <Provider store={ctx.store} >
-                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
-                </Provider>)
-            setTimeout(() => {
-                const component = c.root.findByType(DocumentViewer).children[0] as renderer.ReactTestInstance
-                component.instance.componentWillReceiveProps({ ...component.instance.props, documentIdOrPath: 123456 })
-            }, 100)
+
+        const promise = new Promise((resolve, reject) => {
+            const exampleIdOrPath = 'Example/Id/Or/Path'
+            useTestContextWithSettings({
+                getDocumentData: async (idOrPath) => {
+                    pollCount++
+                    if (pollCount === 2) {
+                        resolve()
+                        done()
+                    }
+                    return exampleDocumentData
+                },
+            }, async (ctx) => {
+                c = renderer.create(
+                    <Provider store={ctx.store} >
+                        <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
+                    </Provider>)
+                setTimeout(() => {
+                    const component = c.root.findByType(DocumentViewer).children[0] as renderer.ReactTestInstance
+                    component.instance.componentWillReceiveProps({ ...component.instance.props, documentIdOrPath: 123456 })
+                }, 100)
+                await promise
+            })
         })
     })
 
