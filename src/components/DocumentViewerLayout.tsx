@@ -47,7 +47,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
             const pagesContainer = document.getElementById('sn-document-viewer-pages')
             const activePage = document.getElementById(`Page-${index}`)
 
-            if (pagesContainer && activePage) {
+            if (pagesContainer && pagesContainer.scrollTo && activePage) {
                 pagesContainer.scrollTo({
                     top: activePage.offsetTop - 8,
                     behavior: 'smooth',
@@ -57,7 +57,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
             const thumbnailsContainer = document.getElementById('sn-document-viewer-thumbnails')
             const activeThumbnail = document.getElementById(`Thumbnail-${index}`)
 
-            if (thumbnailsContainer && activeThumbnail) {
+            if (thumbnailsContainer && thumbnailsContainer.scrollTo && activeThumbnail) {
                 thumbnailsContainer.scrollTo({
                     top: activeThumbnail.offsetTop - 16,
                     behavior: 'smooth',
@@ -119,7 +119,9 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                     <Drawer
                         variant={'persistent'}
                         open={this.props.showThumbnails}
-                        anchor="left" PaperProps={{ style: { position: 'relative', width: this.state.thumbnaislVisibility ? '200px' : 0, height: '100%', overflow: 'hidden' } }}>
+                        anchor="left"
+                        SlideProps={{ in: true }}
+                        PaperProps={{ style: { position: 'relative', width: this.state.thumbnaislVisibility ? '200px' : 0, height: '100%', overflow: 'hidden' } }}>
                         <PageList
                             showWidgets={false}
                             style={{ minWidth: 200, marginRight: '-16px', paddingRight: 0 }}

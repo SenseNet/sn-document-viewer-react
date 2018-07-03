@@ -48,8 +48,12 @@ export class DocumentTitlePagerComponent extends React.Component<componentType<t
     }, 200).bind(this)
 
     /** triggered when the component will receive props */
-    public componentWillReceiveProps(nextProps: this['props']) {
-        this.setState({ currentPage: nextProps.activePages[0], lastPage: nextProps.pageCount })
+    public static getDerivedStateFromProps(nextProps: DocumentTitlePagerComponent['props'], lastState: DocumentTitlePagerComponent['state']) {
+        return {
+            ...lastState,
+            currentPage: lastState.currentPage || nextProps.activePages[0],
+            lastPage: nextProps.pageCount,
+        }
     }
 
     /**

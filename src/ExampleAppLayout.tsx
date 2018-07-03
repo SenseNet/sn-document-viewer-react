@@ -305,9 +305,9 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                                             flexDirection: 'row-reverse',
                                             marginTop: '1em',
                                         }}>
-                                            <Button type="submit" variant="raised" color="primary"> <Send fontSize="20px" /> &nbsp; Open </Button>
+                                            <Button type="submit" variant="raised" color="primary"> <Send /> &nbsp; Open </Button>
                                             &nbsp;
-                                    <Button onClick={(ev) => this.setState({ ...this.state, isHelpOpened: true })} variant="raised" color="primary"> <Help fontSize="20px" /> &nbsp; Help </Button>
+                                    <Button onClick={(ev) => this.setState({ ...this.state, isHelpOpened: true })} variant="raised" color="primary"> <Help /> &nbsp; Help </Button>
                                             &nbsp;
                                     <FormControlLabel
                                                 control={

@@ -16,7 +16,7 @@ export const documentViewerLayoutTests: Mocha.Suite = describe('Document Viewer 
     let c!: renderer.ReactTestRenderer
 
     after(() => {
-        c.unmount()
+        c && c.unmount()
     })
 
     it('Should render without crashing', () => {
