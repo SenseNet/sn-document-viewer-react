@@ -24,10 +24,24 @@ export const documentTitlePagerWidgetTests: Mocha.Suite = describe('DocumentTitl
                 <Provider store={ctx.store}>
                     <DocumentTitlePager />
                 </Provider>)
-            const t: DocumentTitlePagerComponent = c.root.findAllByType(DocumentTitlePagerComponent)[0].instance
+            const t: DocumentTitlePagerComponent = c.root.findAllByType(DocumentTitlePagerComponent as any)[0].instance
             expect(t).to.be.instanceof(DocumentTitlePagerComponent)
         })
         c.unmount()
+    })
+
+    it('static getDerivedStateFromProps should parse the props', async () => {
+        const derivedState = DocumentTitlePagerComponent.getDerivedStateFromProps({
+            documentName: '-',
+            activePages: [3],
+            pageCount: 5,
+            gotoPage: 'gotoPage',
+            children: [],
+            setActivePages: () => ({} as any),
+        }, {} as any)
+
+        expect(derivedState.currentPage).to.be.eq(3)
+        expect(derivedState.lastPage).to.be.eq(5)
     })
 
     it('Should change focused attribute with focus and blur handlers', async () => {
@@ -37,7 +51,7 @@ export const documentTitlePagerWidgetTests: Mocha.Suite = describe('DocumentTitl
                 <Provider store={ctx.store}>
                     <DocumentTitlePager />
                 </Provider>)
-            const t: DocumentTitlePagerComponent = c.root.findAllByType(DocumentTitlePagerComponent)[0].instance
+            const t: DocumentTitlePagerComponent = c.root.findAllByType(DocumentTitlePagerComponent as any)[0].instance
             expect(t.state.focused).to.be.eq(false)
 
             // tslint:disable-next-line:no-string-literal
@@ -50,6 +64,39 @@ export const documentTitlePagerWidgetTests: Mocha.Suite = describe('DocumentTitl
 
         })
 
+        c.unmount()
+    })
+
+    it('gotoPage() should trigger the setPage', (done: MochaDone) => {
+
+        const promise = new Promise((resolve, reject) => {
+            useTestContextAsync(async (ctx) => {
+                ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
+                c = renderer.create(
+                    <Provider store={ctx.store}>
+                        <DocumentTitlePagerComponent
+                            pageCount={5}
+                            activePages={[]}
+                            documentName=""
+                            setActivePages={(page: number[]) => { done(); resolve(); return null as any }}
+                            gotoPage=""
+                        />
+                    </Provider>)
+                const t: DocumentTitlePagerComponent = c.root.findAllByType(DocumentTitlePagerComponent as any)[0].instance
+                expect(t.state.focused).to.be.eq(false)
+
+                // tslint:disable-next-line:no-string-literal
+                t.gotoPage(5)
+                expect(t.state.focused).to.be.eq(true)
+
+                // tslint:disable-next-line:no-string-literal
+                t['handleBlur']()
+                expect(t.state.focused).to.be.eq(false)
+                await promise
+
+            })
+
+        })
         c.unmount()
     })
 
