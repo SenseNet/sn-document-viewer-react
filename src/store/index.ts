@@ -1,4 +1,4 @@
-import { Store } from 'react-redux'
+import { Store } from 'redux'
 import { Action, applyMiddleware, createStore } from 'redux'
 import { Reducer } from 'redux'
 import { StoreEnhancer } from 'redux'
