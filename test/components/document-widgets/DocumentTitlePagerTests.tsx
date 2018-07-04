@@ -68,8 +68,8 @@ export const documentTitlePagerWidgetTests: Mocha.Suite = describe('DocumentTitl
     })
 
     it('gotoPage() should trigger the setPage', (done: MochaDone) => {
-
-        const promise = new Promise((resolve, reject) => {
+        let promise!: Promise<void>
+        promise = new Promise((resolve, reject) => {
             useTestContextAsync(async (ctx) => {
                 ctx.store.dispatch(documentReceivedAction(exampleDocumentData))
                 c = renderer.create(
@@ -84,16 +84,9 @@ export const documentTitlePagerWidgetTests: Mocha.Suite = describe('DocumentTitl
                     </Provider>)
                 const t: DocumentTitlePagerComponent = c.root.findAllByType(DocumentTitlePagerComponent as any)[0].instance
                 expect(t.state.focused).to.be.eq(false)
-
-                // tslint:disable-next-line:no-string-literal
                 t.gotoPage(5)
-                expect(t.state.focused).to.be.eq(true)
-
-                // tslint:disable-next-line:no-string-literal
-                t['handleBlur']()
-                expect(t.state.focused).to.be.eq(false)
+                expect(t.state.currentPage).to.be.eq(5)
                 await promise
-
             })
 
         })

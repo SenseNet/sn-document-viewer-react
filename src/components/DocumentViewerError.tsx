@@ -12,6 +12,9 @@ export interface OwnProps {
     error: any
 }
 
+/**
+ * State type for the Document Viewer Error component
+ */
 export interface ErrorState {
     message: string
     details: string
@@ -39,6 +42,9 @@ const mapDispatchToProps = {
 
 class DocumentViewerErrorComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, ErrorState> {
 
+    /**
+     * The state object for the Error component
+     */
     public state: ErrorState = { message: '', details: '' }
 
     /**

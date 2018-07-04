@@ -43,14 +43,15 @@ export const documentViewerTests: Mocha.Suite = describe('Document Viewer compon
     it('Should start polling again on path change', (done: MochaDone) => {
         let c!: renderer.ReactTestRenderer
         let pollCount = 0
+        let promise!: Promise<void>
         after(() => {
             c.unmount()
         })
 
-        const promise = new Promise((resolve, reject) => {
+        promise = new Promise((resolve) => {
             const exampleIdOrPath = 'Example/Id/Or/Path'
             useTestContextWithSettings({
-                getDocumentData: async (idOrPath) => {
+                getDocumentData: async () => {
                     pollCount++
                     if (pollCount === 2) {
                         resolve()

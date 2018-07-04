@@ -88,6 +88,10 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         this.stopPolling()
     }
 
+    /**
+     * Returns a derived state from the specified props
+     * @param props The props for state creation
+     */
     public static getDerivedStateFromProps(props: Page['props']): PageState {
         const imageRotation = ImageUtil.normalizeDegrees(props.page.Attributes && props.page.Attributes.degree || 0)
         const imageRotationRads = (imageRotation % 180) * Math.PI / 180
