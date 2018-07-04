@@ -62,13 +62,19 @@ export interface PageState {
     imageHeight: string
     imageTransform: string
     zoomRatio: number
+    isPolling: boolean
 }
 
 class Page extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, PageState> {
 
-    private pollPreview?: number
+    private pollPreview?: number = setInterval(() => {
+        if (this.state.isPolling) {
+            this.props.previewAvailable(this.props.documentData, this.props.version, this.props.imageIndex)
+        }
+    }, this.props.pollInterval) as any as number
+
     /** the component state */
-    public state = this.getStateFromProps(this.props)
+    public state = Page.getDerivedStateFromProps(this.props)
 
     private stopPolling() {
         if (this.pollPreview) {
@@ -77,20 +83,15 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         }
     }
 
-    /** event after the component did mount */
-    public componentDidMount() {
-        this.componentWillReceiveProps(this.props)
-    }
-
     /** event before the component did unmount */
     public componentWillUnmount() {
         this.stopPolling()
     }
 
-    private getStateFromProps(props: this['props']): PageState {
+    public static getDerivedStateFromProps(props: Page['props']): PageState {
         const imageRotation = ImageUtil.normalizeDegrees(props.page.Attributes && props.page.Attributes.degree || 0)
         const imageRotationRads = (imageRotation % 180) * Math.PI / 180
-        const imgSrc = (this.props.image === 'preview' ? props.page.PreviewImageUrl : props.page.ThumbnailImageUrl) || ''
+        const imgSrc = (props.image === 'preview' ? props.page.PreviewImageUrl : props.page.ThumbnailImageUrl) || ''
         const relativePageSize = ImageUtil.getImageSize({
             width: props.viewportWidth,
             height: props.viewportHeight,
@@ -107,17 +108,8 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
         const maxDiff = (relativePageSize.height - relativePageSize.width) / 2
         const diffHeight = Math.sin(imageRotationRads) * maxDiff
 
-        if (!imgSrc) {
-            this.stopPolling()
-            this.pollPreview = setInterval(() => {
-                this.props.previewAvailable(this.props.documentData, this.props.version, this.props.imageIndex)
-            }, this.props.pollInterval) as any as number
-        } else {
-            this.stopPolling()
-        }
-
         return {
-            isActive: props.activePages.indexOf(this.props.page.Index) >= 0,
+            isActive: props.activePages.indexOf(props.page.Index) >= 0,
             imgSrc,
             pageWidth: relativePageSize.width,
             pageHeight: relativePageSize.height,
@@ -125,14 +117,8 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
             imageWidth: `${100 * boundingBox.zoomRatio}%`,
             imageHeight: `${100 * boundingBox.zoomRatio}%`,
             imageTransform: `translateY(${diffHeight}px) rotate(${imageRotation}deg)`,
+            isPolling: !imgSrc || false,
         }
-    }
-
-    /** triggered when the component will receive props */
-
-    public componentWillReceiveProps(nextProps: this['props']) {
-        const newState = this.getStateFromProps(nextProps)
-        this.setState({ ...newState })
     }
 
     /**
