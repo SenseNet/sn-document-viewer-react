@@ -31,10 +31,13 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
 const mapDispatchToProps = {
 }
 
-class DocumentViewerErrorComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, {stateMessage: string}> {
+class DocumentViewerErrorComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, { stateMessage: string }> {
 
+    /**
+     * Returns a derived state from the props
+     */
     public static getDerivedStateFromProps(props: DocumentViewerErrorComponent['props']) {
-        const stateMessageValue = props.errorLoadingDocument &&  props.errorLoadingDocument.find((a) => a.state === props.previewState)
+        const stateMessageValue = props.errorLoadingDocument && props.errorLoadingDocument.find((a) => a.state === props.previewState)
         return {
             stateMessage: stateMessageValue && stateMessageValue.value || '',
         }
