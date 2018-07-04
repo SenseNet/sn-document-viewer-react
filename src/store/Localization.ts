@@ -26,11 +26,12 @@ export interface LocalizationStateType {
     lastPage: string
     saveChanges: string
     loadingDocument: string
-    errorLoadingDocument: Array<{state: PreviewState, value: string}>
+    errorLoadingDocument: Array<{ state: PreviewState, value: string }>
     errorLoadingDetails: string
     reloadPage: string
     search: string
     share: string
+    download: string
 }
 
 /**
@@ -59,17 +60,18 @@ export const defaultLocalization: LocalizationStateType = {
     saveChanges: 'Save changes',
     loadingDocument: 'Preview image generation is in progress',
     errorLoadingDocument: [
-        {state: PreviewState.Empty, value: ''},
-        {state: PreviewState.UploadFailure, value: 'Failed to upload'},
-        {state: PreviewState.UploadFailure2, value: 'Failed to upload'},
-        {state: PreviewState.ExtensionFailure, value: 'Failed to generate preview images due to an extension error'},
-        {state: PreviewState.Empty, value: 'The document doesn\'t have any preview images'},
-        {state: PreviewState.NoPreviewProviderEnabled, value: 'There is no preview provider enabled'},
+        { state: PreviewState.Empty, value: '' },
+        { state: PreviewState.UploadFailure, value: 'Failed to upload' },
+        { state: PreviewState.UploadFailure2, value: 'Failed to upload' },
+        { state: PreviewState.ExtensionFailure, value: 'Failed to generate preview images due to an extension error' },
+        { state: PreviewState.Empty, value: 'The document doesn\'t have any preview images' },
+        { state: PreviewState.NoPreviewProviderEnabled, value: 'There is no preview provider enabled' },
     ],
     errorLoadingDetails: 'The following error occured during opening a document: ',
     reloadPage: 'Reload page',
     search: 'Search',
     share: 'Share',
+    download: 'Download',
 }
 
 /**

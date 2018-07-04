@@ -13,6 +13,7 @@ import { componentType } from './services'
 
 import { Button, Checkbox, createMuiTheme, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, MuiThemeProvider, Paper, TextField, Typography } from '@material-ui/core'
 import { FolderOpen, Help, Send } from '@material-ui/icons'
+import { Download } from './components/document-widgets/DownloadWidget'
 import { Share } from './components/document-widgets/ShareWidget'
 
 /**
@@ -240,7 +241,10 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                                 <LayoutAppBar>
                                     <div style={{ flexShrink: 0 }}>
                                         <ToggleThumbnailsWidget />
-                                        {/* Download */}
+                                        <Download download={(doc) => {
+                                            // tslint:disable-next-line:no-console
+                                            console.log('Download triggered', doc)
+                                        }} />
                                         {/* Print*/}
                                         <Share share={(doc) => {
                                             // tslint:disable-next-line:no-console
