@@ -50,9 +50,13 @@ export class PagerComponent extends React.Component<componentType<typeof mapStat
         this.props.setActivePages([this.state.currentPage])
     }, 200).bind(this)
 
-    /** triggered when the component will receive props */
-    public componentWillReceiveProps(nextProps: this['props']) {
-        this.setState({ currentPage: nextProps.activePages[0], lastPage: nextProps.pageCount })
+    /** creates a derived state from props */
+    public static getDerivedStateFromProps(nextProps: PagerComponent['props'], lastState: PagerComponent['state']) {
+        return {
+            ...lastState,
+            currentPage: lastState.currentPage || nextProps.activePages[0],
+            lastPage: nextProps.pageCount,
+        }
     }
 
     private gotoPage(page: string | number) {
