@@ -70,7 +70,7 @@ export const documentReceivedAction = (document: DocumentData) => ({
  * Action that updates the store with a document receive error
  * @param error The error message
  */
-export const documentReceiveErrorAction = (error: string) => ({
+export const documentReceiveErrorAction = (error: any) => ({
     type: 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR',
     error,
 })
@@ -233,7 +233,7 @@ export const documentStateReducer: Reducer<DocumentStateType>
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
                 return { ...state, document: { ...state.document, ...action.document }, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
-                return { ...state, error: action.error, isLoading: false }
+                return { ...state, document: { ...state.document, pageCount: 0 }, error: action.error, isLoading: false }
             case 'SN_DOCVIEWER_DOCUMENT_UPDATE_SHAPE':
                 return {
                     ...state,

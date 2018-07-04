@@ -3,6 +3,7 @@ import React = require('react')
 import { connect } from 'react-redux'
 import { componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store'
+import { LayoutAppBar } from './LayoutAppBar'
 
 /**
  * Defined the component's own properties
@@ -11,13 +12,18 @@ export interface OwnProps {
     error: any
 }
 
+export interface ErrorState {
+    message: string
+    details: string
+}
+
 /**
  * maps state fields from the store to component props
  * @param state the redux state
  */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount || -2,
+        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount || 0,
         errorLoadingDocument: state.sensenetDocumentViewer.localization.errorLoadingDocument,
         errorLoadingDetails: state.sensenetDocumentViewer.localization.errorLoadingDetails,
         reloadPage: state.sensenetDocumentViewer.localization.reloadPage,
@@ -31,15 +37,18 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
 const mapDispatchToProps = {
 }
 
-class DocumentViewerErrorComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, { stateMessage: string }> {
+class DocumentViewerErrorComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, OwnProps>, ErrorState> {
+
+    public state: ErrorState = { message: '', details: '' }
 
     /**
      * Returns a derived state from the props
      */
     public static getDerivedStateFromProps(props: DocumentViewerErrorComponent['props']) {
-        const stateMessageValue = props.errorLoadingDocument && props.errorLoadingDocument.find((a) => a.state === props.previewState)
+        const stateMessageValue = props.errorLoadingDocument && props.errorLoadingDocument.find((a) => a.state === props.previewState && a.code === props.error.status)
         return {
-            stateMessage: stateMessageValue && stateMessageValue.value || '',
+            message: stateMessageValue && stateMessageValue.message || '',
+            details: stateMessageValue && stateMessageValue.details || '',
         }
     }
 
@@ -55,13 +64,18 @@ class DocumentViewerErrorComponent extends React.Component<componentType<typeof 
                 alignItems: 'center',
                 height: '100%',
             }}>
+                <LayoutAppBar style={{ position: 'fixed', top: 0 }} >
+                    <span></span>
+                </LayoutAppBar>
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     flexDirection: 'column',
+                    maxWidth: 500,
+                    margin: '.5em 0 .6em 0',
                 }}>
-                    <svg width="442px" height="332px" viewBox="0 0 442 332" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="442px" height="290px" viewBox="0 0 442 240" version="1.1" xmlns="http://www.w3.org/2000/svg">
                         <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                             <g id="No-provider" transform="translate(-9.000000, 5.000000)">
                                 <g id="Document" transform="translate(9.000000, 0.000000)">
@@ -75,28 +89,13 @@ class DocumentViewerErrorComponent extends React.Component<componentType<typeof 
                             </g>
                         </g>
                     </svg>
-                    <Typography variant="headline" component="h3">
-                        {this.state.stateMessage}
+                    <Typography variant="headline" color="textSecondary" align="center" style={{ fontWeight: 'bolder' }}>
+                        {this.state.message}
                     </Typography>
-                    {/* <Paper elevation={4} style={{ padding: '1.2rem' }}>
-                        <Typography variant="headline" component="h3">
-                            {this.props.errorLoadingDocument}
-                        </Typography>
-                        <Typography component="p">
-                            {this.props.errorLoadingDetails}
-                        </Typography>
-                        <Typography component="p" align="center">
-                            <strong>
-                                {this.props.error.message}
-                            </strong>
-                        </Typography>
-                        <div style={{ textAlign: 'center', marginTop: '1em' }}>
-                            <Button title={this.props.reloadPage} size="small" onClick={() => window.location.reload()}>
-                                <Refresh />
-                                {this.props.reloadPage}
-                            </Button >
-                        </div>
-                    </Paper> */}
+                    <Typography variant="subheading" color="textSecondary" align="center" style={{ whiteSpace: 'pre-wrap' }} >
+                        {this.state.details}
+                    </Typography>
+
                 </div>
             </div >
         )

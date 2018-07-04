@@ -130,6 +130,13 @@ export const exampleSettings: DocumentViewerSettings = {
         const docData = await fetch(`${documentData.hostName}/odata.svc/` + documentData.idOrPath, {
             credentials: 'include',
         })
+
+        if (!docData.ok) {
+            const e = new Error('Error fetching document');
+            (e as any).status = docData.status
+            throw e
+        }
+
         const body = await docData.json()
         return {
             idOrPath: documentData.idOrPath,
