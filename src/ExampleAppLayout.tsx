@@ -14,6 +14,7 @@ import { componentType } from './services'
 import { Button, Checkbox, createMuiTheme, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, MuiThemeProvider, Paper, TextField, Typography } from '@material-ui/core'
 import { FolderOpen, Help, Send } from '@material-ui/icons'
 import { Download } from './components/document-widgets/DownloadWidget'
+import { Print } from './components/document-widgets/PrintWidget'
 import { Share } from './components/document-widgets/ShareWidget'
 
 /**
@@ -245,12 +246,16 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                                             // tslint:disable-next-line:no-console
                                             console.log('Download triggered', doc)
                                         }} />
-                                        {/* Print*/}
+                                        <Print print={(doc) => {
+                                            // tslint:disable-next-line:no-console
+                                            console.log('Print triggered', doc)
+                                        }} />
                                         <Share share={(doc) => {
                                             // tslint:disable-next-line:no-console
                                             console.log('Share triggered', doc)
                                         }} />
-                                        {/* Zoom In / out */}
+                                        {/* Zoom In */}
+                                        {/* Zoom Out */}
                                         <RotateActivePages />
                                     </div>
                                     <DocumentTitlePager />
