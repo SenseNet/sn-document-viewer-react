@@ -54,6 +54,7 @@ export const documentViewerLayoutTests: Mocha.Suite = describe('Document Viewer 
             page.props.onClick()
         });
         (global as any).innerWidth = 1024
+        c.unmount()
     })
 
     it('Click on a page should scroll to the selected page', () => {

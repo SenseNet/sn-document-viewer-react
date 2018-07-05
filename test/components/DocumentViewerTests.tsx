@@ -80,9 +80,7 @@ export const documentViewerTests: Mocha.Suite = describe('Document Viewer compon
         })
         const exampleIdOrPath = 'Example/Id/Or/Path'
         useTestContextWithSettings({
-            getDocumentData: async (idOrPath) => {
-                throw Error('Nooo')
-            },
+            getDocumentData: () => Promise.reject('Nooo'),
         }, (ctx) => {
             c = renderer.create(
                 <Provider store={ctx.store} >
