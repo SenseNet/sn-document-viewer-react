@@ -3,7 +3,7 @@ import { ZoomIn, ZoomOut } from '@material-ui/icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { componentType } from '../../services'
-import { RootReducerType, setCustomZoomLevel, setZoomMode } from '../../store'
+import { RootReducerType, setCustomZoomLevel } from '../../store'
 
 /**
  * maps state fields from the store to component props
@@ -11,7 +11,6 @@ import { RootReducerType, setCustomZoomLevel, setZoomMode } from '../../store'
  */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
-        zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
         customZoomLevel: state.sensenetDocumentViewer.viewer.customZoomLevel,
     }
 }
@@ -21,7 +20,6 @@ export const mapStateToProps = (state: RootReducerType) => {
  * @param state the redux state
  */
 export const mapDispatchToProps = {
-    setZoomMode,
     setZoomLevel: setCustomZoomLevel,
 }
 
@@ -31,15 +29,11 @@ export const mapDispatchToProps = {
 export class ZoomInOutWidgetComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { zoomMenuAnchor?: HTMLElement }> {
 
     private zoomIn(ev: React.MouseEvent<HTMLElement>) {
-        ev.preventDefault()
-        ev.stopPropagation()
-        this.props.setZoomLevel(this.props.customZoomLevel + 1 || 1)
+        this.props.setZoomLevel(this.props.customZoomLevel + 1)
     }
 
     private zoomOut(ev: React.MouseEvent<HTMLElement>) {
-        ev.preventDefault()
-        ev.stopPropagation()
-        this.props.setZoomLevel(this.props.customZoomLevel - 1 || 0)
+        this.props.setZoomLevel(this.props.customZoomLevel - 1)
     }
 
     /**
@@ -48,13 +42,12 @@ export class ZoomInOutWidgetComponent extends React.Component<componentType<type
     public render() {
         return (
             <div style={{ display: 'inline-block' }}>
-                            <IconButton disabled={this.props.customZoomLevel === 5} onClickCapture={(ev) => this.zoomIn(ev)}>
-                                <ZoomIn />
-                            </IconButton>
-                        }
-                            <IconButton disabled={this.props.customZoomLevel === 0} onClickCapture={(ev) => this.zoomOut(ev)}>
-                                <ZoomOut />
-                            </IconButton>
+                <IconButton color="inherit" onClick={(ev) => this.zoomIn(ev)}>
+                    <ZoomIn />
+                </IconButton>
+                <IconButton color="inherit" onClick={(ev) => this.zoomOut(ev)}>
+                    <ZoomOut />
+                </IconButton>
             </div>)
     }
 }

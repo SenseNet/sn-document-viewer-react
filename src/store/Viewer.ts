@@ -117,7 +117,7 @@ export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePag
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_ZOOM_MODE':
             return {...state, zoomMode: action.zoomMode, customZoomLevel: 0 }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_CUSTOM_ZOOM_LEVEL':
-            return {...state, zoomMode: action.cusomZoomLevel ? 'custom' : action.defaultModeOnZero, customZoomLevel: action.customZoomLevel }
+            return {...state, zoomMode: !action.customZoomLevel ? action.defaultModeOnZero : 'custom', customZoomLevel: action.customZoomLevel }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_WATERMARK':
             return {...state, showWatermark: action.showWatermark }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_REDACTION':
