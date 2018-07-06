@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RootReducerType } from './store'
 
 import { v1 } from 'uuid'
-import { DocumentTitlePager, RotateActivePages, SearchBar, ToggleThumbnailsWidget } from './components/document-widgets'
+import { DocumentTitlePager, RotateActivePages, SearchBar, ToggleThumbnailsWidget, ZoomInOutWidget } from './components/document-widgets'
 import { DocumentViewer } from './components/DocumentViewer'
 import { LayoutAppBar } from './components/LayoutAppBar'
 import { DocumentViewerSettings } from './models/DocumentViewerSettings'
@@ -261,8 +261,7 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
                                             // tslint:disable-next-line:no-console
                                             console.log('Share triggered', doc)
                                         }} />
-                                        {/* Zoom In */}
-                                        {/* Zoom Out */}
+                                        <ZoomInOutWidget />
                                         <RotateActivePages />
                                     </div>
                                     <DocumentTitlePager />
