@@ -3,7 +3,7 @@ import { ZoomIn, ZoomOut } from '@material-ui/icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { componentType } from '../../services'
-import { RootReducerType, setCustomZoomLevel, setZoomMode, ZoomMode } from '../../store'
+import { RootReducerType, setCustomZoomLevel, setZoomMode } from '../../store'
 
 /**
  * maps state fields from the store to component props
@@ -13,14 +13,6 @@ export const mapStateToProps = (state: RootReducerType) => {
     return {
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
         customZoomLevel: state.sensenetDocumentViewer.viewer.customZoomLevel,
-        localization: {
-            zoomMode: state.sensenetDocumentViewer.localization.zoomMode,
-            zoomModeFit: state.sensenetDocumentViewer.localization.zoomModeFit,
-            zoomModeFitHeight: state.sensenetDocumentViewer.localization.zoomModeFitHeight,
-            zoomModeFitWidth: state.sensenetDocumentViewer.localization.zoomModeFitWidth,
-            zoomModeOriginalSize: state.sensenetDocumentViewer.localization.zoomModeOriginalSize,
-            zooomModeCustom: state.sensenetDocumentViewer.localization.zooomModeCustom,
-        },
     }
 }
 
@@ -54,7 +46,6 @@ export class ZoomInOutWidgetComponent extends React.Component<componentType<type
      * renders the component
      */
     public render() {
-        const localization = this.props.localization
         return (
             <div style={{ display: 'inline-block' }}>
                             <IconButton disabled={this.props.customZoomLevel === 5} onClickCapture={(ev) => this.zoomIn(ev)}>
