@@ -155,7 +155,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
         }
 
         let marginBottom: number = 0
-        for (let i = pagesToSkip + pagesToTake - 1; i < pages.length; i++) {
+        for (let i = pagesToSkip + pagesToTake - 1; i < pages.length - 1; i++) {
             marginBottom += pages[i].Height + props.padding * 2
         }
 
