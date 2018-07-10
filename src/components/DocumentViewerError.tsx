@@ -51,7 +51,8 @@ class DocumentViewerErrorComponent extends React.Component<componentType<typeof 
      * Returns a derived state from the props
      */
     public static getDerivedStateFromProps(props: DocumentViewerErrorComponent['props']) {
-        const stateMessageValue = props.errorLoadingDocument && props.errorLoadingDocument.find((a) => a.state === props.previewState && a.code === props.error.status)
+        const stateMessageValue = props.errorLoadingDocument && props.errorLoadingDocument.find((a) =>
+            (props.error.status && a.code === props.error.status) || a.state === props.previewState)
         return {
             message: stateMessageValue && stateMessageValue.message || '',
             details: stateMessageValue && stateMessageValue.details || '',
