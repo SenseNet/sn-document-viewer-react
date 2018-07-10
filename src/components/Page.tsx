@@ -148,7 +148,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                             <img src={`${this.state.imgSrc}${this.props.showWatermark ? '?watermark=true' : ''}`}
                                 style={{ transition: 'transform .1s ease-in-out', width: this.state.imageWidth, height: this.state.imageHeight, transform: this.state.imageTransform }}
                             /> :
-                            <CircularProgress />
+                            <CircularProgress style={{ marginTop: '50%' }} />
                         }
                     </span>
                 </div>

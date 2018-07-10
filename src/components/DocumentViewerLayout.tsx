@@ -39,7 +39,7 @@ export interface DocumentLayoutState {
 class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
 
     /** the component state */
-    public state = { activePage: 1, thumbnaislVisibility: false }
+    public state = { activePage: 1, thumbnaislVisibility: this.props.showThumbnails }
 
     /** scrolls the viewer to focus to the page with the provided index */
     public scrollTo(index: number) {

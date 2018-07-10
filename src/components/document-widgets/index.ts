@@ -1,4 +1,7 @@
 export { DocumentTitlePager } from './DocumentTitlePager'
+export { Download } from './DownloadWidget'
+export { Print } from './PrintWidget'
+export { Share } from './ShareWidget'
 export { RotateActivePages } from './RotateActivePages'
 export { RotateDocumentWidget } from './RotateDocument'
 export { SaveWidget } from './SaveWidget'

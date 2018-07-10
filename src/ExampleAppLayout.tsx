@@ -164,7 +164,7 @@ const localStorageKey = 'sn-docviewer-example'
 /**
  * The default example theme
  */
-export const theme = createMuiTheme({
+export const exampleTheme = createMuiTheme({
     palette: {
         primary: {
             main: '#ff9800',
@@ -239,7 +239,7 @@ class ExampleAppLayout extends React.Component<componentType<typeof mapStateToPr
      */
     public render() {
         return (
-            <MuiThemeProvider theme={theme} >
+            <MuiThemeProvider theme={exampleTheme} >
                 <div style={{ height: '100%' }}>
                     {
                         this.state.isViewerOpened ?
