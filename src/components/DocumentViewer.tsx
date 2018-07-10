@@ -79,12 +79,12 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
      * renders the component
      */
     public render() {
-        if (this.props.docViewerError || this.props.previewImagesError) {
-            return <DocumentViewerError error={this.props.docViewerError || this.props.previewImagesError} />
-        }
         if (this.props.isLoading) {
             return <DocumentViewerLoading />
+        }
 
+        if (this.props.docViewerError || this.props.previewImagesError) {
+            return <DocumentViewerError error={this.props.docViewerError || this.props.previewImagesError} />
         }
         return (<DocumentViewerLayout>
             {this.props.children}
