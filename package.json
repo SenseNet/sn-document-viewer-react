@@ -1,6 +1,6 @@
 {
   "name": "@sensenet/document-viewer-react",
-  "version": "1.0.0-development.4",
+  "version": "1.0.0-development.5",
   "description": "",
   "main": "dist/index.js",
   "files": [
