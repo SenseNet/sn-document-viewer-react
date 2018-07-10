@@ -16,7 +16,6 @@ import { ShapesWidget } from './page-widgets'
  */
 const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number }) => {
     return {
-        store: state,
         documentData: state.sensenetDocumentViewer.documentState.document as DocumentData,
         version: state.sensenetDocumentViewer.documentState.version,
         page: state.sensenetDocumentViewer.previewImages.AvailableImages[ownProps.imageIndex - 1] || {} as PreviewImageData,
@@ -121,7 +120,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
             imageWidth: `${100 * boundingBox.zoomRatio}%`,
             imageHeight: `${100 * boundingBox.zoomRatio}%`,
             imageTransform: `translateY(${diffHeight}px) rotate(${imageRotation}deg)`,
-            isPolling: !imgSrc || false,
+            isPolling: !(imgSrc ? true : false),
         }
     }
 
