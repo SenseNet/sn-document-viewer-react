@@ -26,7 +26,7 @@ export interface ErrorState {
  */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount || 0,
+        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount || -1,
         errorLoadingDocument: state.sensenetDocumentViewer.localization.errorLoadingDocument,
         errorLoadingDetails: state.sensenetDocumentViewer.localization.errorLoadingDetails,
         reloadPage: state.sensenetDocumentViewer.localization.reloadPage,

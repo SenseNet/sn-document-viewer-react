@@ -23,6 +23,13 @@ export interface DocumentStateType {
 }
 
 /**
+ * Resets the document viewer state to the default.
+ */
+export const resetDocumentData = () => ({
+    type: 'SN_DOCVIEWER_DOCUMENT_RESET_DOCUMENT',
+})
+
+/**
  * Thunk action that polls document data from the specified API
  * @param hostName the host name, e.g. 'https://my-sensenet-site.com'
  * @param idOrPath Id or full path for the document, e.g.: 'Root/Sites/MySite/MyDocLib/('doc.docx')
@@ -30,6 +37,7 @@ export interface DocumentStateType {
  */
 export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings, Action>> = (hostName: string, idOrPath: string, version: string) => {
     return async (dispatch, getState, api) => {
+        dispatch(resetDocumentData())
         let docData: DocumentData | undefined
         while (!docData || docData.pageCount === PreviewState.Loading) {
             try {
@@ -197,39 +205,44 @@ export const applyShapeRotations = <T extends Shape>(shapes: T[], degree: number
 ])
 
 /**
+ * The default state data for the Document
+ */
+export const defaultState: DocumentStateType = {
+    document: {
+        hostName: '',
+        shapes: {
+            annotations: [],
+            highlights: [],
+            redactions: [],
+        },
+        documentName: '',
+        documentType: '',
+        fileSizekB: 0,
+        idOrPath: 0,
+        pageAttributes: [],
+        pageCount: -1,
+    } as DocumentData,
+    error: undefined,
+    isLoading: true,
+    idOrPath: undefined,
+    version: undefined,
+    canEdit: false,
+    hasChanges: false,
+    canHideRedaction: false,
+    canHideWatermark: false,
+    pollInterval: 2000,
+}
+
+/**
  * Reducer method for the document state
  * @param state the current state
  * @param action the action to dispatch
  */
 export const documentStateReducer: Reducer<DocumentStateType>
-    = (state = {
-        document: {
-            hostName: '',
-            shapes: {
-                annotations: [],
-                highlights: [],
-                redactions: [],
-            },
-            documentName: '',
-            documentType: '',
-            fileSizekB: 0,
-            idOrPath: 0,
-            pageAttributes: [],
-            pageCount: 0,
-        } as DocumentData,
-        error: undefined,
-        isLoading: true,
-        idOrPath: undefined,
-        version: undefined,
-        canEdit: false,
-        hasChanges: false,
-        canHideRedaction: false,
-        canHideWatermark: false,
-        pollInterval: 2000,
-    }, action) => {
+    = (state = defaultState, action) => {
         switch (action.type) {
-            case 'SN_DOCVIEWER_DOCUMENT_SET_DOCUMENT':
-                return { ...state, error: undefined, isLoading: true, idOrPath: action.idOrPath, version: action.version }
+            case 'SN_DOCVIEWER_DOCUMENT_RESET_DOCUMENT':
+                return { ...defaultState }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVED':
                 return { ...state, document: { ...state.document, ...action.document }, error: undefined, isLoading: false, hasChanges: false }
             case 'SN_DOCVIEWER_DOCUMENT_DATA_RECEIVE_ERROR':
