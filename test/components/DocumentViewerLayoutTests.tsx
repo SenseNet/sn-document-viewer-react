@@ -23,7 +23,7 @@ export const documentViewerLayoutTests: Mocha.Suite = describe('Document Viewer 
         useTestContext((ctx) => {
             c = renderer.create(
                 <Provider store={ctx.store}>
-                    <DocumentViewerLayout>
+                    <DocumentViewerLayout drawerSlideProps={{ in: true }}>
                         <span>test</span>
                     </DocumentViewerLayout>
                 </Provider>)
@@ -45,7 +45,7 @@ export const documentViewerLayoutTests: Mocha.Suite = describe('Document Viewer 
             }]))
             c = renderer.create(
                 <Provider store={ctx.store}>
-                    <DocumentViewerLayout>
+                    <DocumentViewerLayout drawerSlideProps={{ in: true }}>
                         <span>test</span>
                     </DocumentViewerLayout>
                 </Provider>)
@@ -71,7 +71,7 @@ export const documentViewerLayoutTests: Mocha.Suite = describe('Document Viewer 
 
             c = renderer.create(
                 <Provider store={ctx.store}>
-                    <DocumentViewerLayout>
+                    <DocumentViewerLayout drawerSlideProps={{ in: true }}>
                     </DocumentViewerLayout>
                 </Provider>)
 

@@ -1,3 +1,4 @@
+import { SlideProps } from '@material-ui/core/Slide'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { ActionCreator, AnyAction, Dispatch } from 'redux'
@@ -17,6 +18,8 @@ export interface OwnProps {
     documentIdOrPath: string | number
     version?: string
     localization?: Partial<LocalizationStateType>
+    drawerSlideProps?: Partial<SlideProps>
+
 }
 
 /**
@@ -86,7 +89,7 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
         if (this.props.docViewerError || this.props.previewImagesError) {
             return <DocumentViewerError error={this.props.docViewerError || this.props.previewImagesError} />
         }
-        return (<DocumentViewerLayout>
+        return (<DocumentViewerLayout drawerSlideProps={this.props.drawerSlideProps}>
             {this.props.children}
         </DocumentViewerLayout>)
     }

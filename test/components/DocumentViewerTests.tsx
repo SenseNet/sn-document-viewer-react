@@ -14,7 +14,7 @@ export const documentViewerTests: Mocha.Suite = describe('Document Viewer compon
         useTestContext((ctx) => {
             const c = renderer.create(
                 <Provider store={ctx.store} >
-                    <DocumentViewer documentIdOrPath="" hostName="" />
+                    <DocumentViewer documentIdOrPath="" hostName="" drawerSlideProps={{ in: true }} />
                 </Provider>)
             c.unmount()
         })
@@ -35,7 +35,7 @@ export const documentViewerTests: Mocha.Suite = describe('Document Viewer compon
         }, (ctx) => {
             c = renderer.create(
                 <Provider store={ctx.store}>
-                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
+                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" drawerSlideProps={{ in: true }} />
                 </Provider>)
         })
     })
@@ -62,7 +62,7 @@ export const documentViewerTests: Mocha.Suite = describe('Document Viewer compon
             }, async (ctx) => {
                 c = renderer.create(
                     <Provider store={ctx.store} >
-                        <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
+                        <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" drawerSlideProps={{ in: true }} />
                     </Provider>)
                 setTimeout(() => {
                     const component = c.root.findByType(DocumentViewer).children[0] as renderer.ReactTestInstance
@@ -84,7 +84,7 @@ export const documentViewerTests: Mocha.Suite = describe('Document Viewer compon
         }, (ctx) => {
             c = renderer.create(
                 <Provider store={ctx.store} >
-                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" />
+                    <DocumentViewer documentIdOrPath={exampleIdOrPath} hostName="" drawerSlideProps={{ in: true }} />
                 </Provider>)
             setTimeout(() => {
                 const error = c.root.findByType(DocumentViewerError).instance

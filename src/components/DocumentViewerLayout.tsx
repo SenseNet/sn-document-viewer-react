@@ -1,4 +1,5 @@
 import { Drawer } from '@material-ui/core'
+import { SlideProps } from '@material-ui/core/Slide'
 import React = require('react')
 import { connect } from 'react-redux'
 import { componentType } from '../services'
@@ -27,6 +28,11 @@ const mapDispatchToProps = {
     setThumbnails,
 }
 
+/** Props definition for the Document Viewer layout */
+export interface DocumentLayoutOwnProps {
+    drawerSlideProps?: Partial<SlideProps>
+}
+
 /** State type definition for the DocumentViewerLayout component */
 export interface DocumentLayoutState {
     activePage?: number
@@ -36,7 +42,7 @@ export interface DocumentLayoutState {
 /**
  * Component for the main DocumentViewer layout
  */
-class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, undefined>, DocumentLayoutState> {
+class DocumentViewerLayoutComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps, DocumentLayoutOwnProps>, DocumentLayoutState> {
 
     /** the component state */
     public state = { activePage: 1, thumbnaislVisibility: this.props.showThumbnails }
@@ -120,7 +126,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                         variant={'persistent'}
                         open={this.props.showThumbnails}
                         anchor="left"
-                        SlideProps={{ in: true }}
+                        SlideProps={this.props.drawerSlideProps}
                         PaperProps={{ style: { position: 'relative', width: this.state.thumbnaislVisibility ? '200px' : 0, height: '100%', overflow: 'hidden' } }}>
                         <PageList
                             showWidgets={false}
