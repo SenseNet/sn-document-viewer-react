@@ -1,6 +1,7 @@
 import { Typography } from '@material-ui/core'
 import React = require('react')
 import { connect } from 'react-redux'
+import { PreviewState } from '../Enums'
 import { componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store'
 import { LayoutAppBar } from './LayoutAppBar'
@@ -26,7 +27,7 @@ export interface ErrorState {
  */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount || -1,
+        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount || PreviewState.Loading,
         errorLoadingDocument: state.sensenetDocumentViewer.localization.errorLoadingDocument,
         errorLoadingDetails: state.sensenetDocumentViewer.localization.errorLoadingDetails,
         reloadPage: state.sensenetDocumentViewer.localization.reloadPage,
