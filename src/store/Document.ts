@@ -1,5 +1,5 @@
-import { Action, ActionCreator, Reducer } from 'redux'
-import { ThunkAction } from 'redux-thunk'
+import { Action, Reducer } from 'redux'
+import { InjectableAction } from 'redux-di-middleware'
 import { PreviewState } from '../Enums'
 import { DocumentData, DocumentViewerSettings, PreviewImageData, Shape, Shapes } from '../models'
 import { Dimensions, ImageUtil } from '../services'
@@ -35,35 +35,38 @@ export const resetDocumentData = () => ({
  * @param idOrPath Id or full path for the document, e.g.: 'Root/Sites/MySite/MyDocLib/('doc.docx')
  * @param version The document version
  */
-export const pollDocumentData: ActionCreator<ThunkAction<Promise<void>, DocumentStateType, DocumentViewerSettings, Action>> = (hostName: string, idOrPath: string, version: string) => {
-    return async (dispatch, getState, api) => {
-        dispatch(resetDocumentData())
-        let docData: DocumentData | undefined
-        while (!docData || docData.pageCount === PreviewState.Loading) {
-            try {
-                docData = await api.getDocumentData({ idOrPath, hostName })
-                if (!docData || docData.pageCount === PreviewState.Loading) {
-                    await new Promise<void>((resolve, reject) => setTimeout(() => { resolve() }, getState().pollInterval))
+export const pollDocumentData: (hostName: string, idOrPath: string | number, version?: string) => InjectableAction<RootReducerType, Action> =
+    (hostName: string, idOrPath: string | number, version: string = 'V1.0A') => ({
+        type: 'SN_POLL_DOCUMENT_DATA_INJECTABLE_ACTION',
+        inject: async (options) => {
+            const api = options.getInjectable(DocumentViewerSettings)
+            options.dispatch(resetDocumentData())
+            let docData: DocumentData | undefined
+            while (!docData || docData.pageCount === PreviewState.Loading) {
+                try {
+                    docData = await api.getDocumentData({ idOrPath, hostName })
+                    if (!docData || docData.pageCount === PreviewState.Loading) {
+                        await new Promise<void>((resolve) => setTimeout(() => { resolve() }, options.getState().sensenetDocumentViewer.documentState.pollInterval))
+                    }
+                } catch (error) {
+                    options.dispatch(documentReceiveErrorAction(error || Error('Error loading document')))
+                    return
                 }
-            } catch (error) {
-                dispatch(documentReceiveErrorAction(error || Error('Error loading document')))
-                return
             }
-        }
-        try {
-            const [canEdit, canHideRedaction, canHideWatermark] = await Promise.all([
-                await api.canEditDocument(docData),
-                await api.canHideRedaction(docData),
-                await api.canHideWatermark(docData),
-            ])
-            dispatch(documentPermissionsReceived(canEdit, canHideRedaction, canHideWatermark))
-        } catch (error) {
-            dispatch(documentPermissionsReceived(false, false, false))
-        }
-        dispatch(documentReceivedAction(docData))
-        dispatch<any>(getAvailableImages(docData))
-    }
-}
+            try {
+                const [canEdit, canHideRedaction, canHideWatermark] = await Promise.all([
+                    await api.canEditDocument(docData),
+                    await api.canHideRedaction(docData),
+                    await api.canHideWatermark(docData),
+                ])
+                options.dispatch(documentPermissionsReceived(canEdit, canHideRedaction, canHideWatermark))
+            } catch (error) {
+                options.dispatch(documentPermissionsReceived(false, false, false))
+            }
+            options.dispatch(documentReceivedAction(docData))
+            options.dispatch<any>(getAvailableImages(docData))
+        },
+    })
 
 /**
  * Action that updates the store with the received document data
@@ -166,17 +169,19 @@ export const rotateShapesForPages = (pages: Array<{ index: number, size: Dimensi
 /**
  * Thunk action to call the Save endpoint with the current document state to save changes
  */
-export const saveChanges: ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings, Action>> = () => {
-    return async (dispatch, getState, api) => {
-        dispatch(saveChangesRequest())
+export const saveChanges: () => InjectableAction<RootReducerType, Action> = () => ({
+    type: 'SN_DOCVIEWER_SAVE_CHANGES_INJECTABLE_ACTION',
+    inject: async (options) => {
+        const api = options.getInjectable(DocumentViewerSettings)
+        options.dispatch(saveChangesRequest())
         try {
-            await api.saveChanges(getState().sensenetDocumentViewer.documentState.document as DocumentData, getState().sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[])
-            dispatch(saveChangesSuccess())
+            await api.saveChanges(options.getState().sensenetDocumentViewer.documentState.document as DocumentData, options.getState().sensenetDocumentViewer.previewImages.AvailableImages as PreviewImageData[])
+            options.dispatch(saveChangesSuccess())
         } catch (error) {
-            dispatch(saveChangesError(error))
+            options.dispatch(saveChangesError(error))
         }
-    }
-}
+    },
+})
 
 /**
  * helper method to apply shape rotations

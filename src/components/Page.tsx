@@ -2,12 +2,12 @@ import { Paper } from '@material-ui/core'
 import { CircularProgress } from '@material-ui/core'
 import React = require('react')
 import { connect } from 'react-redux'
-import { DocumentData, DocumentViewerSettings, PreviewImageData } from '../models'
+import { DocumentData, PreviewImageData } from '../models'
 import { componentType, ImageUtil } from '../services'
 import { previewAvailable, RootReducerType, ZoomMode } from '../store'
 
-import { Action, ActionCreator } from 'redux'
-import { ThunkAction } from 'redux-thunk'
+import { Action } from 'redux'
+import { InjectableAction } from 'redux-di-middleware'
 import { ShapesWidget } from './page-widgets'
 
 /**
@@ -30,7 +30,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: { imageIndex: number 
  * @param state the redux state
  */
 const mapDispatchToProps = {
-    previewAvailable: previewAvailable as ActionCreator<ThunkAction<Promise<void>, RootReducerType, DocumentViewerSettings, Action>>,
+    previewAvailable: previewAvailable as (documentData: DocumentData, version?: string, page?: number) => InjectableAction<RootReducerType, Action>,
 }
 
 /**

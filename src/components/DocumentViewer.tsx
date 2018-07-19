@@ -1,10 +1,10 @@
 import { SlideProps } from '@material-ui/core/Slide'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { ActionCreator, AnyAction, Dispatch } from 'redux'
-import { DocumentViewerSettings } from '../models'
+import { Action } from 'redux'
+import { InjectableAction } from 'redux-di-middleware'
 import { componentType } from '../services'
-import { DocumentStateType, pollDocumentData, RootReducerType } from '../store'
+import { pollDocumentData, RootReducerType } from '../store'
 import { LocalizationStateType, setLocalization } from '../store/Localization'
 import { DocumentViewerError } from './DocumentViewerError'
 import { DocumentViewerLayout } from './DocumentViewerLayout'
@@ -41,7 +41,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
  * @param state the redux state
  */
 const mapDispatchToProps = {
-    pollDocumentData: pollDocumentData as ActionCreator<(dispatch: Dispatch<AnyAction>, getState: () => DocumentStateType, extraArgument: DocumentViewerSettings) => Promise<void>>,
+    pollDocumentData: pollDocumentData as (hostName: string, idOrPath: string | number, version?: string) => InjectableAction<RootReducerType, Action>,
     setLocalization,
 }
 

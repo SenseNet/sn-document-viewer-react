@@ -55,7 +55,7 @@ const mapDispatchToProps = {
 /**
  * Settings object for the Document Viewer Example component
  */
-export const exampleSettings: DocumentViewerSettings = {
+export const exampleSettings: DocumentViewerSettings = new DocumentViewerSettings({
     canEditDocument: async (documentData) => {
         const response = await fetch(`${encodeURI(documentData.hostName)}/odata.svc/${encodeURI(documentData.idOrPath.toString())}/HasPermission?permissions=Save`, { method: 'GET', credentials: 'include' })
         if (response.ok) {
@@ -157,7 +157,7 @@ export const exampleSettings: DocumentViewerSettings = {
             pageAttributes: body.d.PageAttributes && JSON.parse(body.d.PageAttributes) || [],
         }
     },
-}
+})
 
 const localStorageKey = 'sn-docviewer-example'
 

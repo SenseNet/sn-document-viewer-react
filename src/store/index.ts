@@ -2,7 +2,7 @@ import { Store } from 'redux'
 import { Action, applyMiddleware, createStore } from 'redux'
 import { Reducer } from 'redux'
 import { StoreEnhancer } from 'redux'
-import thunk from 'redux-thunk'
+import { ReduxDiMiddleware } from 'redux-di-middleware'
 import { DocumentViewerSettings } from '../models'
 import { rootReducer, RootReducerType } from './RootReducer'
 
@@ -12,10 +12,12 @@ import { rootReducer, RootReducerType } from './RootReducer'
  */
 export const getStoreConfig: (settings: DocumentViewerSettings) => { rootReducer: Reducer<RootReducerType>, preloadedState: RootReducerType, enhancer: StoreEnhancer<any> }
     = (settings: DocumentViewerSettings) => {
+        const di = new ReduxDiMiddleware()
+        di.setInjectable(settings)
         return {
             rootReducer,
             preloadedState: { sensenetDocumentViewer: { documentState: { isLoading: true } } } as RootReducerType,
-            enhancer: applyMiddleware(thunk.withExtraArgument(settings)),
+            enhancer: applyMiddleware(di.getMiddleware()),
         }
     }
 
