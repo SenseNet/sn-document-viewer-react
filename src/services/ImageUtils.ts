@@ -3,6 +3,8 @@ import { ZoomMode } from '../store'
 /** Dimensions model that defines a specified width and height */
 export interface Dimensions { width: number, height: number }
 
+export const fitRelativeZoomLevelScale = 0.05
+
 /**
  * Helper class for image manipulation
  */
@@ -29,7 +31,7 @@ export class ImageUtil {
      * @param relativeZoomLevel The relative zoom level if provided
      * @returns The relative image size
      */
-    public static getImageSize(viewPort: Dimensions, image: Dimensions & { rotation: number }, zoomMode: ZoomMode, relativeZoomLevel: number = 1): Dimensions {
+    public static getImageSize(viewPort: Dimensions, image: Dimensions & { rotation: number }, zoomMode: ZoomMode, relativeZoomLevel: number = 1, fitRelativeZoomLevel: number = 0): Dimensions {
 
         if (zoomMode === 'custom') {
             relativeZoomLevel = (relativeZoomLevel + 1) / 4
@@ -57,8 +59,8 @@ export class ImageUtil {
             case 'fit':
                 const zoom = Math.min(zoomWidth, zoomHeight)
                 return {
-                    width: width * zoom * relativeZoomLevel,
-                    height: height * zoom * relativeZoomLevel,
+                    width: width * zoom + (fitRelativeZoomLevel * width * zoom * fitRelativeZoomLevelScale),
+                    height: height * zoom + (fitRelativeZoomLevel * height * zoom * fitRelativeZoomLevelScale),
                 }
             default:
                 return { width: width * relativeZoomLevel, height: height * relativeZoomLevel }

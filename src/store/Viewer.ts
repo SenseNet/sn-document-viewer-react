@@ -38,6 +38,11 @@ export interface ViewerStateType {
      * Thumbnails on / off
      */
     showThumbnails: boolean
+
+    /**
+     * Zoom level relative to the fitted image size
+     */
+    fitRelativeZoomLevel: number
 }
 
 /**
@@ -67,6 +72,16 @@ export const setCustomZoomLevel = (customZoomLevel: number, defaultModeOnZero: Z
     type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_CUSTOM_ZOOM_LEVEL',
     customZoomLevel,
     defaultModeOnZero,
+})
+
+/**
+ * Action to set the zoom level to a custom value
+ * @param customZoomLevel
+ * @param defaultModeOnZero
+ */
+export const setFitRelativeZoomLevel = (fitRelativeZoomLevel: number, defaultModeOnZero: ZoomMode = 'fit') => ({
+    type: 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_FIT_RELATIVE_ZOOM_LEVEL',
+    fitRelativeZoomLevel,
 })
 
 /**
@@ -110,7 +125,7 @@ export const setThumbnails = (showThumbnails: boolean) => ({
  * @param state the current state
  * @param action the dispatched action
  */
-export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePages: [1], zoomMode: 'fit', customZoomLevel: 3, showWatermark: false, showRedaction: true, showShapes: true, showThumbnails: false }, action) => {
+export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePages: [1], zoomMode: 'fit', customZoomLevel: 3, showWatermark: false, showRedaction: true, showShapes: true, showThumbnails: false, fitRelativeZoomLevel: 0 }, action) => {
     switch (action.type) {
         case 'SN_DOCVIEWER_DOCUMENT_RESET_DOCUMENT':
             return { ...state, activePages: [1] }
@@ -128,6 +143,8 @@ export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePag
             return { ...state, showShapes: action.showShapes }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_THUMBNAILS':
             return { ...state, showThumbnails: action.showThumbnails }
+        case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_FIT_RELATIVE_ZOOM_LEVEL':
+            return { ...state, fitRelativeZoomLevel: action.fitRelativeZoomLevel }
         default:
             return state
     }

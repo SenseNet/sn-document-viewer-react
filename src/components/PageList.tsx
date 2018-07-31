@@ -34,6 +34,7 @@ export interface PageListProps {
     elementNamePrefix: string
     zoomMode: ZoomMode
     zoomLevel: number
+    fitRelativeZoomLevel: number
     images: 'preview' | 'thumbnail'
     activePage?: number
     onPageClick: (ev: React.MouseEvent<HTMLElement>, pageIndex: number) => void
@@ -128,7 +129,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
                     width: p.Width,
                     height: p.Height,
                     rotation: p.Attributes && p.Attributes.degree || 0,
-                }, props.zoomMode, props.zoomLevel)
+                }, props.zoomMode, props.zoomLevel, props.fitRelativeZoomLevel)
 
             return {
                 ...p,
@@ -217,6 +218,7 @@ class PageList extends React.Component<componentType<typeof mapStateToProps, typ
                             onClick={(ev) => this.props.onPageClick(ev, value.Index)}
                             zoomMode={this.props.zoomMode}
                             zoomLevel={this.props.zoomLevel}
+                            fitRelativeZoomLevel={this.props.fitRelativeZoomLevel}
                             elementNamePrefix={this.props.elementNamePrefix}
                             image={this.props.images}
                             margin={this.props.padding}

@@ -3,7 +3,7 @@ import { ZoomIn, ZoomOut } from '@material-ui/icons'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { componentType } from '../../services'
-import { RootReducerType, setCustomZoomLevel } from '../../store'
+import { RootReducerType, setFitRelativeZoomLevel } from '../../store'
 
 /**
  * maps state fields from the store to component props
@@ -11,7 +11,7 @@ import { RootReducerType, setCustomZoomLevel } from '../../store'
  */
 export const mapStateToProps = (state: RootReducerType) => {
     return {
-        customZoomLevel: state.sensenetDocumentViewer.viewer.customZoomLevel,
+        fitRelativeZoomLevel: state.sensenetDocumentViewer.viewer.fitRelativeZoomLevel,
     }
 }
 
@@ -20,7 +20,7 @@ export const mapStateToProps = (state: RootReducerType) => {
  * @param state the redux state
  */
 export const mapDispatchToProps = {
-    setZoomLevel: setCustomZoomLevel,
+    setFitRelativeZoomLevel,
 }
 
 /**
@@ -29,11 +29,11 @@ export const mapDispatchToProps = {
 export class ZoomInOutWidgetComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, { zoomMenuAnchor?: HTMLElement }> {
 
     private zoomIn(ev: React.MouseEvent<HTMLElement>) {
-        this.props.setZoomLevel(this.props.customZoomLevel + 1)
+        this.props.setFitRelativeZoomLevel(this.props.fitRelativeZoomLevel + 1)
     }
 
     private zoomOut(ev: React.MouseEvent<HTMLElement>) {
-        this.props.setZoomLevel(this.props.customZoomLevel - 1)
+        this.props.setFitRelativeZoomLevel(this.props.fitRelativeZoomLevel - 1)
     }
 
     /**

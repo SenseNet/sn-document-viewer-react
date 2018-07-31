@@ -44,6 +44,7 @@ export interface OwnProps {
     elementNamePrefix: string,
     zoomMode: ZoomMode,
     zoomLevel: number,
+    fitRelativeZoomLevel: number,
     onClick: (ev: React.MouseEvent<HTMLElement>) => any,
     margin: number,
     image: 'preview' | 'thumbnail'
@@ -102,7 +103,7 @@ class Page extends React.Component<componentType<typeof mapStateToProps, typeof 
                 width: props.page.Width,
                 height: props.page.Height,
                 rotation: props.page.Attributes && props.page.Attributes.degree || 0,
-            }, props.zoomMode, props.zoomLevel)
+            }, props.zoomMode, props.zoomLevel, props.fitRelativeZoomLevel)
         const boundingBox = ImageUtil.getRotatedBoundingBoxSize({
             width: props.page.Width,
             height: props.page.Height,

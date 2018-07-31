@@ -16,6 +16,8 @@ const mapStateToProps = (state: RootReducerType) => {
         zoomMode: state.sensenetDocumentViewer.viewer.zoomMode,
         customZoomLevel: state.sensenetDocumentViewer.viewer.customZoomLevel,
         showThumbnails: state.sensenetDocumentViewer.viewer.showThumbnails,
+        fitRelativeZoomLevel: state.sensenetDocumentViewer.viewer.fitRelativeZoomLevel,
+
     }
 }
 
@@ -78,7 +80,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
 
     /** triggered when the component will receive props */
     public componentWillReceiveProps(newProps: this['props']) {
-        if (this.props.activePages[0] !== newProps.activePages[0]) {
+        if (this.props.activePages[0] !== newProps.activePages[0] || this.props.fitRelativeZoomLevel !== newProps.fitRelativeZoomLevel) {
             this.scrollTo(newProps.activePages[0])
         }
         if (this.props.showThumbnails !== newProps.showThumbnails) {
@@ -133,6 +135,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                             style={{ minWidth: 200, marginRight: '-16px', paddingRight: 0 }}
                             id="sn-document-viewer-thumbnails"
                             zoomMode="fit"
+                            fitRelativeZoomLevel={0}
                             zoomLevel={1}
                             onPageClick={(ev, index) => this.scrollTo(index)}
                             elementNamePrefix="Thumbnail-"
@@ -147,6 +150,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
                         id="sn-document-viewer-pages"
                         zoomMode={this.props.zoomMode}
                         zoomLevel={this.props.customZoomLevel}
+                        fitRelativeZoomLevel={this.props.fitRelativeZoomLevel}
                         onPageClick={(ev, index) => this.scrollTo(index)}
                         elementNamePrefix="Page-"
                         images="preview"
