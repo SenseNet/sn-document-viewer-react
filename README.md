@@ -1,4 +1,7 @@
 # sn-document-viewer-react
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/SenseNet/sn-document-viewer-react.svg)](https://greenkeeper.io/)
+
 Document viewer component for sensenet ECM
 
 ## Running the example application
