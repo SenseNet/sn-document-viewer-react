@@ -32,6 +32,7 @@ export const pageListTests: Mocha.Suite = describe('PageList component', () => {
                         tolerance={100}
                         padding={10}
                         images={'preview'}
+                        fitRelativeZoomLevel={0}
                     >
                     </PageList>
                 </Provider>)

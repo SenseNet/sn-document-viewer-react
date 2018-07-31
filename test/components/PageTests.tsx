@@ -33,6 +33,7 @@ export const pageTests: Mocha.Suite = describe('Page component', () => {
                         viewportHeight={768}
                         showWidgets={true}
                         margin={8}
+                        fitRelativeZoomLevel={0}
                     >
                     </Page>
                 </Provider>)
