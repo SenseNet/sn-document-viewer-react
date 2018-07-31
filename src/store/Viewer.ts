@@ -112,20 +112,22 @@ export const setThumbnails = (showThumbnails: boolean) => ({
  */
 export const viewerStateReducer: Reducer<ViewerStateType> = (state = { activePages: [1], zoomMode: 'fit', customZoomLevel: 3, showWatermark: false, showRedaction: true, showShapes: true, showThumbnails: false }, action) => {
     switch (action.type) {
+        case 'SN_DOCVIEWER_DOCUMENT_RESET_DOCUMENT':
+            return { ...state, activePages: [1] }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_PAGE':
-            return {...state, activePages: [...action.activePages] }
+            return { ...state, activePages: [...action.activePages] }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_ZOOM_MODE':
-            return {...state, zoomMode: action.zoomMode, customZoomLevel: 0 }
+            return { ...state, zoomMode: action.zoomMode, customZoomLevel: 0 }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_CUSTOM_ZOOM_LEVEL':
-            return {...state, zoomMode: !action.customZoomLevel ? action.defaultModeOnZero : 'custom', customZoomLevel: action.customZoomLevel }
+            return { ...state, zoomMode: !action.customZoomLevel ? action.defaultModeOnZero : 'custom', customZoomLevel: action.customZoomLevel }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_WATERMARK':
-            return {...state, showWatermark: action.showWatermark }
+            return { ...state, showWatermark: action.showWatermark }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_REDACTION':
-            return {...state, showRedaction: action.showRedaction }
+            return { ...state, showRedaction: action.showRedaction }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_SHAPES':
-            return {...state, showShapes: action.showShapes }
+            return { ...state, showShapes: action.showShapes }
         case 'SN_DOCVIEWER_DOCUMENT_VIEWER_SET_THUMBNAILS':
-            return {...state, showThumbnails: action.showThumbnails}
+            return { ...state, showThumbnails: action.showThumbnails }
         default:
             return state
     }

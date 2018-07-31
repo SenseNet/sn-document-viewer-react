@@ -2,7 +2,6 @@ import { ClickAwayListener, TextField, Typography } from '@material-ui/core'
 import _ = require('lodash')
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { componentType } from '../../services'
 import { RootReducerType, setActivePages } from '../../store'
 
 /**
@@ -38,22 +37,27 @@ export interface PagerState {
 /**
  * Document widget component for paging
  */
-export class DocumentTitlePagerComponent extends React.Component<componentType<typeof mapStateToProps, typeof mapDispatchToProps>, PagerState> {
+export class DocumentTitlePagerComponent extends React.Component<ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps, PagerState> {
 
     /** the component state */
-    public state = { currentPage: this.props.activePages[0], lastPage: this.props.pageCount, focused: false }
+    public state: PagerState = {
+        currentPage: (this.props.activePages[0]) || 1,
+        lastPage: this.props.pageCount,
+        focused: false,
+    }
 
     private setPage = _.debounce(() => {
         this.props.setActivePages([this.state.currentPage])
     }, 200).bind(this)
 
     /** triggered when the component will receive props */
-    public static getDerivedStateFromProps(nextProps: DocumentTitlePagerComponent['props'], lastState: DocumentTitlePagerComponent['state']): DocumentTitlePagerComponent['state'] {
-        return {
+    public static getDerivedStateFromProps(nextProps: DocumentTitlePagerComponent['props'], lastState: Partial<PagerState>) {
+        const newState: Partial<PagerState> = {
             ...lastState,
-            currentPage: lastState.currentPage || nextProps.activePages[0],
+            currentPage: nextProps.activePages[0] || 1,
             lastPage: nextProps.pageCount,
-        } as DocumentTitlePagerComponent['state']
+        }
+        return newState
     }
 
     /**

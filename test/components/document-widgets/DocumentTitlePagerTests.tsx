@@ -35,6 +35,7 @@ export const documentTitlePagerWidgetTests: Mocha.Suite = describe('DocumentTitl
             documentName: '-',
             activePages: [3],
             pageCount: 5,
+            documentIdOrPath: '0',
             gotoPage: 'gotoPage',
             children: [],
             setActivePages: () => ({} as any),
@@ -78,6 +79,7 @@ export const documentTitlePagerWidgetTests: Mocha.Suite = describe('DocumentTitl
                             pageCount={5}
                             activePages={[]}
                             documentName=""
+                            documentIdOrPath=""
                             setActivePages={(page: number[]) => { done(); resolve(); return null as any }}
                             gotoPage=""
                         />
