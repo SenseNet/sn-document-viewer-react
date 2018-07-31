@@ -50,7 +50,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
     public state = { activePage: 1, thumbnaislVisibility: this.props.showThumbnails }
 
     /** scrolls the viewer to focus to the page with the provided index */
-    public scrollTo(index: number) {
+    public scrollTo(index: number, smoothScroll: boolean = true) {
         this.setState({ ...this.state, activePage: index }, () => {
             const pagesContainer = document.getElementById('sn-document-viewer-pages')
             const activePage = document.getElementById(`Page-${index}`)
@@ -58,7 +58,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
             if (pagesContainer && pagesContainer.scrollTo && activePage) {
                 pagesContainer.scrollTo({
                     top: activePage.offsetTop - 8,
-                    behavior: 'smooth',
+                    behavior: smoothScroll ? 'smooth' : 'instant',
                 })
             }
 
@@ -81,7 +81,7 @@ class DocumentViewerLayoutComponent extends React.Component<componentType<typeof
     /** triggered when the component will receive props */
     public componentWillReceiveProps(newProps: this['props']) {
         if (this.props.activePages[0] !== newProps.activePages[0] || this.props.fitRelativeZoomLevel !== newProps.fitRelativeZoomLevel) {
-            this.scrollTo(newProps.activePages[0])
+            this.scrollTo(newProps.activePages[0], this.props.fitRelativeZoomLevel === newProps.fitRelativeZoomLevel)
         }
         if (this.props.showThumbnails !== newProps.showThumbnails) {
             if (newProps.showThumbnails) {
