@@ -10,7 +10,7 @@ import { exampleDocumentData, useTestContext, useTestContextWithSettings, useTes
 /**
  * Save widget tests
  */
-export const saveWidgetTests = describe('SaveWidget component', () => {
+export const saveWidgetTests: Mocha.Suite = describe('SaveWidget component', () => {
 
     let c!: renderer.ReactTestRenderer
 

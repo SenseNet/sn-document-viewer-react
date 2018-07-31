@@ -11,7 +11,7 @@ import { exampleDocumentData, useTestContext } from '../../viewercontext'
 /**
  * Toggle Watermark widget tests
  */
-export const toggleWatermarkWidgetTests = describe('ToggleWatermarkWidget component', () => {
+export const toggleWatermarkWidgetTests: Mocha.Suite = describe('ToggleWatermarkWidget component', () => {
 
     let c!: renderer.ReactTestRenderer
 

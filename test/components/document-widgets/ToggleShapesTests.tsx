@@ -11,7 +11,7 @@ import { exampleDocumentData, useTestContext } from '../../viewercontext'
 /**
  * Toggle Shapes widget tests
  */
-export const toggleShapesWidgetTests = describe('ToggleShapesWidget component', () => {
+export const toggleShapesWidgetTests: Mocha.Suite = describe('ToggleShapesWidget component', () => {
 
     let c!: renderer.ReactTestRenderer
 

@@ -14,7 +14,7 @@ import { exampleDocumentData, useTestContext, useTestContextAsync } from '../../
 /**
  * Pager widget tests
  */
-export const pagerWidgetTests = describe('PagerWidget component', () => {
+export const pagerWidgetTests: Mocha.Suite = describe('PagerWidget component', () => {
 
     let c!: renderer.ReactTestRenderer
 
