@@ -3,6 +3,9 @@ import { ZoomMode } from '../store'
 /** Dimensions model that defines a specified width and height */
 export interface Dimensions { width: number, height: number }
 
+/**
+ * Default scale value per step. Adjust this to increase / decrease fit relative zoom per clicks
+ */
 export const fitRelativeZoomLevelScale = 0.05
 
 /**

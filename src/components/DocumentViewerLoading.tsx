@@ -46,7 +46,8 @@ class DocumentViewerLoadingComponent extends React.Component<componentType<typeo
                     maxWidth: 500,
                     margin: '.5em 0 .6em 0',
                 }}>
-                    <svg width="442px" height="333px" viewBox="0 0 442 333" version="1.1" >
+                    <img src="./assets/loader.gif" />
+                    {/* <svg width="442px" height="333px" viewBox="0 0 442 333" version="1.1" >
                         <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                             <g id="New-Image-Generation" transform="translate(-9.000000, 5.000000)">
                                 <g id="Document" transform="translate(9.000000, 0.000000)">
@@ -59,7 +60,7 @@ class DocumentViewerLoadingComponent extends React.Component<componentType<typeo
                                 </g>
                             </g>
                         </g>
-                    </svg>
+                    </svg> */}
                     <Typography variant="headline" color="textSecondary" align="center" style={{ fontWeight: 'bolder' }}>
                         {this.props.loadingDocument}
                     </Typography>
