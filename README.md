@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/SenseNet/sn-document-viewer-react.svg?branch=master)](https://travis-ci.org/SenseNet/sn-document-viewer-react)
+
+
 # sn-document-viewer-react
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/SenseNet/sn-document-viewer-react.svg)](https://greenkeeper.io/)
