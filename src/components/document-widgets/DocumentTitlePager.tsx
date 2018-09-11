@@ -62,7 +62,6 @@ export class DocumentTitlePagerComponent extends React.Component<ReturnType<type
     public static getDerivedStateFromProps(nextProps: DocumentTitlePagerComponent['props'], lastState: Partial<PagerState>) {
         const newState: Partial<PagerState> = {
             ...lastState,
-            // currentPage: lastState.currentPage || nextProps.activePages[0] || 1,
             lastPage: nextProps.pageCount,
         }
         return newState
@@ -85,7 +84,7 @@ export class DocumentTitlePagerComponent extends React.Component<ReturnType<type
         }
     }
 
-    public submitPageNumber(ev: React.FormEvent<HTMLFormElement>) {
+    private submitPageNumber(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault()
         const formData = new FormData(ev.currentTarget)
         const pageNo = formData.get('gotoPage') as string
