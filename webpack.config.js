@@ -30,7 +30,7 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".json"]
     },
     plugins: [
-        // new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin(),
         new CopyWebpackPlugin([{
             from: "index.html",
             to: "./../"
