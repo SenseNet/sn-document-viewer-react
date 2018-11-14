@@ -22,12 +22,25 @@ export interface ErrorState {
 }
 
 /**
+ * Gets the preview state form the document's page count
+ * @param {RootReducerType} state
+ * @returns {number} page count that can be compared to PreviewState
+ */
+function getPreviewState(state: RootReducerType): number {
+    if (state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.idOrPath) {
+        // asNumber will return with a number because we added a default value
+       return asNumber(state.sensenetDocumentViewer.documentState.document.pageCount, PreviewState.Loading)!
+    }
+    return PreviewState.Loading
+}
+
+/**
  * maps state fields from the store to component props
  * @param state the redux state
  */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        previewState: state.sensenetDocumentViewer.documentState.document && asNumber(state.sensenetDocumentViewer.documentState.document.pageCount, PreviewState.Loading),
+        previewState: getPreviewState(state),
         errorLoadingDocument: state.sensenetDocumentViewer.localization.errorLoadingDocument,
         errorLoadingDetails: state.sensenetDocumentViewer.localization.errorLoadingDetails,
         reloadPage: state.sensenetDocumentViewer.localization.reloadPage,
