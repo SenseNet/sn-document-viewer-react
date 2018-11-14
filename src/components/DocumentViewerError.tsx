@@ -2,7 +2,7 @@ import Typography from '@material-ui/core/Typography'
 import React = require('react')
 import { connect } from 'react-redux'
 import { PreviewState } from '../Enums'
-import { componentType } from '../services/TypeHelpers'
+import { asNumber, componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store'
 import { LayoutAppBar } from './LayoutAppBar'
 
@@ -27,7 +27,7 @@ export interface ErrorState {
  */
 const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
-        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount || PreviewState.Loading,
+        previewState: state.sensenetDocumentViewer.documentState.document && asNumber(state.sensenetDocumentViewer.documentState.document.pageCount, PreviewState.Loading),
         errorLoadingDocument: state.sensenetDocumentViewer.localization.errorLoadingDocument,
         errorLoadingDetails: state.sensenetDocumentViewer.localization.errorLoadingDetails,
         reloadPage: state.sensenetDocumentViewer.localization.reloadPage,
@@ -53,7 +53,7 @@ class DocumentViewerErrorComponent extends React.Component<componentType<typeof 
      */
     public static getDerivedStateFromProps(props: DocumentViewerErrorComponent['props']) {
         const stateMessageValue = props.errorLoadingDocument && props.errorLoadingDocument.find((a) =>
-            (props.error.status && a.code === props.error.status) || a.state === props.previewState)
+            (props.error && props.error.status && a.code === props.error.status) || a.state === props.previewState)
         return {
             message: stateMessageValue && stateMessageValue.message || '',
             details: stateMessageValue && stateMessageValue.details || '',
