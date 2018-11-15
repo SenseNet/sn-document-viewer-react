@@ -1,8 +1,9 @@
 import Typography from '@material-ui/core/Typography'
+import { toNumber } from '@sensenet/client-utils'
 import React = require('react')
 import { connect } from 'react-redux'
 import { PreviewState } from '../Enums'
-import { asNumber, componentType } from '../services/TypeHelpers'
+import { componentType } from '../services/TypeHelpers'
 import { RootReducerType } from '../store'
 import { LayoutAppBar } from './LayoutAppBar'
 
@@ -29,7 +30,7 @@ export interface ErrorState {
 function getPreviewState(state: RootReducerType): number {
     if (state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.idOrPath) {
         // asNumber will return with a number because we added a default value
-       return asNumber(state.sensenetDocumentViewer.documentState.document.pageCount, PreviewState.Loading)!
+       return toNumber(state.sensenetDocumentViewer.documentState.document.pageCount, PreviewState.Loading)!
     }
     return PreviewState.Loading
 }
