@@ -28,8 +28,8 @@ export interface ErrorState {
  * @returns {number} page count that can be compared to PreviewState
  */
 export function getPreviewState(state: RootReducerType): number {
-    if (state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.idOrPath) {
-        // asNumber will return with a number because we added a default value
+    if (state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.idOrPath) {
+        // toNumber will return with a number because we added a default value
        return toNumber(state.sensenetDocumentViewer.documentState.document.pageCount, PreviewState.Loading)!
     }
     return PreviewState.Loading
