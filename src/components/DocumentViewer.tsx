@@ -32,6 +32,7 @@ const mapStateToProps = (state: RootReducerType, ownProps: OwnProps) => {
     return {
         isLoading: state.sensenetDocumentViewer.documentState.isLoading,
         idOrPath: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.idOrPath,
+        previewState: state.sensenetDocumentViewer.documentState.document && state.sensenetDocumentViewer.documentState.document.pageCount,
         docViewerError: state.sensenetDocumentViewer.documentState.error,
         previewImagesError: state.sensenetDocumentViewer.previewImages.error,
     }
@@ -87,7 +88,8 @@ class DocumentViewer extends React.Component<docViewerComponentType> {
             return <DocumentViewerLoading image={this.props.loaderImage || './assets/loader.gif'} />
         }
 
-        if (this.props.docViewerError || this.props.previewImagesError) {
+        const isPreviewError = this.props.previewState !== -1 && this.props.previewState < 1
+        if (this.props.docViewerError || this.props.previewImagesError || isPreviewError) {
             return <DocumentViewerError error={this.props.docViewerError || this.props.previewImagesError} />
         }
         return (<DocumentViewerLayout drawerSlideProps={this.props.drawerSlideProps}>
