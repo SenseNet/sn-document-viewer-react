@@ -87,7 +87,7 @@
     "lodash.debounce": "^4.0.8",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-redux": "^5.0.7",
+    "react-redux": "^6.0.0",
     "react-test-renderer": "^16.5.2",
     "redux": "^4.0.0",
     "redux-di-middleware": "^1.0.2",
