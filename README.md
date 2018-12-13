@@ -4,6 +4,10 @@
 
 # @sensenet/document-viewer-react
 
+------
+### This package is not under active development. You can find our latest packages in the [sensenset/sn-client](https://github.com/sensenet/sn-client) monorepo.
+------
+
 Document viewer component for sensenet ECM
 
 ## Running the example application
